@@ -1,0 +1,10 @@
+{
+  "item.palmon.empty_contract": "§eEmpty Contract",
+  "item.palmon.labor_contract": "§eLabor Contract",
+
+  "creativetab.palmon_tab": "Palmon",
+
+  "text.palmon.contract_on_wild": "You cannot hire a wild pokemon",
+  "text.palmon.contract_on_other": "You cannot hire other player's pokemon",
+  "text.palmon.labor_contract_not_shift": "You need to press [Shift] to release the pokemon"
+}
