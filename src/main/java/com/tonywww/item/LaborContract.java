@@ -3,17 +3,18 @@ package com.tonywww.item;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
-import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import com.cobblemon.mod.common.pokemon.EVs;
 import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.DataKeys;
 import com.tonywww.registeries.ModItems;
-import com.tonywww.utils.StatsHelper;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -22,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,19 @@ public class LaborContract extends Item {
                         itemStack.shrink(1);
 
                         player.getInventory().placeItemBackInInventory(ModItems.EMPTY_CONTRACT.get().getDefaultInstance());
+
+                        serverLevel.sendParticles(
+                                ParticleTypes.HAPPY_VILLAGER,
+                                serverPlayer.getX(),
+                                serverPlayer.getY() + 0.5d,
+                                serverPlayer.getZ(),
+                                16,
+                                0.5d,
+                                0.5d,
+                                0.5d,
+                                0.1
+                        );
+                        serverLevel.playSound(null, player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
 
                     }
 

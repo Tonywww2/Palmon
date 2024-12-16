@@ -7,10 +7,13 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.tonywww.Palmon;
 import com.tonywww.registeries.ModItems;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,8 +21,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.joml.Vector3f;
 
 public class EmptyContract extends Item {
+    public static final DustParticleOptions PARTICLE = new DustParticleOptions(new Vector3f(1f, 1f, 1f), 2.0F);
+
     public EmptyContract(Properties arg) {
         super(arg);
     }
@@ -40,6 +46,20 @@ public class EmptyContract extends Item {
                     if (!player.isCreative()) itemStack.shrink(1);
 
                     player.getInventory().placeItemBackInInventory(result);
+
+                    serverLevel.sendParticles(
+                            PARTICLE,
+                            pokemon.getX(),
+                            pokemon.getY() + 0.5d,
+                            pokemon.getZ(),
+                            16,
+                            0.5d,
+                            0.5d,
+                            0.5d,
+                            0.1d
+                    );
+                    serverLevel.playSound(null, player.blockPosition(), SoundEvents.VILLAGER_TRADE, SoundSource.BLOCKS, 1f, 1f);
+
                     player.getCooldowns().addCooldown(this, 10);
 
                 }
