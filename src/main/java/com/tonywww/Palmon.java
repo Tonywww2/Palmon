@@ -1,7 +1,6 @@
 package com.tonywww;
 
-import com.tonywww.registeries.ModCreativeModTabs;
-import com.tonywww.registeries.ModItems;
+import com.tonywww.registeries.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -22,6 +21,9 @@ public class Palmon {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         ModItems.register(eventBus);
+        ModBlocks.register(eventBus);
+        ModBlockEntities.register(eventBus);
+        ModMenus.register(eventBus);
         ModCreativeModTabs.register(eventBus);
 
         // Register the setup method for modloading

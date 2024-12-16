@@ -36,6 +36,10 @@ repositories {
     maven("https://cursemaven.com")
     maven("https://hub.spigotmc.org/nexus/content/groups/public/")
     maven("https://thedarkcolour.github.io/KotlinForForge/")
+
+    maven("https://maven.blamejared.com/")
+    maven("https://modmaven.dev")
+
 }
 
 dependencies {
@@ -48,6 +52,11 @@ dependencies {
     modImplementation("com.cobblemon:forge:${property("cobblemon_version")}")
 
     implementation("thedarkcolour:kotlinforforge:4.4.0")
+
+//    // compile against the JEI API but do not include it at runtime
+//    compileOnly("mezz.jei:jei-${property("minecraft_version")}-forge-api:${property("jei_version")}")
+//    // at runtime, use the full JEI jar for Forge
+//    runtimeOnly("mezz.jei:jei-${property("minecraft_version")}-forge:${property("jei_version")}")
 
 
 }

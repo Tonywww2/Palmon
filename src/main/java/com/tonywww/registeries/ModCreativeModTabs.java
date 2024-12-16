@@ -20,6 +20,8 @@ public class ModCreativeModTabs {
                         pOutput.accept(ModItems.EMPTY_CONTRACT.get());
                         pOutput.accept(ModItems.LABOR_CONTRACT.get());
 
+                        pOutput.accept(ModBlocks.WORKING_STATION.get());
+
                     })
                     .build());
 

@@ -2,7 +2,11 @@
   "item.palmon.empty_contract": "§eEmpty Contract",
   "item.palmon.labor_contract": "§eLabor Contract",
 
+  "block.palmon.working_station": "Working Station",
+
   "creativetab.palmon_tab": "Palmon",
+
+  "screen.palmon.working_station": "Working Station",
 
   "text.palmon.contract_on_wild": "You cannot hire a wild pokemon",
   "text.palmon.contract_on_other": "You cannot hire other player's pokemon",
