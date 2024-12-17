@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=north": { "model": "palmon:block/production_machine" },
+    "facing=east": { "model": "palmon:block/production_machine", "y": 90 },
+    "facing=south": { "model": "palmon:block/production_machine", "y": 180 },
+    "facing=west": { "model": "palmon:block/production_machine", "y": 270 }
+
+  }
+
+}

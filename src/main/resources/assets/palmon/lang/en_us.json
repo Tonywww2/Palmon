@@ -1,12 +1,20 @@
 {
   "item.palmon.empty_contract": "§eEmpty Contract",
   "item.palmon.labor_contract": "§eLabor Contract",
+  "item.palmon.m_crystal": "§bM-Crystal",
 
   "block.palmon.working_station": "Working Station",
+  "block.palmon.production_machine": "Production Machine",
+
+  "block.palmon.boost_frame_1": "Boost Frame Level 1",
+  "block.palmon.boost_frame_2": "Boost Frame Level 2",
+  "block.palmon.boost_frame_3": "Boost Frame Level 3",
+  "block.palmon.boost_frame_4": "Boost Frame Level 4",
 
   "creativetab.palmon_tab": "Palmon",
 
   "screen.palmon.working_station": "Working Station",
+  "screen.palmon.production_machine": "Production Machine",
 
   "text.palmon.contract_on_wild": "You cannot hire a wild pokemon",
   "text.palmon.contract_on_other": "You cannot hire other player's pokemon",

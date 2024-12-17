@@ -31,6 +31,8 @@ loom {
 
 repositories {
     mavenCentral()
+    maven(url = "${rootProject.projectDir}/deps")
+
     maven("https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/")
     maven("https://maven.impactdev.net/repository/development/")
     maven("https://cursemaven.com")
@@ -39,6 +41,8 @@ repositories {
 
     maven("https://maven.blamejared.com/")
     maven("https://modmaven.dev")
+
+    mavenLocal()
 
 }
 
@@ -49,15 +53,11 @@ dependencies {
     // Forge
     forge("net.minecraftforge:forge:${property("forge_version")}")
 
+    compileOnlyApi(libs.jei.api)
+
     modImplementation("com.cobblemon:forge:${property("cobblemon_version")}")
 
     implementation("thedarkcolour:kotlinforforge:4.4.0")
-
-//    // compile against the JEI API but do not include it at runtime
-//    compileOnly("mezz.jei:jei-${property("minecraft_version")}-forge-api:${property("jei_version")}")
-//    // at runtime, use the full JEI jar for Forge
-//    runtimeOnly("mezz.jei:jei-${property("minecraft_version")}-forge:${property("jei_version")}")
-
 
 }
 
