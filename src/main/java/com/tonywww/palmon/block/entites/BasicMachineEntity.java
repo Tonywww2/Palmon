@@ -16,31 +16,28 @@ public class BasicMachineEntity extends SyncedBlockEntity {
     /**
      * Run on every tick
      *
-     * @param be
      * @param tick
      */
-    public static void tick(BasicMachineEntity be, int tick) {
-        be.currentTick += tick;
+    public void tick(int tick) {
+        this.currentTick += tick;
 
     }
 
     /**
      * Return if is the working tick
      *
-     * @param be
      * @return
      */
-    public static boolean isWorkingTick(BasicMachineEntity be) {
-        return be.currentTick >= be.tickPerOperation;
+    public boolean isWorkingTick() {
+        return this.currentTick >= this.tickPerOperation;
     }
 
     /**
      * Reset the ticker after a working tick
      *
-     * @param be
      */
-    public static void resetTicker(BasicMachineEntity be) {
-        be.currentTick = 0;
+    public void resetTicker() {
+        this.currentTick = 0;
 
     }
 

@@ -3,9 +3,10 @@ package com.tonywww.palmon.item;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
-import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.cobblemon.mod.common.pokemon.Species;
 import com.tonywww.palmon.registeries.ModItems;
+import com.tonywww.palmon.utils.PokemonNBTUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -32,7 +33,6 @@ public class LaborContract extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-
         if (level instanceof ServerLevel serverLevel) {
             if (player instanceof ServerPlayer serverPlayer) {
                 if (serverPlayer.isShiftKeyDown()) {
@@ -75,51 +75,50 @@ public class LaborContract extends Item {
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> toolTips, TooltipFlag flag) {
-        Pokemon pokemon = getPokemon(itemStack);
-        if (pokemon != null) {
-            toolTips.add(pokemon.getSpecies().getTranslatedName());
+        CompoundTag pokemonTag = getPokemonNBT(itemStack);
+        if (!pokemonTag.isEmpty()) {
+            Species species = PokemonNBTUtils.getSpeciesFromNBT(pokemonTag);
+            toolTips.add(species.getTranslatedName());
 
-            toolTips.add(Component.literal("Lv: " + pokemon.getLevel()));
+            toolTips.add(Component.literal("Lv: " + PokemonNBTUtils.getLevelFromNBT(pokemonTag)));
             toolTips.add(Component.translatable("cobblemon.ui.info.type")
-                    .append(": ").append(pokemon.getPrimaryType().getDisplayName()).append(" ")
-                    .append(pokemon.getSecondaryType() == null ? Component.empty() : pokemon.getSecondaryType().getDisplayName()));
+                    .append(": ").append(species.getPrimaryType().getDisplayName()).append(" ")
+                    .append(species.getSecondaryType() == null ? Component.empty() : species.getSecondaryType().getDisplayName()));
 
-            IVs ivs = pokemon.getIvs();
-            Map<Stat, Integer> base = pokemon.getForm().getBaseStats();
+            CompoundTag ivs = PokemonNBTUtils.getAllIVsFromNBT(pokemonTag);
+            Map<Stat, Integer> base = species.getBaseStats();
             toolTips.add(Component.translatable("cobblemon.ui.stats.ivs")
                     .append(" | ").append(Component.translatable("cobblemon.ui.stats.base")));
 
             toolTips.add(Component.translatable("cobblemon.ui.stats.hp").append("  : ")
-                    .append("§b" + ivs.get(Stats.HP) + "  |  §d" + base.get(Stats.HP)));
+                    .append("§b" + PokemonNBTUtils.getIVFromNBT(ivs, Stats.HP) + "  |  §d" + base.get(Stats.HP)));
             toolTips.add(Component.translatable("cobblemon.ui.stats.atk").append(": ")
-                    .append("§b" + ivs.get(Stats.ATTACK) + "  |  §d" + base.get(Stats.ATTACK)));
+                    .append("§b" + PokemonNBTUtils.getIVFromNBT(ivs, Stats.ATTACK) + "  |  §d" + base.get(Stats.ATTACK)));
             toolTips.add(Component.translatable("cobblemon.ui.stats.def").append(": ")
-                    .append("§b" + ivs.get(Stats.DEFENCE) + "  |  §d" + base.get(Stats.DEFENCE)));
+                    .append("§b" + PokemonNBTUtils.getIVFromNBT(ivs, Stats.DEFENCE) + "  |  §d" + base.get(Stats.DEFENCE)));
             toolTips.add(Component.translatable("cobblemon.ui.stats.sp_atk").append(": ")
-                    .append("§b" + ivs.get(Stats.SPECIAL_ATTACK) + "  |  §d" + base.get(Stats.SPECIAL_ATTACK)));
+                    .append("§b" + PokemonNBTUtils.getIVFromNBT(ivs, Stats.SPECIAL_ATTACK) + "  |  §d" + base.get(Stats.SPECIAL_ATTACK)));
             toolTips.add(Component.translatable("cobblemon.ui.stats.sp_def").append(": ")
-                    .append("§b" + ivs.get(Stats.SPECIAL_DEFENCE) + "  |  §d" + base.get(Stats.SPECIAL_DEFENCE)));
+                    .append("§b" + PokemonNBTUtils.getIVFromNBT(ivs, Stats.SPECIAL_DEFENCE) + "  |  §d" + base.get(Stats.SPECIAL_DEFENCE)));
             toolTips.add(Component.translatable("cobblemon.ui.stats.speed").append(": ")
-                    .append("§b" + ivs.get(Stats.SPEED) + "  |  §d" + base.get(Stats.SPEED)));
+                    .append("§b" + PokemonNBTUtils.getIVFromNBT(ivs, Stats.SPEED) + "  |  §d" + base.get(Stats.SPEED)));
 
+
+            super.appendHoverText(itemStack, level, toolTips, flag);
         }
-
-        super.appendHoverText(itemStack, level, toolTips, flag);
     }
 
-    public static Pokemon getPokemon(ItemStack itemStack) {
+    public static CompoundTag getPokemonNBT(ItemStack itemStack) {
         if (itemStack != null && !itemStack.isEmpty() &&
                 itemStack.is(ModItems.LABOR_CONTRACT.get())) {
             CompoundTag nbt = itemStack.getTag();
             if (nbt != null) {
-                nbt = nbt.getCompound("Pokemon");
-                if (!nbt.isEmpty()) {
-                    return Pokemon.Companion.loadFromNBT(nbt);
-                }
+                return nbt.getCompound("Pokemon");
             }
         }
         return null;
     }
 
 }
+
 

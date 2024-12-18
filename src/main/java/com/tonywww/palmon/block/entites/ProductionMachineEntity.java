@@ -1,18 +1,25 @@
 package com.tonywww.palmon.block.entites;
 
+import com.cobblemon.mod.common.api.pokemon.stats.Stats;
+import com.cobblemon.mod.common.pokemon.Species;
+import com.tonywww.palmon.block.BoostFrame;
 import com.tonywww.palmon.menu.ProductionMachineContainer;
 import com.tonywww.palmon.registeries.ModBlockEntities;
+import com.tonywww.palmon.utils.PokemonNBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -31,6 +38,12 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
     private final LazyOptional<ItemStackHandler> itemOptional = LazyOptional.of(() -> this.itemStackHandler);
     private final LazyOptional<FluidTank> fluidOptional = LazyOptional.of(() -> this.fluidTank);
 
+    private double boostMultiplier = 1.0;
+    private double levelMultiplier = 1.0;
+    private double ovaStatsMultiplier = 1.0;
+    private double focusMultiplier = 1.0;
+
+    public static double[] levelToEfficiency = new double[]{1.0, 1.5, 2.25, 3.5, 5};
 
     private ItemStackHandler createItemHandler() {
         return new ItemStackHandler(18) {
@@ -176,4 +189,100 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
     public @Nullable AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
         return new ProductionMachineContainer(id, inventory, this);
     }
+
+    public CompoundTag getPokemonNBT() {
+        int x = 0, z = 0;
+        switch (this.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)) {
+            case NORTH:
+                z--;
+                break;
+
+            case EAST:
+                x++;
+                break;
+
+            case SOUTH:
+                z++;
+                break;
+
+            case WEST:
+                x--;
+                break;
+        }
+        if (this.level != null &&
+                this.level.getBlockEntity(this.getBlockPos().offset(x, 0, z)) instanceof WorkingStationEntity workingStationEntity) {
+            return workingStationEntity.getPokemonNBT();
+        }
+        return null;
+    }
+
+    public double getBoostMultiplier() {
+        BlockState state = null;
+        if (this.level != null) {
+            state = this.level.getBlockState(this.getBlockPos().above());
+        }
+        if (state != null && state.getBlock() instanceof BoostFrame boostFrame) {
+            return levelToEfficiency[boostFrame.level];
+        }
+        return levelToEfficiency[0];
+
+    }
+
+    public double getLevelMultiplier(int level) {
+        return (0.00015d * level * level) + 1;
+    }
+
+    public double getFocusMultiplier(int ev, int iv) {
+        return Math.max(1, (Math.pow(ev, 3) + (1000d * Math.pow(iv - 1, 3))) / 4000000d);
+    }
+
+    public double getOvaStatsMultiplier(CompoundTag ivs) {
+        int sumIvs = PokemonNBTUtils.getIVFromNBT(ivs, Stats.HP) +
+                PokemonNBTUtils.getIVFromNBT(ivs, Stats.ATTACK) +
+                PokemonNBTUtils.getIVFromNBT(ivs, Stats.DEFENCE) +
+                PokemonNBTUtils.getIVFromNBT(ivs, Stats.SPECIAL_ATTACK) +
+                PokemonNBTUtils.getIVFromNBT(ivs, Stats.SPECIAL_DEFENCE) +
+                PokemonNBTUtils.getIVFromNBT(ivs, Stats.SPEED);
+
+        return Math.max(1, (Math.pow(sumIvs - 5, 3) / 1000000d) + 0.3d);
+    }
+
+    public static void tick(Level level, BlockPos pos, BlockState state, ProductionMachineEntity be) {
+        if (level instanceof ServerLevel) {
+            be.tick(1);
+            if (be.isWorkingTick()) {
+                CompoundTag pokemonNBT = be.getPokemonNBT();
+                if (pokemonNBT != null) {
+                    Species species = PokemonNBTUtils.getSpeciesFromNBT(pokemonNBT);
+                    CompoundTag ivs = PokemonNBTUtils.getAllIVsFromNBT(pokemonNBT);
+
+                    be.boostMultiplier = be.getBoostMultiplier();
+                    be.levelMultiplier = be.getLevelMultiplier(PokemonNBTUtils.getLevelFromNBT(pokemonNBT));
+                    be.ovaStatsMultiplier = be.getOvaStatsMultiplier(ivs);
+
+                    if (true) {
+                        Stats recipeFocusStat = Stats.HP;
+                        be.focusMultiplier = be.getFocusMultiplier(species.getEvYield().get(recipeFocusStat), PokemonNBTUtils.getIVFromNBT(ivs, recipeFocusStat));
+                        // equation: boost(1-5) * level(1-2.5) * ovaStats(1-5.5, With sum of Ivs) * focusStats(1-11.0, with the Ev and Iv)
+                        double efficiency = be.boostMultiplier * be.levelMultiplier * be.ovaStatsMultiplier * be.focusMultiplier;
+
+                        System.out.println(efficiency);
+                    } else {
+                        be.focusMultiplier = 0;
+                    }
+                } else {
+                    be.boostMultiplier = 1.0;
+                    be.levelMultiplier = 1.0;
+                    be.ovaStatsMultiplier = 1.0;
+                    be.focusMultiplier = 1.0;
+
+                }
+
+                be.resetTicker();
+
+            }
+        }
+
+    }
+
 }

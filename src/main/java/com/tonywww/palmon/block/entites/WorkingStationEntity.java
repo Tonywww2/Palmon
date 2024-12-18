@@ -10,6 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -103,8 +104,12 @@ public class WorkingStationEntity extends SyncedBlockEntity implements MenuProvi
         return new WorkingStationContainer(id, inventory, this);
     }
 
-    public Pokemon getPokemon() {
-        return LaborContract.getPokemon(this.itemStackHandler.getStackInSlot(0));
+    public CompoundTag getPokemonNBT() {
+        if (this.getLevel() instanceof ServerLevel serverLevel) {
+            return LaborContract.getPokemonNBT(this.itemStackHandler.getStackInSlot(0));
+
+        }
+        return null;
 
     }
 }
