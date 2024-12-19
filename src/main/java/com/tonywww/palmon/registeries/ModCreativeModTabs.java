@@ -18,7 +18,9 @@ public class ModCreativeModTabs {
                     .title(Component.translatable("creativetab.palmon_tab"))
                     .displayItems((pParameters, pOutput) -> {
                         pOutput.accept(ModItems.EMPTY_CONTRACT.get());
+
                         pOutput.accept(ModItems.M_CRYSTAL.get());
+                        pOutput.accept(ModItems.WOOD.get());
 
                         pOutput.accept(ModBlocks.WORKING_STATION.get());
                         pOutput.accept(ModBlocks.PRODUCTION_MACHINE.get());

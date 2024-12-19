@@ -1,0 +1,26 @@
+{
+  "type": "palmon:production",
+  "focus_stat": "HP",
+  "min_level": 1,
+  "required_type": "water",
+  "ev_hp": 0,
+  "ev_atk": 0,
+  "ev_def": 0,
+  "ev_spa": 0,
+  "ev_spd": 0,
+  "ev_spe": 0,
+  "area_blocks": [
+    {
+      "item": "minecraft:ice"
+    }
+  ],
+  "block_count": 1,
+  "tick": 400,
+  "result_items": null,
+  "result_power": 10,
+  "result_fluid": {
+    "fluid": "minecraft:water",
+    "amount": 1000
+  }
+
+}

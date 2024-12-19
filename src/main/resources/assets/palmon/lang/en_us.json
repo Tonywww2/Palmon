@@ -2,6 +2,7 @@
   "item.palmon.empty_contract": "§eEmpty Contract",
   "item.palmon.labor_contract": "§eLabor Contract",
   "item.palmon.m_crystal": "§bM-Crystal",
+  "item.palmon.wood": "Wood",
 
   "block.palmon.working_station": "Working Station",
   "block.palmon.production_machine": "Production Machine",
@@ -15,6 +16,12 @@
 
   "screen.palmon.working_station": "Working Station",
   "screen.palmon.production_machine": "Production Machine",
+
+  "ui.palmon.boost_multiplier": "Boost Multiplier: ",
+  "ui.palmon.level_multiplier": "Level Multiplier: ",
+  "ui.palmon.stats_multiplier": "IVs Multiplier: ",
+  "ui.palmon.focus_multiplier": "Focus Multiplier: ",
+  "ui.palmon.overall_multiplier": "Final Efficiency: ",
 
   "text.palmon.contract_on_wild": "You cannot hire a wild pokemon",
   "text.palmon.contract_on_other": "You cannot hire other player's pokemon",

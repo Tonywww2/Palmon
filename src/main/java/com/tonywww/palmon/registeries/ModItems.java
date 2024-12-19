@@ -12,6 +12,11 @@ import net.minecraftforge.registries.RegistryObject;
 public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Palmon.MOD_ID);
 
+    public static final RegistryObject<Item> EMPTY = ITEMS.register("empty",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            ));
+
     public static final RegistryObject<Item> EMPTY_CONTRACT = ITEMS.register("empty_contract",
             () -> new EmptyContract(new Item.Properties()
                     .stacksTo(16)
@@ -23,7 +28,13 @@ public class ModItems {
                     .fireResistant()
             ));
 
+    // Materials
     public static final RegistryObject<Item> M_CRYSTAL = ITEMS.register("m_crystal",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            ));
+
+    public static final RegistryObject<Item> WOOD = ITEMS.register("wood",
             () -> new Item(new Item.Properties()
                     .stacksTo(64)
             ));

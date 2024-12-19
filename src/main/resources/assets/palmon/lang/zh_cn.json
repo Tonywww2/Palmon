@@ -2,6 +2,7 @@
   "item.palmon.empty_contract": "§e空合同",
   "item.palmon.labor_contract": "§e劳务合同",
   "item.palmon.m_crystal": "§bM水晶",
+  "item.palmon.wood": "木材",
 
   "block.palmon.working_station": "工作站",
   "block.palmon.production_machine": "生产机",
@@ -15,6 +16,12 @@
 
   "screen.palmon.working_station": "工作站",
   "screen.palmon.production_machine": "生产机",
+
+  "ui.palmon.boost_multiplier": "框架乘区：",
+  "ui.palmon.level_multiplier": "等级乘区：",
+  "ui.palmon.stats_multiplier": "个体乘区：",
+  "ui.palmon.focus_multiplier": "专注乘区：",
+  "ui.palmon.overall_multiplier": "最终效率：",
 
   "text.palmon.contract_on_wild": "你无法雇佣一个野生的宝可梦",
   "text.palmon.contract_on_other": "你无法雇佣其他玩家的宝可梦",

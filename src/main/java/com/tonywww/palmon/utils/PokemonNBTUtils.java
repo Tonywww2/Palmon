@@ -2,6 +2,8 @@ package com.tonywww.palmon.utils;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
+import com.cobblemon.mod.common.api.types.ElementalType;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.cobblemon.mod.common.util.DataKeys;
 import net.minecraft.nbt.CompoundTag;
@@ -24,6 +26,14 @@ public class PokemonNBTUtils {
 
     public static short getIVFromNBT(CompoundTag nbt, Stats stats) {
         return nbt.getShort(stats.getIdentifier().getPath());
+    }
+
+    public static ElementalType getType1FromSpecies(Species species) {
+        return species.getPrimaryType();
+    }
+
+    public static ElementalType getType2FromSpecies(Species species) {
+        return species.getSecondaryType();
     }
 
 }

@@ -1,0 +1,30 @@
+{
+  "type": "palmon:production",
+  "focus_stat": "HP",
+  "min_level": 5,
+  "required_type": null,
+  "ev_hp": 50,
+  "ev_atk": 50,
+  "ev_def": 0,
+  "ev_spa": 0,
+  "ev_spd": 0,
+  "ev_spe": 0,
+  "area_blocks": [
+    {
+      "tag": "minecraft:logs"
+    },
+    {
+      "tag": "minecraft:planks"
+    }
+  ],
+  "block_count": 4,
+  "tick": 400,
+  "result_items": [
+    {
+      "item": "palmon:wood",
+      "count": 2
+    }
+  ],
+  "result_power": 0,
+  "result_fluid": null
+}

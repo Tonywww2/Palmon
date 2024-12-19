@@ -6,9 +6,7 @@ import com.tonywww.palmon.registeries.ModMenus;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -20,25 +18,30 @@ import java.util.Objects;
 
 public class ProductionMachineContainer extends AbstractContainerMenu {
 
-    private final BlockEntity blockEntity;
+    private final ProductionMachineEntity blockEntity;
     private final ContainerLevelAccess canInteractWithCallable;
     private final IItemHandler playerInventory;
 
-    public ProductionMachineContainer(int id, Inventory playerInventory, ProductionMachineEntity blockEntity) {
+    private final ContainerData data;
+
+    public ProductionMachineContainer(int id, Inventory playerInventory, ProductionMachineEntity blockEntity, ContainerData dataAccess) {
         super(ModMenus.PRODUCTION_MACHINE_CONTAINER.get(), id);
 
         this.blockEntity = blockEntity;
         this.canInteractWithCallable = ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos());
         this.playerInventory = new InvWrapper(playerInventory);
 
+        this.data = dataAccess;
+
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             int i, j;
             for (i = 0; i < 3; i++) {
                 for (j = 0; j < 6; j++) {
-                    addSlot(new SlotItemHandler(h, j + i * 6, 35 + j * 18, 49 + i * 18));
+                    addSlot(new SlotItemHandler(h, j + i * 6, 35 + j * 18, 51 + i * 18));
                 }
             }
 
+            addDataSlots(data);
         });
 
         layoutPlayerInventory(playerInventory);
@@ -61,7 +64,7 @@ public class ProductionMachineContainer extends AbstractContainerMenu {
     public ProductionMachineContainer(final int id,
                                       final Inventory playerInventory,
                                       final FriendlyByteBuf data) {
-        this(id, playerInventory, getTileEntity(playerInventory, data));
+        this(id, playerInventory, getTileEntity(playerInventory, data), new SimpleContainerData(8));
 
     }
 
@@ -118,5 +121,14 @@ public class ProductionMachineContainer extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         return stillValid(canInteractWithCallable, player, ModBlocks.PRODUCTION_MACHINE.get());
+    }
+
+    public ContainerData getData() {
+        return data;
+    }
+
+
+    public ProductionMachineEntity getBlockEntity() {
+        return blockEntity;
     }
 }

@@ -26,6 +26,8 @@ public class Palmon {
         ModMenus.register(eventBus);
         ModCreativeModTabs.register(eventBus);
 
+        ModRecipes.register(eventBus);
+
         // Register the setup method for modloading
         eventBus.addListener(this::setup);
 
