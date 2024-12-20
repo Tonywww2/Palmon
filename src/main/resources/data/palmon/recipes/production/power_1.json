@@ -3,12 +3,12 @@
   "focus_stat": "ATTACK",
   "min_level": 5,
   "required_type": "electric",
-  "ev_hp": 0,
-  "ev_atk": 90,
-  "ev_def": 0,
-  "ev_spa": 0,
-  "ev_spd": 50,
-  "ev_spe": 0,
+  "base_hp": 0,
+  "base_atk": 90,
+  "base_def": 0,
+  "base_spa": 0,
+  "base_spd": 50,
+  "base_spe": 0,
   "area_blocks": [
     {
       "tag": "forge:storage_blocks/copper"

@@ -17,6 +17,11 @@ public class ModItems {
                     .stacksTo(64)
             ));
 
+    public static final RegistryObject<Item> FE_SYMBOL = ITEMS.register("fe_symbol",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            ));
+
     public static final RegistryObject<Item> EMPTY_CONTRACT = ITEMS.register("empty_contract",
             () -> new EmptyContract(new Item.Properties()
                     .stacksTo(16)

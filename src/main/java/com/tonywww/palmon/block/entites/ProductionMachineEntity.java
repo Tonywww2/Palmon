@@ -431,7 +431,6 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
 
                     ItemStackHandler areaBlocks = be.getAreaBlocks();
                     if (areaBlocks != null) {
-
                         ProductionInput input = new ProductionInput(areaBlocks, pokemonLevel, type1,
                                 baseStats.get(Stats.HP), baseStats.get(Stats.ATTACK), baseStats.get(Stats.DEFENCE),
                                 baseStats.get(Stats.SPECIAL_ATTACK), baseStats.get(Stats.SPECIAL_DEFENCE), baseStats.get(Stats.SPEED));
@@ -457,7 +456,8 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
                                 // equation: boost(1-5) * level(1-2.5) * ovaStats(1-5.5, With sum of Ivs) * focusStats(1-11.0, with the Ev and Iv)
                                 be.efficiency = be.boostMultiplier * be.levelMultiplier * be.ovaStatsMultiplier * be.focusMultiplier;
 
-                                be.currentTick += be.efficiency;
+                                // Basic Machine multiplier
+                                be.currentTick += be.efficiency * be.tickPerOperation;
 
                                 // finished a cycle
                                 if (be.currentTick >= be.targetTick) {

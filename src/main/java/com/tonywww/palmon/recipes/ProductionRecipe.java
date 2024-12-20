@@ -15,8 +15,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.Arrays;
-
 public class ProductionRecipe implements Recipe<ProductionInput> {
     private final ResourceLocation id;
 
@@ -25,12 +23,12 @@ public class ProductionRecipe implements Recipe<ProductionInput> {
 
     private final ElementalType requiredType;
 
-    private final int evHP;
-    private final int evATK;
-    private final int evDEF;
-    private final int evSPA;
-    private final int evSPD;
-    private final int evSPE;
+    private final int baseHP;
+    private final int baseATK;
+    private final int baseDEF;
+    private final int baseSPA;
+    private final int baseSPD;
+    private final int baseSPE;
 
     private final NonNullList<Ingredient> areaBlocks;
     private final int blockCount;
@@ -42,19 +40,19 @@ public class ProductionRecipe implements Recipe<ProductionInput> {
     private final FluidStack resultFluid;
 
     public ProductionRecipe(ResourceLocation id, Stats focusStat, int minLevel, ElementalType requiredType,
-                            int evHP, int evATK, int evDEF, int evSPA, int evSPD, int evSPE,
+                            int baseHP, int baseATK, int baseDEF, int baseSPA, int baseSPD, int baseSPE,
                             NonNullList<Ingredient> areaBlocks, int blockCount, int tick,
                             NonNullList<ItemStack> resultItems, int resultPower, FluidStack resultFluid) {
         this.id = id;
         this.focusStat = focusStat;
         this.minLevel = minLevel;
         this.requiredType = requiredType;
-        this.evHP = evHP;
-        this.evATK = evATK;
-        this.evDEF = evDEF;
-        this.evSPA = evSPA;
-        this.evSPD = evSPD;
-        this.evSPE = evSPE;
+        this.baseHP = baseHP;
+        this.baseATK = baseATK;
+        this.baseDEF = baseDEF;
+        this.baseSPA = baseSPA;
+        this.baseSPD = baseSPD;
+        this.baseSPE = baseSPE;
         this.areaBlocks = areaBlocks;
         this.blockCount = blockCount;
         this.tick = tick;
@@ -67,8 +65,8 @@ public class ProductionRecipe implements Recipe<ProductionInput> {
     @Override
     public boolean matches(ProductionInput input, Level level) {
         if (input.getLevel() >= this.minLevel && (this.requiredType == null || this.requiredType.equals(input.getType())) &&
-                input.getEVHP() >= this.evHP && input.getEVATK() >= this.evATK && input.getEVDEF() >= this.evDEF &&
-                input.getEVSPA() >= this.evSPA && input.getEVSPD() >= this.evSPD && input.getEVSPE() >= this.evSPE
+                input.getBaseHP() >= this.baseHP && input.getBaseATK() >= this.baseATK && input.getBaseDEF() >= this.baseDEF &&
+                input.getBaseSPA() >= this.baseSPA && input.getBaseSPD() >= this.baseSPD && input.getBaseSPE() >= this.baseSPE
         ) {
             int[] matches = new int[this.areaBlocks.size()];
             for (int i = 0; i < this.areaBlocks.size(); i++) {
@@ -132,28 +130,28 @@ public class ProductionRecipe implements Recipe<ProductionInput> {
         return minLevel;
     }
 
-    public int getEvHP() {
-        return evHP;
+    public int getBaseHP() {
+        return baseHP;
     }
 
-    public int getEvATK() {
-        return evATK;
+    public int getBaseATK() {
+        return baseATK;
     }
 
-    public int getEvDEF() {
-        return evDEF;
+    public int getBaseDEF() {
+        return baseDEF;
     }
 
-    public int getEvSPA() {
-        return evSPA;
+    public int getBaseSPA() {
+        return baseSPA;
     }
 
-    public int getEvSPD() {
-        return evSPD;
+    public int getBaseSPD() {
+        return baseSPD;
     }
 
-    public int getEvSPE() {
-        return evSPE;
+    public int getBaseSPE() {
+        return baseSPE;
     }
 
     public NonNullList<Ingredient> getAreaBlocks() {

@@ -1,5 +1,7 @@
 package com.tonywww.palmon.block.entites;
 
+import com.cobblemon.mod.common.CobblemonEntities;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.tonywww.palmon.item.LaborContract;
 import com.tonywww.palmon.menu.WorkingStationContainer;
@@ -10,8 +12,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -26,11 +30,16 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 
 public class WorkingStationEntity extends SyncedBlockEntity implements MenuProvider {
-    public final ItemStackHandler itemStackHandler = createHandler();
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> itemStackHandler);
+    public final ItemStackHandler itemStackHandler;
+    private final LazyOptional<ItemStackHandler> handler;
+
+    private PokemonEntity pokemonEntity;
 
     public WorkingStationEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.WORKING_STATION_BLOCK_ENTITY.get(), pos, state);
+        this.itemStackHandler = createHandler();
+        this.handler = LazyOptional.of(() -> itemStackHandler);
+
     }
 
     private ItemStackHandler createHandler() {
@@ -38,6 +47,9 @@ public class WorkingStationEntity extends SyncedBlockEntity implements MenuProvi
             @Override
             protected void onContentsChanged(int slot) {
                 inventoryChanged();
+                if (level != null && level instanceof ServerLevel serverLevel) {
+                    serverLevel.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+                }
             }
 
             @Override
@@ -65,6 +77,12 @@ public class WorkingStationEntity extends SyncedBlockEntity implements MenuProvi
     @Override
     public void load(CompoundTag tag) {
         itemStackHandler.deserializeNBT(tag.getCompound("inv"));
+        if (!itemStackHandler.getStackInSlot(0).isEmpty() && this.getPokemonNBT() != null) {
+            updatePokemonEntity();
+
+        } else {
+            this.pokemonEntity = null;
+        }
 
         super.load(tag);
     }
@@ -74,6 +92,40 @@ public class WorkingStationEntity extends SyncedBlockEntity implements MenuProvi
         tag.put("inv", itemStackHandler.serializeNBT());
 
         super.saveAdditional(tag);
+    }
+
+    @Override
+    public @Nullable ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
+        if (tag.contains("inv")) {
+            itemStackHandler.deserializeNBT(tag.getCompound("inv"));
+            if (!itemStackHandler.getStackInSlot(0).isEmpty() && this.getPokemonNBT() != null) {
+                updatePokemonEntity();
+
+            } else {
+                this.pokemonEntity = null;
+            }
+
+        }
+    }
+
+
+    private void updatePokemonEntity() {
+        if (this.getLevel() != null) {
+            this.pokemonEntity = new PokemonEntity(this.getLevel(), Pokemon.Companion.loadFromNBT(this.getPokemonNBT()), CobblemonEntities.POKEMON) {
+                @Override
+                public boolean shouldRender(double d, double e, double f) {
+                    return true;
+                }
+            };
+            this.pokemonEntity.setYBodyRot(0);
+            this.pokemonEntity.setYHeadRot(0);
+        }
     }
 
     public NonNullList<ItemStack> getDroppableInventory() {
@@ -105,11 +157,11 @@ public class WorkingStationEntity extends SyncedBlockEntity implements MenuProvi
     }
 
     public CompoundTag getPokemonNBT() {
-        if (this.getLevel() instanceof ServerLevel serverLevel) {
-            return LaborContract.getPokemonNBT(this.itemStackHandler.getStackInSlot(0));
+        return LaborContract.getPokemonNBT(this.itemStackHandler.getStackInSlot(0));
 
-        }
-        return null;
+    }
 
+    public PokemonEntity getPokemonEntity() {
+        return pokemonEntity;
     }
 }

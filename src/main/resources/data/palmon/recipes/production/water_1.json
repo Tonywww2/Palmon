@@ -3,24 +3,24 @@
   "focus_stat": "HP",
   "min_level": 1,
   "required_type": "water",
-  "ev_hp": 0,
-  "ev_atk": 0,
-  "ev_def": 0,
-  "ev_spa": 0,
-  "ev_spd": 0,
-  "ev_spe": 0,
+  "base_hp": 0,
+  "base_atk": 0,
+  "base_def": 0,
+  "base_spa": 0,
+  "base_spd": 0,
+  "base_spe": 0,
   "area_blocks": [
     {
-      "item": "minecraft:ice"
+      "item": "minecraft:bricks"
     }
   ],
   "block_count": 1,
-  "tick": 400,
+  "tick": 200,
   "result_items": null,
-  "result_power": 10,
+  "result_power": 0,
   "result_fluid": {
     "fluid": "minecraft:water",
-    "amount": 1000
+    "amount": 500
   }
 
 }

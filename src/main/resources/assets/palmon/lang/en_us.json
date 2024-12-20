@@ -1,6 +1,7 @@
 {
   "item.palmon.empty_contract": "§eEmpty Contract",
   "item.palmon.labor_contract": "§eLabor Contract",
+  "item.palmon.fe_symbol": "FE",
   "item.palmon.m_crystal": "§bM-Crystal",
   "item.palmon.wood": "Wood",
 
@@ -25,5 +26,8 @@
 
   "text.palmon.contract_on_wild": "You cannot hire a wild pokemon",
   "text.palmon.contract_on_other": "You cannot hire other player's pokemon",
-  "text.palmon.labor_contract_not_shift": "You need to press [Shift] to release the pokemon"
+  "text.palmon.labor_contract_not_shift": "You need to press [Shift] to release the pokemon",
+
+  "jei.palmon.production": "Resources Production",
+  "jei.palmon.area_blocks": "Needed Blocks: "
 }

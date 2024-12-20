@@ -38,6 +38,6 @@ public class WorkingStationScreen extends AbstractContainerScreen<WorkingStation
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int pX, int pY) {
-        guiGraphics.drawString(this.font, this.title, this.titleLabelX + 62, this.titleLabelY - 22, 3012040, false);
+        guiGraphics.drawString(this.font, this.title, this.titleLabelX + 52, this.titleLabelY - 18, 3012040, false);
     }
 }

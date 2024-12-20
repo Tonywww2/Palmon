@@ -22,6 +22,8 @@ public class ModCreativeModTabs {
                         pOutput.accept(ModItems.M_CRYSTAL.get());
                         pOutput.accept(ModItems.WOOD.get());
 
+                        pOutput.accept(ModItems.FE_SYMBOL.get());
+
                         pOutput.accept(ModBlocks.WORKING_STATION.get());
                         pOutput.accept(ModBlocks.PRODUCTION_MACHINE.get());
                         pOutput.accept(ModBlocks.BOOST_FRAME_1.get());

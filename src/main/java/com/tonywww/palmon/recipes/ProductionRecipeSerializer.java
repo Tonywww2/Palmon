@@ -3,6 +3,7 @@ package com.tonywww.palmon.recipes;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.types.ElementalType;
 import com.cobblemon.mod.common.api.types.ElementalTypes;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tonywww.palmon.Palmon;
@@ -24,6 +25,8 @@ public class ProductionRecipeSerializer implements RecipeSerializer<ProductionRe
     public static final ProductionRecipeSerializer INSTANCE = new ProductionRecipeSerializer();
     public static final ResourceLocation ID = new ResourceLocation(Palmon.MOD_ID, ProductionRecipe.ProductionRecipeType.ID);
 
+    public static final int MAX_AREA_BLOCKS = 8;
+    public static final int MAX_OUTPUT_ITEMS = 8;
 
     @Override
     public ProductionRecipe fromJson(ResourceLocation id, JsonObject json) {
@@ -35,22 +38,30 @@ public class ProductionRecipeSerializer implements RecipeSerializer<ProductionRe
             requiredType = ElementalTypes.INSTANCE.get(GsonHelper.getAsString(json, "required_type"));
         }
 
-        int evHP = GsonHelper.getAsInt(json, "ev_hp");
-        int evATK = GsonHelper.getAsInt(json, "ev_atk");
-        int evDEF = GsonHelper.getAsInt(json, "ev_def");
-        int evSPA = GsonHelper.getAsInt(json, "ev_spa");
-        int evSPD = GsonHelper.getAsInt(json, "ev_spd");
-        int evSPE = GsonHelper.getAsInt(json, "ev_spe");
+        int baseHP = GsonHelper.getAsInt(json, "base_hp");
+        int baseATK = GsonHelper.getAsInt(json, "base_atk");
+        int baseDEF = GsonHelper.getAsInt(json, "base_def");
+        int baseSPA = GsonHelper.getAsInt(json, "base_spa");
+        int baseSPD = GsonHelper.getAsInt(json, "base_spd");
+        int baseSPE = GsonHelper.getAsInt(json, "base_spe");
 
         NonNullList<Ingredient> areaBlocks = RecipeUtils.itemsFromJson(GsonHelper.getAsJsonArray(json, "area_blocks"));
+        if (areaBlocks.size() > MAX_AREA_BLOCKS) {
+            Palmon.getLogger().atError().log("Types of area_blocks should be less than " + MAX_AREA_BLOCKS);
+            return null;
+        }
         int blockCount = GsonHelper.getAsInt(json, "block_count");
 
         int tick = GsonHelper.getAsInt(json, "tick");
 
         NonNullList<ItemStack> resultItem = NonNullList.create();
         if (!json.get("result_items").isJsonNull()) {
-            JsonElement resultsArr = GsonHelper.getAsJsonArray(json, "result_items");
-            for (JsonElement i : resultsArr.getAsJsonArray()) {
+            JsonArray resultJsonArr = GsonHelper.getAsJsonArray(json, "result_items");
+            if (resultJsonArr.size() > MAX_OUTPUT_ITEMS) {
+                Palmon.getLogger().atError().log("Types of result_items should be less than " + MAX_OUTPUT_ITEMS);
+                return null;
+            }
+            for (JsonElement i : resultJsonArr) {
                 if (i instanceof JsonObject jsonObject) {
                     resultItem.add(ShapedRecipe.itemStackFromJson(jsonObject));
 
@@ -72,7 +83,7 @@ public class ProductionRecipeSerializer implements RecipeSerializer<ProductionRe
         }
 
         return new ProductionRecipe(id, focusStat, minLevel, requiredType,
-                evHP, evATK, evDEF, evSPA, evSPD, evSPE,
+                baseHP, baseATK, baseDEF, baseSPA, baseSPD, baseSPE,
                 areaBlocks, blockCount, tick,
                 resultItem, resultPower, resultFluid);
     }
@@ -84,12 +95,12 @@ public class ProductionRecipeSerializer implements RecipeSerializer<ProductionRe
 
         ElementalType requiredType = ElementalTypes.INSTANCE.get(buffer.readUtf());
 
-        int evHP = buffer.readVarInt();
-        int evATK = buffer.readVarInt();
-        int evDEF = buffer.readVarInt();
-        int evSPA = buffer.readVarInt();
-        int evSPD = buffer.readVarInt();
-        int evSPE = buffer.readVarInt();
+        int baseHP = buffer.readVarInt();
+        int baseATK = buffer.readVarInt();
+        int baseDEF = buffer.readVarInt();
+        int baseSPA = buffer.readVarInt();
+        int baseSPD = buffer.readVarInt();
+        int baseSPE = buffer.readVarInt();
 
         int size = buffer.readVarInt();
         NonNullList<Ingredient> areaBlocks = NonNullList.create();
@@ -111,7 +122,7 @@ public class ProductionRecipeSerializer implements RecipeSerializer<ProductionRe
 
 
         return new ProductionRecipe(id, focusStat, minLevel, requiredType,
-                evHP, evATK, evDEF, evSPA, evSPD, evSPE,
+                baseHP, baseATK, baseDEF, baseSPA, baseSPD, baseSPE,
                 areaBlocks, blockCount, tick,
                 resultItem, resultPower, resultFluid);
     }
@@ -123,12 +134,12 @@ public class ProductionRecipeSerializer implements RecipeSerializer<ProductionRe
 
         buffer.writeUtf(recipe.getRequiredType().getName());
 
-        buffer.writeVarInt(recipe.getEvHP());
-        buffer.writeVarInt(recipe.getEvATK());
-        buffer.writeVarInt(recipe.getEvDEF());
-        buffer.writeVarInt(recipe.getEvSPA());
-        buffer.writeVarInt(recipe.getEvSPD());
-        buffer.writeVarInt(recipe.getEvSPE());
+        buffer.writeVarInt(recipe.getBaseHP());
+        buffer.writeVarInt(recipe.getBaseATK());
+        buffer.writeVarInt(recipe.getBaseDEF());
+        buffer.writeVarInt(recipe.getBaseSPA());
+        buffer.writeVarInt(recipe.getBaseSPD());
+        buffer.writeVarInt(recipe.getBaseSPE());
 
         buffer.writeVarInt(recipe.getAreaBlocks().size());
         for (Ingredient i : recipe.getAreaBlocks()) {
