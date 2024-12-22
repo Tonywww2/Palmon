@@ -22,10 +22,34 @@ architectury {
     platformSetupLoomIde()
     forge()
 }
+val generatedResources = file("src/generated")
+
+configure<SourceSetContainer> {
+    named("main") {
+        resources {
+            srcDir(generatedResources)
+        }
+    }
+}
 
 loom {
     enableTransitiveAccessWideners.set(true)
     silentMojangMappingsLicense()
+
+    runs {
+        create("data") {
+            data()
+            programArgs(
+                "--all",
+                "--mod", "palmon", // Replace with your actual mod ID
+                "--output", generatedResources.absolutePath
+            )
+            // Additional arguments can be added as needed
+            programArgs(
+                "--existing", file("src/main/resources").absolutePath
+            )
+        }
+    }
 
 }
 
@@ -90,4 +114,5 @@ tasks {
     }
 
     jar.get().archiveClassifier.set("dev")
+
 }

@@ -15,12 +15,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -29,37 +31,83 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
-public class WorkingStationEntity extends SyncedBlockEntity implements MenuProvider {
+public class WorkingStationEntity extends BasicMachineEntity implements MenuProvider {
     public final ItemStackHandler itemStackHandler;
     private final LazyOptional<ItemStackHandler> handler;
 
+    protected final ContainerData dataAccess;
+
+    public int food;
+    public static final int MAX_FOOD = 1000;
+    public static final int FOOD_VALUE = 4;
+
     private PokemonEntity pokemonEntity;
+    private float entityScale;
+
+    public static final float SCALE_THRESHOLD = 1.25f;
 
     public WorkingStationEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.WORKING_STATION_BLOCK_ENTITY.get(), pos, state);
         this.itemStackHandler = createHandler();
         this.handler = LazyOptional.of(() -> itemStackHandler);
 
+        this.food = 0;
+
+
+        this.dataAccess = new ContainerData() {
+            @Override
+            public int get(int index) {
+                switch (index) {
+                    case 0 -> {
+                        return food;
+                    }
+                }
+                return 0;
+            }
+
+            @Override
+            public void set(int index, int val) {
+                switch (index) {
+                    case 0:
+                        food = val;
+                        break;
+                }
+
+            }
+
+            @Override
+            public int getCount() {
+                return 1;
+            }
+        };
+
     }
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(1) {
+        return new ItemStackHandler(2) {
             @Override
             protected void onContentsChanged(int slot) {
                 inventoryChanged();
                 if (level != null && level instanceof ServerLevel serverLevel) {
-                    serverLevel.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+                    if (slot == 0) {
+                        serverLevel.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+                    }
                 }
             }
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return (slot == 0 && stack.is(ModItems.LABOR_CONTRACT.get()));
+                return (slot == 0 && stack.is(ModItems.LABOR_CONTRACT.get()) ||
+                        slot == 1 && stack.is(ModItems.POKE_FOOD.get()));
             }
 
             @Override
             public int getSlotLimit(int slot) {
-                return 1;
+                return switch (slot) {
+                    case 0 -> 1;
+                    case 1 -> 64;
+                    default -> 1;
+                };
             }
 
             @Nonnull
@@ -74,6 +122,23 @@ public class WorkingStationEntity extends SyncedBlockEntity implements MenuProvi
         };
     }
 
+    public static void tick(Level level, BlockPos pos, BlockState state, WorkingStationEntity be) {
+        if (level instanceof ServerLevel serverLevel) {
+            be.tick(1);
+            if (be.isWorkingTick()) {
+                ItemStack itemStack = be.itemStackHandler.getStackInSlot(1);
+                if (itemStack.is(ModItems.POKE_FOOD.get())) {
+                    int numToUse = Math.min((MAX_FOOD - be.food) / FOOD_VALUE, itemStack.getCount());
+                    itemStack.shrink(numToUse);
+
+                    be.food += numToUse * FOOD_VALUE;
+
+                }
+                be.resetTicker();
+            }
+        }
+    }
+
     @Override
     public void load(CompoundTag tag) {
         itemStackHandler.deserializeNBT(tag.getCompound("inv"));
@@ -84,12 +149,16 @@ public class WorkingStationEntity extends SyncedBlockEntity implements MenuProvi
             this.pokemonEntity = null;
         }
 
+        this.food = tag.getInt("food");
+
         super.load(tag);
     }
 
     @Override
     public void saveAdditional(CompoundTag tag) {
         tag.put("inv", itemStackHandler.serializeNBT());
+
+        tag.putInt("food", food);
 
         super.saveAdditional(tag);
     }
@@ -116,15 +185,46 @@ public class WorkingStationEntity extends SyncedBlockEntity implements MenuProvi
 
 
     private void updatePokemonEntity() {
-        if (this.getLevel() != null) {
+        if (this.getLevel() != null && this.getPokemonNBT() != null && !this.getPokemonNBT().isEmpty()) {
+            float angle = switch (this.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)) {
+                case NORTH -> 0;
+                case EAST -> 90f;
+                case SOUTH -> 180f;
+                case WEST -> 270f;
+                default -> 0f;
+            };
             this.pokemonEntity = new PokemonEntity(this.getLevel(), Pokemon.Companion.loadFromNBT(this.getPokemonNBT()), CobblemonEntities.POKEMON) {
                 @Override
                 public boolean shouldRender(double d, double e, double f) {
                     return true;
                 }
+
+                @Override
+                public void tick() {
+                    super.tick();
+                }
+
+                @Override
+                public void onAddedToWorld() {
+                    super.onAddedToWorld();
+                    this.yHeadRot = angle;
+                    this.yHeadRotO = angle;
+                    this.yBodyRot = angle;
+                    this.yBodyRotO = angle;
+                    this.setTicksLived(200);
+                }
             };
-            this.pokemonEntity.setYBodyRot(0);
-            this.pokemonEntity.setYHeadRot(0);
+            this.pokemonEntity.setNoAi(true);
+            this.pokemonEntity.onAddedToWorld();
+
+            if (this.pokemonEntity.getBoundingBox().getXsize() > SCALE_THRESHOLD || this.pokemonEntity.getBoundingBox().getYsize() > SCALE_THRESHOLD) {
+                this.entityScale = (float) (2f /
+                        (this.pokemonEntity.getBoundingBox().getXsize() + this.pokemonEntity.getBoundingBox().getZsize()));
+
+            } else {
+                this.entityScale = 1f;
+            }
+
         }
     }
 
@@ -153,7 +253,7 @@ public class WorkingStationEntity extends SyncedBlockEntity implements MenuProvi
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new WorkingStationContainer(id, inventory, this);
+        return new WorkingStationContainer(id, inventory, this, dataAccess);
     }
 
     public CompoundTag getPokemonNBT() {
@@ -162,6 +262,10 @@ public class WorkingStationEntity extends SyncedBlockEntity implements MenuProvi
     }
 
     public PokemonEntity getPokemonEntity() {
-        return pokemonEntity;
+        return this.pokemonEntity;
+    }
+
+    public float getEntityScale() {
+        return entityScale;
     }
 }

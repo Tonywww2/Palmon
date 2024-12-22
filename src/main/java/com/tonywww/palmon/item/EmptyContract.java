@@ -20,8 +20,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+
+import java.util.List;
 
 public class EmptyContract extends Item {
     public static final DustParticleOptions PARTICLE = new DustParticleOptions(new Vector3f(1f, 1f, 1f), 2.0F);
@@ -92,6 +97,14 @@ public class EmptyContract extends Item {
 
         return itemStack;
 
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> toolTips, TooltipFlag flag) {
+
+        toolTips.add(Component.translatable("tooltip.palmon.empty_contract"));
+
+        super.appendHoverText(itemStack, level, toolTips, flag);
     }
 
 }

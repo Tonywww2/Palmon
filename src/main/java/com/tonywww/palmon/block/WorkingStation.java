@@ -3,16 +3,21 @@ package com.tonywww.palmon.block;
 import com.tonywww.palmon.block.entites.WorkingStationEntity;
 import com.tonywww.palmon.registeries.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -23,6 +28,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class WorkingStation extends BaseEntityBlock {
     public WorkingStation(Properties arg) {
         super(arg);
@@ -30,7 +37,7 @@ public class WorkingStation extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    private static final VoxelShape SHAPE =  Block.box(0, 0, 0, 16, 4, 16);
+    private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 6, 16);
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
@@ -98,5 +105,18 @@ public class WorkingStation extends BaseEntityBlock {
 
             super.onRemove(pState, level, pos, pNewState, pIsMoving);
         }
+    }
+
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        return createTickerHelper(blockEntityType, ModBlockEntities.WORKING_STATION_BLOCK_ENTITY.get(), WorkingStationEntity::tick);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable BlockGetter blockGetter, List<Component> toolTips, TooltipFlag flag) {
+
+        toolTips.add(Component.translatable("tooltip.palmon.working_station"));
+
+        super.appendHoverText(itemStack, blockGetter, toolTips, flag);
     }
 }

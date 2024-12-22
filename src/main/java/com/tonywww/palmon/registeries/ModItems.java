@@ -27,6 +27,7 @@ public class ModItems {
                     .stacksTo(16)
                     .fireResistant()
             ));
+
     public static final RegistryObject<Item> LABOR_CONTRACT = ITEMS.register("labor_contract",
             () -> new LaborContract(new Item.Properties()
                     .stacksTo(1)
@@ -34,6 +35,11 @@ public class ModItems {
             ));
 
     // Materials
+    public static final RegistryObject<Item> POKE_FOOD = ITEMS.register("poke_food",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            ));
+
     public static final RegistryObject<Item> M_CRYSTAL = ITEMS.register("m_crystal",
             () -> new Item(new Item.Properties()
                     .stacksTo(64)
@@ -44,10 +50,35 @@ public class ModItems {
                     .stacksTo(64)
             ));
 
-    public static void register(IEventBus eventBus) {
+    public static final RegistryObject<Item> STONE = ITEMS.register("stone",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            ));
 
+    public static final RegistryObject<Item> REFINED_COPPER_INGOT = ITEMS.register("refined_copper_ingot",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            ));
+
+    public static final RegistryObject<Item> REFINED_STEEL_INGOT = ITEMS.register("refined_steel_ingot",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            ));
+
+    public static final RegistryObject<Item> REFINED_M_STEEL_INGOT = ITEMS.register("refined_m_steel_ingot",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            ));
+
+    public static final RegistryObject<Item> POLYMER_PLATE = ITEMS.register("polymer_plate",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            ));
+
+    public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
 
     }
+
 
 }

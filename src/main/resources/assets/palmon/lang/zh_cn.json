@@ -2,16 +2,22 @@
   "item.palmon.empty_contract": "§e空合同",
   "item.palmon.labor_contract": "§e劳务合同",
   "item.palmon.fe_symbol": "FE",
+  "item.palmon.poke_food": "宝可梦食物",
   "item.palmon.m_crystal": "§bM水晶",
-  "item.palmon.wood": "木材",
+  "item.palmon.wood": "§a木材",
+  "item.palmon.stone": "§a石材",
+  "item.palmon.refined_copper_ingot": "§a精炼铜锭",
+  "item.palmon.refined_steel_ingot": "§a精炼钢锭",
+  "item.palmon.refined_m_steel_ingot": "§b精炼M钢锭",
+  "item.palmon.polymer_plate": "§b聚合物板",
 
-  "block.palmon.working_station": "工作站",
-  "block.palmon.production_machine": "生产机",
+  "block.palmon.working_station": "§d工作站",
+  "block.palmon.production_machine": "§d生产机",
 
-  "block.palmon.boost_frame_1": "一级增速框架",
-  "block.palmon.boost_frame_2": "二级增速框架",
-  "block.palmon.boost_frame_3": "三级增速框架",
-  "block.palmon.boost_frame_4": "四级增速框架",
+  "block.palmon.boost_frame_1": "§d一级增速框架",
+  "block.palmon.boost_frame_2": "§d二级增速框架",
+  "block.palmon.boost_frame_3": "§d三级增速框架",
+  "block.palmon.boost_frame_4": "§d四级增速框架",
 
   "creativetab.palmon_tab": "帕鲁梦",
 
@@ -23,6 +29,12 @@
   "ui.palmon.stats_multiplier": "个体乘区：",
   "ui.palmon.focus_multiplier": "专注乘区：",
   "ui.palmon.overall_multiplier": "最终效率：",
+
+  "tooltip.palmon.empty_contract": "对着你的宝可梦使用以签署劳务合同。\n 去干活！",
+  "tooltip.palmon.labor_contract": "放置在工作站内，让宝可梦开始工作！\n 或者潜行右键以释放宝可梦。",
+  "tooltip.palmon.boost_frame": "放置于机器上后，将框架乘区设为 ",
+  "tooltip.palmon.working_station": "将一个劳务合同至于其中，并提供充足的食物，其中的宝可梦将会在临近的机器工作。",
+  "tooltip.palmon.production_machine": "需要工作站。\n 让宝可梦根据周围的方块生产各种资源（材料，流体，能量）！\n 通常需要宝可梦的种族值高于一定数值。",
 
   "text.palmon.contract_on_wild": "你无法雇佣一个野生的宝可梦",
   "text.palmon.contract_on_other": "你无法雇佣其他玩家的宝可梦",

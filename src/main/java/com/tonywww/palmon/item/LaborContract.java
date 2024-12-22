@@ -75,6 +75,8 @@ public class LaborContract extends Item {
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> toolTips, TooltipFlag flag) {
+        toolTips.add(Component.translatable("tooltip.palmon.labor_contract"));
+
         CompoundTag pokemonTag = getPokemonNBT(itemStack);
         if (!pokemonTag.isEmpty()) {
             Species species = PokemonNBTUtils.getSpeciesFromNBT(pokemonTag);

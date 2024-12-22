@@ -1,0 +1,27 @@
+{
+  "type": "palmon:production",
+  "focus_stat": "ATTACK",
+  "min_level": 5,
+  "required_type": null,
+  "base_hp": 100,
+  "base_atk": 120,
+  "base_def": 150,
+  "base_spa": 100,
+  "base_spd": 100,
+  "base_spe": 100,
+  "area_blocks": [
+    {
+      "tag": "forge:storage_blocks/coal"
+    }
+  ],
+  "block_count": 32,
+  "tick": 8000,
+  "result_items": [
+    {
+      "item": "minecraft:diamond",
+      "count": 1
+    }
+  ],
+  "result_power": 0,
+  "result_fluid": null
+}

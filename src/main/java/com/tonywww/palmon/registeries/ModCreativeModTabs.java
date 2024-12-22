@@ -18,9 +18,15 @@ public class ModCreativeModTabs {
                     .title(Component.translatable("creativetab.palmon_tab"))
                     .displayItems((pParameters, pOutput) -> {
                         pOutput.accept(ModItems.EMPTY_CONTRACT.get());
+                        pOutput.accept(ModItems.POKE_FOOD.get());
 
                         pOutput.accept(ModItems.M_CRYSTAL.get());
                         pOutput.accept(ModItems.WOOD.get());
+                        pOutput.accept(ModItems.STONE.get());
+                        pOutput.accept(ModItems.REFINED_COPPER_INGOT.get());
+                        pOutput.accept(ModItems.REFINED_STEEL_INGOT.get());
+                        pOutput.accept(ModItems.REFINED_M_STEEL_INGOT.get());
+                        pOutput.accept(ModItems.POLYMER_PLATE.get());
 
                         pOutput.accept(ModItems.FE_SYMBOL.get());
 

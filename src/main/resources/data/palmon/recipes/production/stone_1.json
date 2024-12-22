@@ -2,26 +2,23 @@
   "type": "palmon:production",
   "focus_stat": "HP",
   "min_level": 5,
-  "required_type": "grass",
-  "base_hp": 50,
+  "required_type": "ground",
+  "base_hp": 0,
   "base_atk": 50,
-  "base_def": 0,
+  "base_def": 50,
   "base_spa": 0,
   "base_spd": 0,
   "base_spe": 0,
   "area_blocks": [
     {
-      "tag": "minecraft:logs"
-    },
-    {
-      "tag": "minecraft:planks"
+      "tag": "forge:stone"
     }
   ],
-  "block_count": 4,
-  "tick": 400,
+  "block_count": 32,
+  "tick": 500,
   "result_items": [
     {
-      "item": "palmon:wood",
+      "item": "palmon:stone",
       "count": 1
     }
   ],

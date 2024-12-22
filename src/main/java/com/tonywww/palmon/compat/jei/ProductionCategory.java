@@ -112,6 +112,8 @@ public class ProductionCategory implements IRecipeCategory<ProductionRecipe> {
         }
         guiGraphics.drawString(font, Component.literal("LV >= " + recipe.getMinLevel()), 117, 9, 3012040);
 
+        guiGraphics.drawString(font, Component.literal("" + recipe.getTick()), 156, 9, 252525);
+
         guiGraphics.drawString(font, Component.translatable("jei.palmon.area_blocks"), 98, 24, 3012040);
         guiGraphics.drawString(font, Component.literal("* " + recipe.getBlockCount()), 172, 48, 3012040);
 
@@ -136,6 +138,17 @@ public class ProductionCategory implements IRecipeCategory<ProductionRecipe> {
         guiGraphics.blit(BG, 17, 53, 0, 172, getBarWidth(recipe.getBaseSPD()), 8);
         guiGraphics.drawString(font, Component.literal("SPE >= " + recipe.getBaseSPE()), 17, 65, 4995679);
         guiGraphics.blit(BG, 17, 65, 0, 180, getBarWidth(recipe.getBaseSPE()), 8);
+        
+        int yPos = switch (recipe.getFocusStat()) {
+            case HP -> 3;
+            case ATTACK -> 15;
+            case DEFENCE -> 27;
+            case SPECIAL_ATTACK -> 39;
+            case SPECIAL_DEFENCE -> 51;
+            case SPEED -> 63;
+            default -> 0;
+        };
+        guiGraphics.blit(BG, 15, yPos, 0, 128, 81, 12);
 
     }
 

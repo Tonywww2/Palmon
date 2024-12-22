@@ -1,5 +1,6 @@
 package com.tonywww.palmon.block.entites;
 
+import com.cobblemon.mod.common.CobblemonSounds;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.types.ElementalType;
@@ -20,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +32,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -66,8 +67,6 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
 
     private double currentTick = 0.0;
     private double targetTick = 0.0;
-
-    public static double[] levelToEfficiency = new double[]{1.0, 1.5, 2.25, 3.5, 5};
 
     private ResourceLocation currentRecipe;
 
@@ -305,41 +304,15 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
         return new ProductionMachineContainer(id, inventory, this, dataAccess);
     }
 
-    public CompoundTag getPokemonNBT() {
-        int x = 0, z = 0;
-        switch (this.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)) {
-            case NORTH:
-                z--;
-                break;
-
-            case EAST:
-                x++;
-                break;
-
-            case SOUTH:
-                z++;
-                break;
-
-            case WEST:
-                x--;
-                break;
-        }
-        if (this.level != null &&
-                this.level.getBlockEntity(this.getBlockPos().offset(x, 0, z)) instanceof WorkingStationEntity workingStationEntity) {
-            return workingStationEntity.getPokemonNBT();
-        }
-        return null;
-    }
-
     public double getBoostMultiplier() {
         BlockState state = null;
         if (this.level != null) {
             state = this.level.getBlockState(this.getBlockPos().above());
         }
         if (state != null && state.getBlock() instanceof BoostFrame boostFrame) {
-            return levelToEfficiency[boostFrame.level];
+            return boostFrame.efficiency;
         }
-        return levelToEfficiency[0];
+        return 1.0d;
 
     }
 
@@ -416,96 +389,102 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
     public static void tick(Level level, BlockPos pos, BlockState state, ProductionMachineEntity be) {
         if (level instanceof ServerLevel serverLevel) {
             be.tick(1);
-            if (be.isWorkingTick()) {
+            int food = be.getFood();
+            if (be.isWorkingTick() && food > be.FOOD_PER_WORKING_TICK) {
                 CompoundTag pokemonNBT = be.getPokemonNBT();
                 if (pokemonNBT != null) {
                     Species species = PokemonNBTUtils.getSpeciesFromNBT(pokemonNBT);
+                    if (species != null) {
 
-                    ElementalType type1 = PokemonNBTUtils.getType1FromSpecies(species);
-                    ElementalType type2 = PokemonNBTUtils.getType2FromSpecies(species);
+                        ElementalType type1 = PokemonNBTUtils.getType1FromSpecies(species);
+                        ElementalType type2 = PokemonNBTUtils.getType2FromSpecies(species);
 
-                    int pokemonLevel = PokemonNBTUtils.getLevelFromNBT(pokemonNBT);
+                        int pokemonLevel = PokemonNBTUtils.getLevelFromNBT(pokemonNBT);
 
-                    CompoundTag ivs = PokemonNBTUtils.getAllIVsFromNBT(pokemonNBT);
-                    HashMap<Stat, Integer> baseStats = species.getBaseStats();
+                        CompoundTag ivs = PokemonNBTUtils.getAllIVsFromNBT(pokemonNBT);
+                        HashMap<Stat, Integer> baseStats = species.getBaseStats();
 
-                    ItemStackHandler areaBlocks = be.getAreaBlocks();
-                    if (areaBlocks != null) {
-                        ProductionInput input = new ProductionInput(areaBlocks, pokemonLevel, type1,
-                                baseStats.get(Stats.HP), baseStats.get(Stats.ATTACK), baseStats.get(Stats.DEFENCE),
-                                baseStats.get(Stats.SPECIAL_ATTACK), baseStats.get(Stats.SPECIAL_DEFENCE), baseStats.get(Stats.SPEED));
+                        ItemStackHandler areaBlocks = be.getAreaBlocks();
+                        if (areaBlocks != null) {
+                            ProductionInput input = new ProductionInput(areaBlocks, pokemonLevel, type1,
+                                    baseStats.get(Stats.HP), baseStats.get(Stats.ATTACK), baseStats.get(Stats.DEFENCE),
+                                    baseStats.get(Stats.SPECIAL_ATTACK), baseStats.get(Stats.SPECIAL_DEFENCE), baseStats.get(Stats.SPEED));
 
-                        Optional<ProductionRecipe> recipe = serverLevel.getRecipeManager()
-                                .getRecipeFor(ProductionRecipe.ProductionRecipeType.INSTANCE, input, serverLevel);
-
-                        if (recipe.isEmpty() && type2 != null) {
-                            input.setType(type2);
-                            recipe = serverLevel.getRecipeManager()
+                            Optional<ProductionRecipe> recipe = serverLevel.getRecipeManager()
                                     .getRecipeFor(ProductionRecipe.ProductionRecipeType.INSTANCE, input, serverLevel);
-                        }
 
-                        be.boostMultiplier = be.getBoostMultiplier();
-                        be.levelMultiplier = be.getLevelMultiplier(PokemonNBTUtils.getLevelFromNBT(pokemonNBT));
-                        be.ovaStatsMultiplier = be.getOvaStatsMultiplier(ivs);
+                            if (recipe.isEmpty() && type2 != null) {
+                                input.setType(type2);
+                                recipe = serverLevel.getRecipeManager()
+                                        .getRecipeFor(ProductionRecipe.ProductionRecipeType.INSTANCE, input, serverLevel);
+                            }
 
-                        if (recipe.isPresent()) {
-                            ProductionRecipe rec = recipe.get();
-                            if (rec.getId().equals(be.currentRecipe)) {
-                                // keep ticking
-                                be.focusMultiplier = be.getFocusMultiplier(species.getBaseStats().get(rec.getFocusStat()), PokemonNBTUtils.getIVFromNBT(ivs, rec.getFocusStat()));
-                                // equation: boost(1-5) * level(1-2.5) * ovaStats(1-5.5, With sum of Ivs) * focusStats(1-11.0, with the Ev and Iv)
-                                be.efficiency = be.boostMultiplier * be.levelMultiplier * be.ovaStatsMultiplier * be.focusMultiplier;
+                            be.boostMultiplier = be.getBoostMultiplier();
+                            be.levelMultiplier = be.getLevelMultiplier(PokemonNBTUtils.getLevelFromNBT(pokemonNBT));
+                            be.ovaStatsMultiplier = be.getOvaStatsMultiplier(ivs);
 
-                                // Basic Machine multiplier
-                                be.currentTick += be.efficiency * be.tickPerOperation;
+                            if (recipe.isPresent()) {
+                                ProductionRecipe rec = recipe.get();
+                                if (rec.getId().equals(be.currentRecipe)) {
+                                    // keep ticking
+                                    be.focusMultiplier = be.getFocusMultiplier(species.getBaseStats().get(rec.getFocusStat()), PokemonNBTUtils.getIVFromNBT(ivs, rec.getFocusStat()));
+                                    // equation: boost(1-5) * level(1-2.5) * ovaStats(1-5.5, With sum of Ivs) * focusStats(1-11.0, with the Ev and Iv)
+                                    be.efficiency = be.boostMultiplier * be.levelMultiplier * be.ovaStatsMultiplier * be.focusMultiplier;
 
-                                // finished a cycle
-                                if (be.currentTick >= be.targetTick) {
-                                    int times = (int) (be.currentTick / be.targetTick);
-                                    for (int i = 0; i < times; i++) {
-                                        if (!rec.getResultItems().isEmpty()) {
-                                            insertListToHandler(rec.getResultItems(), be.itemStackHandler);
+                                    // Basic Machine multiplier
+                                    be.currentTick += be.efficiency * be.tickPerOperation;
 
+                                    // finished a cycle
+                                    if (be.currentTick >= be.targetTick) {
+                                        int times = (int) (be.currentTick / be.targetTick);
+                                        for (int i = 0; i < times; i++) {
+                                            if (!rec.getResultItems().isEmpty()) {
+                                                insertListToHandler(rec.getResultItems(), be.itemStackHandler);
+
+                                            }
+                                            if (rec.getResultPower() > 0) {
+                                                be.energyStorage.setEnergyStored(be.energyStorage.getEnergyStored() + rec.getResultPower());
+
+                                            }
+
+                                            if (rec.getResultFluid() != null) {
+                                                be.fluidTank.fill(rec.getResultFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
+
+                                            }
                                         }
-                                        if (rec.getResultPower() > 0) {
-                                            be.energyStorage.setEnergyStored(be.energyStorage.getEnergyStored() + rec.getResultPower());
-
-                                        }
-
-                                        if (rec.getResultFluid() != null) {
-                                            be.fluidTank.fill(rec.getResultFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
-
-                                        }
+                                        be.currentTick = be.currentTick % be.targetTick;
                                     }
-                                    be.currentTick = be.currentTick % be.targetTick;
+
+                                } else {
+                                    // new recipe
+                                    be.currentRecipe = rec.getId();
+                                    be.targetTick = rec.getTick();
+
+                                    be.currentTick = 0;
+                                }
+                                if (serverLevel.getRandom().nextDouble() < be.FOOD_CONSUME_CHANCE) {
+                                    be.setFood(food - be.FOOD_PER_WORKING_TICK);
+                                    serverLevel.playSound(null, pos, CobblemonSounds.BERRY_EAT, SoundSource.BLOCKS);
+
                                 }
 
                             } else {
-                                // new recipe
-                                be.currentRecipe = rec.getId();
-                                be.targetTick = rec.getTick();
-
-                                be.currentTick = 0;
+                                be.focusMultiplier = 0;
+                                be.efficiency = 0;
+                                be.currentRecipe = null;
                             }
-
-
-                        } else {
-                            be.focusMultiplier = 0;
-                            be.efficiency = 0;
-                            be.currentRecipe = null;
                         }
+                    } else {
+                        be.boostMultiplier = 1.0;
+                        be.levelMultiplier = 1.0;
+                        be.ovaStatsMultiplier = 1.0;
+                        be.focusMultiplier = 0;
+                        be.efficiency = 0;
+
                     }
-                } else {
-                    be.boostMultiplier = 1.0;
-                    be.levelMultiplier = 1.0;
-                    be.ovaStatsMultiplier = 1.0;
-                    be.focusMultiplier = 0;
-                    be.efficiency = 0;
-
+                    be.distributeEnergy();
+                    be.resetTicker();
                 }
-                be.distributeEnergy();
-                be.resetTicker();
-
             }
         }
 

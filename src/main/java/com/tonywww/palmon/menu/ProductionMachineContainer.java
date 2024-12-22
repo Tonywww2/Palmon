@@ -1,5 +1,6 @@
 package com.tonywww.palmon.menu;
 
+import com.tonywww.palmon.api.IAbstractContainerMenu;
 import com.tonywww.palmon.block.entites.ProductionMachineEntity;
 import com.tonywww.palmon.registeries.ModBlocks;
 import com.tonywww.palmon.registeries.ModMenus;
@@ -13,10 +14,13 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class ProductionMachineContainer extends AbstractContainerMenu {
+import static com.tonywww.palmon.utils.ContainerUtils.quickMoveHelper;
+
+public class ProductionMachineContainer extends IAbstractContainerMenu {
 
     private final ProductionMachineEntity blockEntity;
     private final ContainerLevelAccess canInteractWithCallable;
@@ -81,41 +85,7 @@ public class ProductionMachineContainer extends AbstractContainerMenu {
     @Override
     public ItemStack quickMoveStack(Player player, int slotNumber) {
         int invCount = 18;
-        var itemstack = ItemStack.EMPTY;
-        var slot = this.slots.get(slotNumber);
-
-        if (slot.hasItem()) {
-            var itemstack1 = slot.getItem();
-            itemstack = itemstack1.copy();
-
-            if (slotNumber == 0) {
-                if (!this.moveItemStackTo(itemstack1, invCount, invCount + 36, true)) {
-                    return ItemStack.EMPTY;
-                }
-
-                slot.onQuickCraft(itemstack1, itemstack);
-            } else if (slotNumber >= invCount && slotNumber < invCount + 36) {
-                if (!this.moveItemStackTo(itemstack1, 0, invCount, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!this.moveItemStackTo(itemstack1, invCount, invCount + 36, false)) {
-                return ItemStack.EMPTY;
-            }
-
-            if (itemstack1.isEmpty()) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-
-            if (itemstack1.getCount() == itemstack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-
-            slot.onTake(player, itemstack1);
-        }
-
-        return itemstack;
+        return quickMoveHelper(this, player, slotNumber, invCount);
     }
 
     @Override

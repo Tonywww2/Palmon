@@ -2,6 +2,7 @@ package com.tonywww.palmon.block.entites;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -19,15 +20,17 @@ public class WorkingStationRenderer implements BlockEntityRenderer<WorkingStatio
             PokemonEntity pokemonEntity = blockEntity.getPokemonEntity();
             if (pokemonEntity != null) {
                 poseStack.pushPose();
-                poseStack.translate(0.5, 0.5, 0.5);
+                poseStack.translate(0.5, 0.125, 0.5);
+                poseStack.mulPose(Axis.YP.rotationDegrees(pokemonEntity.getYRot()));
 
-                float scale = 1f / pokemonEntity.getPokemon().getScaleModifier();
+//                float scale = 0.75f;
+                float scale = blockEntity.getEntityScale();
                 poseStack.scale(scale, scale, scale);
 
                 Minecraft.getInstance().getEntityRenderDispatcher().render(
                         pokemonEntity,
                         0, 0, 0,
-                        0f,
+                        0,
                         partialTicks,
                         poseStack,
                         bufferSource,
@@ -38,6 +41,21 @@ public class WorkingStationRenderer implements BlockEntityRenderer<WorkingStatio
             }
         }
 
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(WorkingStationEntity arg) {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRender(WorkingStationEntity arg, Vec3 arg2) {
+        return true;
+    }
+
+    @Override
+    public int getViewDistance() {
+        return 128;
     }
 
 }

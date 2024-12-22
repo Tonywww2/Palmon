@@ -2,16 +2,22 @@
   "item.palmon.empty_contract": "§eEmpty Contract",
   "item.palmon.labor_contract": "§eLabor Contract",
   "item.palmon.fe_symbol": "FE",
+  "item.palmon.poke_food": "Pokemon Food",
   "item.palmon.m_crystal": "§bM-Crystal",
-  "item.palmon.wood": "Wood",
+  "item.palmon.wood": "§aWood",
+  "item.palmon.stone": "§aStone",
+  "item.palmon.refined_copper_ingot": "§aRefined Copper Ingot",
+  "item.palmon.refined_steel_ingot": "§aRefined Steel Ingot",
+  "item.palmon.refined_m_steel_ingot": "§bRefined M-Steel Ingot",
+  "item.palmon.polymer_plate": "§bPolymer Plate",
 
-  "block.palmon.working_station": "Working Station",
-  "block.palmon.production_machine": "Production Machine",
+  "block.palmon.working_station": "§dWorking Station",
+  "block.palmon.production_machine": "§dProduction Machine",
 
-  "block.palmon.boost_frame_1": "Boost Frame Level 1",
-  "block.palmon.boost_frame_2": "Boost Frame Level 2",
-  "block.palmon.boost_frame_3": "Boost Frame Level 3",
-  "block.palmon.boost_frame_4": "Boost Frame Level 4",
+  "block.palmon.boost_frame_1": "§dBoost Frame Level 1",
+  "block.palmon.boost_frame_2": "§dBoost Frame Level 2",
+  "block.palmon.boost_frame_3": "§dBoost Frame Level 3",
+  "block.palmon.boost_frame_4": "§dBoost Frame Level 4",
 
   "creativetab.palmon_tab": "Palmon",
 
@@ -23,6 +29,12 @@
   "ui.palmon.stats_multiplier": "IVs Multiplier: ",
   "ui.palmon.focus_multiplier": "Focus Multiplier: ",
   "ui.palmon.overall_multiplier": "Final Efficiency: ",
+
+  "tooltip.palmon.empty_contract": "Use it on your Pokemon to let it work for you!",
+  "tooltip.palmon.labor_contract": "Place it in a Working Station to let the Pokemon to work!\n Sneak and right-click to release the Pokemon from the contract. ",
+  "tooltip.palmon.boost_frame": "Place it above the machines to set the boost multiplier with ",
+  "tooltip.palmon.working_station": "Place an Labor Contract in it and provide enough food,\n the Pokemon will work on the machine around it.",
+  "tooltip.palmon.production_machine": "Need a Working Station.\n Let Pokemon produce resources (material, fluid, power) depends on the surrounding blocks!\n Usually requires the Pokemon to have base stats higher than certain value. ",
 
   "text.palmon.contract_on_wild": "You cannot hire a wild pokemon",
   "text.palmon.contract_on_other": "You cannot hire other player's pokemon",
