@@ -2,6 +2,7 @@ package com.tonywww.palmon.registeries;
 
 import com.tonywww.palmon.Palmon;
 import com.tonywww.palmon.block.BoostFrame;
+import com.tonywww.palmon.block.ProcessingStation;
 import com.tonywww.palmon.block.ProductionMachine;
 import com.tonywww.palmon.block.WorkingStation;
 import net.minecraft.world.item.BlockItem;
@@ -29,6 +30,13 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> PRODUCTION_MACHINE = registerBlocks("production_machine",
             () -> new ProductionMachine(BlockBehaviour.Properties
+                    .copy(Blocks.STONE)
+                    .strength(2f, 4f)
+                    .noOcclusion()
+            ));
+
+    public static final RegistryObject<Block> PROCESSING_STATION = registerBlocks("processing_station",
+            () -> new ProcessingStation(BlockBehaviour.Properties
                     .copy(Blocks.STONE)
                     .strength(2f, 4f)
                     .noOcclusion()

@@ -13,6 +13,7 @@
 
   "block.palmon.working_station": "§dWorking Station",
   "block.palmon.production_machine": "§dProduction Machine",
+  "block.palmon.processing_station": "§dProcessing Station",
 
   "block.palmon.boost_frame_1": "§dBoost Frame Level 1",
   "block.palmon.boost_frame_2": "§dBoost Frame Level 2",
@@ -23,6 +24,7 @@
 
   "screen.palmon.working_station": "Working Station",
   "screen.palmon.production_machine": "Production Machine",
+  "screen.palmon.processing_station": "Processing Station",
 
   "ui.palmon.boost_multiplier": "Boost Multiplier: ",
   "ui.palmon.level_multiplier": "Level Multiplier: ",

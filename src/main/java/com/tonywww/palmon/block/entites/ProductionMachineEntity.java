@@ -120,7 +120,7 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
                 int energy = this.getEnergyStored();
                 int diff = Math.min(energy, maxExtract);
                 if (!simulate) {
-                    this.energy += diff;
+                    this.setEnergyStored(this.getEnergyStored() + diff);
                     if (diff != 0) {
                         inventoryChanged();
                     }
@@ -301,7 +301,7 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new ProductionMachineContainer(id, inventory, this, dataAccess);
+        return new ProductionMachineContainer(id, inventory, this, this.dataAccess);
     }
 
     public double getBoostMultiplier() {

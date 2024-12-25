@@ -1,8 +1,8 @@
 package com.tonywww.palmon.screen;
 
 import com.tonywww.palmon.Palmon;
-import com.tonywww.palmon.block.entites.ProductionMachineEntity;
-import com.tonywww.palmon.menu.ProductionMachineContainer;
+import com.tonywww.palmon.block.entites.ProcessingStationEntity;
+import com.tonywww.palmon.menu.ProcessingStationContainer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -13,23 +13,22 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class ProductionMachineScreen extends AbstractContainerScreen<ProductionMachineContainer> {
+public class ProcessingStationScreen extends AbstractContainerScreen<ProcessingStationContainer> {
 
-    private final ResourceLocation GUI = new ResourceLocation(Palmon.MOD_ID, "textures/gui/production_machine_gui.png");
+    private final ResourceLocation GUI = new ResourceLocation(Palmon.MOD_ID, "textures/gui/processing_station_gui.png");
 
-    public static final int FLUID_TANK_X = 13;
+    public static final int FLUID_TANK_X = 15;
     public static final int FLUID_TANK_Y = 51;
     public static final int FLUID_TANK_HEIGHT = 52;
 
-    public static final int ENERGY_TANK_X = 147;
+    public static final int ENERGY_TANK_X = -6;
     public static final int ENERGY_TANK_Y = 51;
     public static final int ENERGY_TANK_HEIGHT = 52;
 
-    public ProductionMachineScreen(ProductionMachineContainer container, Inventory playerInventory, Component title) {
+    public ProcessingStationScreen(ProcessingStationContainer container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
     }
 
@@ -64,7 +63,7 @@ public class ProductionMachineScreen extends AbstractContainerScreen<ProductionM
 
         ScreenUtils.init(GUI);
 
-        guiGraphics.blit(GUI, this.leftPos - 14, this.topPos - 23, 0, 0, 203, 220);
+        guiGraphics.blit(GUI, this.leftPos - 14, this.topPos - 23, 0, 0, 202, 220);
 
         FluidTank tank = this.menu.getBlockEntity().fluidTank;
         FluidStack fluidStack = tank.getFluid();
@@ -88,11 +87,8 @@ public class ProductionMachineScreen extends AbstractContainerScreen<ProductionM
 
         }
 
-        ContainerData data = this.menu.getData();
-        int energyHeight = getEnergyHeight(data.get(7), this.menu.getBlockEntity().energyStorage.getMaxEnergyStored());
+        int energyHeight = getEnergyHeight(this.menu.getData().get(7), this.menu.getBlockEntity().energyStorage.getMaxEnergyStored());
         guiGraphics.blit(GUI, this.leftPos + ENERGY_TANK_X, getEnergyY(energyHeight), 204, ENERGY_TANK_HEIGHT - energyHeight + 1, 16, energyHeight);
-
-        guiGraphics.blit(GUI, this.leftPos + 11, this.topPos + 109, 0, 220, (int) (153d * decodeData(data, 5) / decodeData(data, 6)), 4);
 
     }
 
@@ -134,12 +130,12 @@ public class ProductionMachineScreen extends AbstractContainerScreen<ProductionM
         guiGraphics.drawString(this.font, Component.translatable("ui.palmon.overall_multiplier"), this.titleLabelX + 111, this.titleLabelY - 22, 3012040, false);
         guiGraphics.drawString(this.font, Component.literal(String.valueOf(decodeData(data, 4))), this.titleLabelX + 111, this.titleLabelY - 10, 3012040, false);
 
-//        guiGraphics.drawString(this.font, Component.literal(decodeData(data, 5) + "/ " + decodeData(data, 6)), this.titleLabelX + 111, this.titleLabelY, 3012040, false);
+        guiGraphics.drawString(this.font, Component.literal(decodeData(data, 5) + "/ " + decodeData(data, 6)), this.titleLabelX + 111, this.titleLabelY, 3012040, false);
 
     }
 
     double decodeData(ContainerData data, int index) {
-        return data.get(index) / ProductionMachineEntity.ACCURACY;
+        return data.get(index) / ProcessingStationEntity.ACCURACY;
 
     }
 

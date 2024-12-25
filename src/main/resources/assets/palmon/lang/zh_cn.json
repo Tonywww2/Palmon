@@ -13,6 +13,7 @@
 
   "block.palmon.working_station": "§d工作站",
   "block.palmon.production_machine": "§d生产机",
+  "block.palmon.processing_station": "§d加工站",
 
   "block.palmon.boost_frame_1": "§d一级增速框架",
   "block.palmon.boost_frame_2": "§d二级增速框架",
@@ -23,6 +24,7 @@
 
   "screen.palmon.working_station": "工作站",
   "screen.palmon.production_machine": "生产机",
+  "screen.palmon.processing_station": "加工站",
 
   "ui.palmon.boost_multiplier": "框架乘区：",
   "ui.palmon.level_multiplier": "等级乘区：",

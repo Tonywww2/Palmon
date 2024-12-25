@@ -1,6 +1,7 @@
 package com.tonywww.palmon.registeries;
 
 import com.tonywww.palmon.Palmon;
+import com.tonywww.palmon.block.entites.ProcessingStationEntity;
 import com.tonywww.palmon.block.entites.ProductionMachineEntity;
 import com.tonywww.palmon.block.entites.WorkingStationEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -20,6 +21,10 @@ public class ModBlockEntities {
     public static RegistryObject<BlockEntityType<ProductionMachineEntity>> PRODUCTION_MACHINE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("production_machine",
                     () -> BlockEntityType.Builder.of(ProductionMachineEntity::new, ModBlocks.PRODUCTION_MACHINE.get()).build(null));
+
+    public static RegistryObject<BlockEntityType<ProcessingStationEntity>> PROCESSING_STATION_ENTITY =
+            BLOCK_ENTITIES.register("processing_station",
+                    () -> BlockEntityType.Builder.of(ProcessingStationEntity::new, ModBlocks.PROCESSING_STATION.get()).build(null));
 
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);

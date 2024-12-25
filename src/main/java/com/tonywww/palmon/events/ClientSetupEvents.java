@@ -3,6 +3,7 @@ package com.tonywww.palmon.events;
 import com.tonywww.palmon.block.entites.WorkingStationRenderer;
 import com.tonywww.palmon.registeries.ModBlockEntities;
 import com.tonywww.palmon.registeries.ModMenus;
+import com.tonywww.palmon.screen.ProcessingStationScreen;
 import com.tonywww.palmon.screen.ProductionMachineScreen;
 import com.tonywww.palmon.screen.WorkingStationScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -21,6 +22,7 @@ public class ClientSetupEvents {
         event.enqueueWork(() -> {
             MenuScreens.register(ModMenus.WORKING_STATION_CONTAINER.get(), WorkingStationScreen::new);
             MenuScreens.register(ModMenus.PRODUCTION_MACHINE_CONTAINER.get(), ProductionMachineScreen::new);
+            MenuScreens.register(ModMenus.PROCESSING_STATION_CONTAINER.get(), ProcessingStationScreen::new);
 
             BlockEntityRenderers.register(ModBlockEntities.WORKING_STATION_BLOCK_ENTITY.get(), WorkingStationRenderer::new);
 

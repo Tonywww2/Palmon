@@ -13,7 +13,7 @@ public class BasicMachineEntity extends SyncedBlockEntity {
     protected int tickPerOperation = 4;
 
     protected final int FOOD_PER_WORKING_TICK = 5;
-    protected final double FOOD_CONSUME_CHANCE = 0.2;
+    protected final double FOOD_CONSUME_CHANCE = 0.15;
 
     public BasicMachineEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
         super(tileEntityTypeIn, pos, state);

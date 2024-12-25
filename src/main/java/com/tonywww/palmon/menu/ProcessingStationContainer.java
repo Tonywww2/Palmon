@@ -1,14 +1,17 @@
 package com.tonywww.palmon.menu;
 
 import com.tonywww.palmon.api.IAbstractContainerMenu;
-import com.tonywww.palmon.block.entites.WorkingStationEntity;
+import com.tonywww.palmon.block.entites.ProcessingStationEntity;
+import com.tonywww.palmon.block.entites.ProductionMachineEntity;
 import com.tonywww.palmon.registeries.ModBlocks;
 import com.tonywww.palmon.registeries.ModMenus;
 import com.tonywww.palmon.utils.ContainerUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -20,16 +23,16 @@ import java.util.Objects;
 
 import static com.tonywww.palmon.utils.ContainerUtils.quickMoveHelper;
 
-public class WorkingStationContainer extends IAbstractContainerMenu {
+public class ProcessingStationContainer extends IAbstractContainerMenu {
 
-    private final BlockEntity blockEntity;
+    private final ProcessingStationEntity blockEntity;
     private final ContainerLevelAccess canInteractWithCallable;
     private final IItemHandler playerInventory;
 
     private final ContainerData data;
 
-    public WorkingStationContainer(int id, Inventory playerInventory, WorkingStationEntity blockEntity, ContainerData dataAccess) {
-        super(ModMenus.WORKING_STATION_CONTAINER.get(), id);
+    public ProcessingStationContainer(int id, Inventory playerInventory, ProcessingStationEntity blockEntity, ContainerData dataAccess) {
+        super(ModMenus.PROCESSING_STATION_CONTAINER.get(), id);
 
         this.blockEntity = blockEntity;
         this.canInteractWithCallable = ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos());
@@ -37,29 +40,40 @@ public class WorkingStationContainer extends IAbstractContainerMenu {
 
         this.data = dataAccess;
 
-        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new SlotItemHandler(h, 0, 56, -2));
-            addSlot(new SlotItemHandler(h, 1, 56, 66));
+        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(h -> {
+            int i = 0;
+            for (int j = 0; j < 2; j++) {
+                for (int k = 0; k < 4; k++) {
+                    addSlot(new SlotItemHandler(h, i++, 37 + k * 18, 51 + j * 18));
+                }
+            }
 
-            addDataSlots(data);
+            for (int j = 0; j < 2; j++) {
+                for (int k = 0; k < 2; k++) {
+                    addSlot(new SlotItemHandler(h, i++, 128 + k * 18, 51 + j * 18));
+                }
+            }
+
+            addDataSlots(this.data);
+
         });
 
         ContainerUtils.layoutPlayerInventory(playerInventory, this);
 
     }
 
-    public WorkingStationContainer(final int id,
-                                   final Inventory playerInventory,
-                                   final FriendlyByteBuf data) {
-        this(id, playerInventory, getTileEntity(playerInventory, data), new SimpleContainerData(1));
+    public ProcessingStationContainer(final int id,
+                                      final Inventory playerInventory,
+                                      final FriendlyByteBuf data) {
+        this(id, playerInventory, getTileEntity(playerInventory, data), new SimpleContainerData(8));
 
     }
 
-    private static WorkingStationEntity getTileEntity(final Inventory playerInventory, final FriendlyByteBuf data) {
+    private static ProcessingStationEntity getTileEntity(final Inventory playerInventory, final FriendlyByteBuf data) {
         Objects.requireNonNull(playerInventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
         final BlockEntity tileAtPos = playerInventory.player.level().getBlockEntity(data.readBlockPos());
-        if (tileAtPos instanceof WorkingStationEntity tile) {
+        if (tileAtPos instanceof ProcessingStationEntity tile) {
             return tile;
         }
         throw new IllegalStateException("Tile entity is not correct! " + tileAtPos);
@@ -67,17 +81,20 @@ public class WorkingStationContainer extends IAbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int slotNumber) {
-        int invCount = 2;
+        int invCount = 12;
         return quickMoveHelper(this, player, slotNumber, invCount);
     }
 
     @Override
     public boolean stillValid(Player player) {
-        return stillValid(canInteractWithCallable, player, ModBlocks.WORKING_STATION.get());
+        return stillValid(canInteractWithCallable, player, ModBlocks.PROCESSING_STATION.get());
     }
 
     public ContainerData getData() {
         return data;
     }
 
+    public ProcessingStationEntity getBlockEntity() {
+        return blockEntity;
+    }
 }

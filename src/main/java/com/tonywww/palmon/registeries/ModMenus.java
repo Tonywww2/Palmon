@@ -1,6 +1,7 @@
 package com.tonywww.palmon.registeries;
 
 import com.tonywww.palmon.Palmon;
+import com.tonywww.palmon.menu.ProcessingStationContainer;
 import com.tonywww.palmon.menu.ProductionMachineContainer;
 import com.tonywww.palmon.menu.WorkingStationContainer;
 import net.minecraft.world.inventory.MenuType;
@@ -19,6 +20,9 @@ public class ModMenus {
 
     public static final RegistryObject<MenuType<ProductionMachineContainer>> PRODUCTION_MACHINE_CONTAINER = CONTAINERS.register("production_machine_container",
             () -> IForgeMenuType.create(ProductionMachineContainer::new));
+
+    public static final RegistryObject<MenuType<ProcessingStationContainer>> PROCESSING_STATION_CONTAINER = CONTAINERS.register("processing_station_container",
+            () -> IForgeMenuType.create(ProcessingStationContainer::new));
 
     public static void register(IEventBus eventBus) {
         CONTAINERS.register(eventBus);

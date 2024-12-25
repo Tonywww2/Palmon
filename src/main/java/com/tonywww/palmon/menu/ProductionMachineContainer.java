@@ -4,6 +4,7 @@ import com.tonywww.palmon.api.IAbstractContainerMenu;
 import com.tonywww.palmon.block.entites.ProductionMachineEntity;
 import com.tonywww.palmon.registeries.ModBlocks;
 import com.tonywww.palmon.registeries.ModMenus;
+import com.tonywww.palmon.utils.ContainerUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -48,21 +49,8 @@ public class ProductionMachineContainer extends IAbstractContainerMenu {
             addDataSlots(data);
         });
 
-        layoutPlayerInventory(playerInventory);
+        ContainerUtils.layoutPlayerInventory(playerInventory, this);
 
-    }
-
-    private void layoutPlayerInventory(Inventory playerInventory) {
-        int i, j;
-        for (i = 0; i < 3; i++) {
-            for (j = 0; j < 9; j++) {
-                this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 122 + i * 18));
-            }
-        }
-
-        for (j = 0; j < 9; j++) {
-            this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 180));
-        }
     }
 
     public ProductionMachineContainer(final int id,

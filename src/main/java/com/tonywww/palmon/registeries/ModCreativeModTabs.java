@@ -32,6 +32,8 @@ public class ModCreativeModTabs {
 
                         pOutput.accept(ModBlocks.WORKING_STATION.get());
                         pOutput.accept(ModBlocks.PRODUCTION_MACHINE.get());
+                        pOutput.accept(ModBlocks.PROCESSING_STATION.get());
+
                         pOutput.accept(ModBlocks.BOOST_FRAME_1.get());
                         pOutput.accept(ModBlocks.BOOST_FRAME_2.get());
                         pOutput.accept(ModBlocks.BOOST_FRAME_3.get());

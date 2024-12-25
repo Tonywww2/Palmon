@@ -1,6 +1,7 @@
 package com.tonywww.palmon.utils;
 
 import com.tonywww.palmon.api.IAbstractContainerMenu;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -44,4 +45,18 @@ public class ContainerUtils {
 
         return itemstack;
     }
+
+    public static void layoutPlayerInventory(Inventory playerInventory, IAbstractContainerMenu menu) {
+        int i, j;
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 9; j++) {
+                menu.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 122 + i * 18));
+            }
+        }
+
+        for (j = 0; j < 9; j++) {
+            menu.addSlot(new Slot(playerInventory, j, 8 + j * 18, 180));
+        }
+    }
+
 }
