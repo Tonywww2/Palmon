@@ -37,7 +37,7 @@ public class WorkingStation extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 6, 16);
+    private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 8, 16);
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {

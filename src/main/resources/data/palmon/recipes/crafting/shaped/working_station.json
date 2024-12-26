@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "palmon:wood"
+    },
+    "B": {
+      "item": "palmon:m_crystal"
+    },
+    "C": {
+      "item": "minecraft:hopper_minecart"
+    },
+    "D": {
+      "item": "palmon:stone"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "BCB",
+    "DDD"
+  ],
+  "result": {
+    "item": "palmon:palmon:working_station"
+  }
+}

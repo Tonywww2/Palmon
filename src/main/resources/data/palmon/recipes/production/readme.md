@@ -1,4 +1,5 @@
 "type": "palmon:production"
+"category": "misc",
 
 "focus_stat": "HP" // ame of the 6 stats: HP, ATTACK, DEFENCE, SPECIAL_ATTACK, SPECIAL_DEFENCE, SPEED
 "min_level": 5, // minimum level required, 1-100

@@ -42,6 +42,7 @@
   "text.palmon.contract_on_other": "You cannot hire other player's pokemon",
   "text.palmon.labor_contract_not_shift": "You need to press [Shift] to release the pokemon",
 
-  "jei.palmon.production": "Resources Production",
+  "jei.palmon.production": "Pokemon Resources Production",
+  "jei.palmon.processing": "Pokemon Processing",
   "jei.palmon.area_blocks": "Needed Blocks: "
 }

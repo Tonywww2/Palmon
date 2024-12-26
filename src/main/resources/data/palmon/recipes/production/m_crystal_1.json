@@ -1,0 +1,43 @@
+{
+  "type": "palmon:production",
+  "category": "misc",
+  "focus_stat": "SPEED",
+  "min_level": 5,
+  "required_type": "psychic",
+  "base_hp": 0,
+  "base_atk": 0,
+  "base_def": 0,
+  "base_spa": 0,
+  "base_spd": 0,
+  "base_spe": 110,
+  "area_blocks": [
+    {
+      "tag": "forge:storage_blocks/netherite"
+    },
+    {
+      "tag": "forge:storage_blocks/diamond"
+    },
+    {
+      "tag": "forge:storage_blocks/gold"
+    },
+    {
+      "tag": "forge:storage_blocks/emerald"
+    },
+    {
+      "item": "minecraft:beacon"
+    }
+  ],
+  "block_count": 1,
+  "tick": 1800,
+  "result_items": [
+    {
+      "item": "palmon:m_crystal",
+      "count": 1
+    }
+  ],
+  "result_power": 0,
+  "result_fluid": {
+    "fluid": "minecraft:water",
+    "amount": 4000
+  }
+}

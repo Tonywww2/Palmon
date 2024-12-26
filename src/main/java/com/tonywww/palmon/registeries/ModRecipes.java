@@ -1,6 +1,8 @@
 package com.tonywww.palmon.registeries;
 
 import com.tonywww.palmon.Palmon;
+import com.tonywww.palmon.recipes.ProcessingRecipe;
+import com.tonywww.palmon.recipes.ProcessingRecipeSerializer;
 import com.tonywww.palmon.recipes.ProductionRecipe;
 import com.tonywww.palmon.recipes.ProductionRecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -14,6 +16,9 @@ public class ModRecipes {
 
     public static final RegistryObject<ProductionRecipeSerializer> PRODUCTION_SERIALIZER =
             RECIPE_TYPE.register(ProductionRecipe.ProductionRecipeType.ID, () -> ProductionRecipeSerializer.INSTANCE);
+
+    public static final RegistryObject<ProcessingRecipeSerializer> PROCESSING_SERIALIZER =
+            RECIPE_TYPE.register(ProcessingRecipe.ProcessingRecipeType.ID, () -> ProcessingRecipeSerializer.INSTANCE);
 
     public static void register(IEventBus eventBus) {
         RECIPE_TYPE.register(eventBus);

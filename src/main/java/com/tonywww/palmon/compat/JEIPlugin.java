@@ -1,9 +1,12 @@
 package com.tonywww.palmon.compat;
 
 import com.tonywww.palmon.Palmon;
+import com.tonywww.palmon.compat.jei.ProcessingCategory;
 import com.tonywww.palmon.compat.jei.ProductionCategory;
+import com.tonywww.palmon.recipes.ProcessingRecipe;
 import com.tonywww.palmon.recipes.ProductionRecipe;
 import com.tonywww.palmon.registeries.ModBlocks;
+import com.tonywww.palmon.screen.ProcessingStationScreen;
 import com.tonywww.palmon.screen.ProductionMachineScreen;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -33,7 +36,8 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(
-                new ProductionCategory(registration.getJeiHelpers().getGuiHelper())
+                new ProductionCategory(registration.getJeiHelpers().getGuiHelper()),
+                new ProcessingCategory(registration.getJeiHelpers().getGuiHelper())
         );
     }
 
@@ -44,6 +48,9 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipes(JEITypes.PRODUCTION,
                 rm.getAllRecipesFor(ProductionRecipe.ProductionRecipeType.INSTANCE).stream().toList());
 
+        registration.addRecipes(JEITypes.PROCESSING,
+                rm.getAllRecipesFor(ProcessingRecipe.ProcessingRecipeType.INSTANCE).stream().toList());
+
     }
 
     @Override
@@ -52,11 +59,18 @@ public class JEIPlugin implements IModPlugin {
                 ModBlocks.PRODUCTION_MACHINE.get().asItem().getDefaultInstance(),
                 JEITypes.PRODUCTION
         );
+
+        registration.addRecipeCatalyst(
+                ModBlocks.PROCESSING_STATION.get().asItem().getDefaultInstance(),
+                JEITypes.PROCESSING
+        );
+
     }
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addRecipeClickArea(ProductionMachineScreen.class, 118, 15, 65, 13, JEITypes.PRODUCTION);
+        registration.addRecipeClickArea(ProcessingStationScreen.class, 118, 15, 65, 13, JEITypes.PROCESSING);
 
     }
 }

@@ -87,8 +87,12 @@ public class ProcessingStationScreen extends AbstractContainerScreen<ProcessingS
 
         }
 
-        int energyHeight = getEnergyHeight(this.menu.getData().get(7), this.menu.getBlockEntity().energyStorage.getMaxEnergyStored());
+        ContainerData data = this.menu.getData();
+        int energyHeight = getEnergyHeight(data.get(7), this.menu.getBlockEntity().energyStorage.getMaxEnergyStored());
         guiGraphics.blit(GUI, this.leftPos + ENERGY_TANK_X, getEnergyY(energyHeight), 204, ENERGY_TANK_HEIGHT - energyHeight + 1, 16, energyHeight);
+
+        guiGraphics.blit(GUI, this.leftPos + 37, this.topPos + 92, 0, 220, (int) (125d * decodeData(data, 5) / decodeData(data, 6)), 4);
+
 
     }
 

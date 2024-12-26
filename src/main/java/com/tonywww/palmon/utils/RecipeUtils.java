@@ -36,11 +36,27 @@ public class RecipeUtils {
         return nonnulllist;
     }
 
-    public static void insertListToHandler(NonNullList<ItemStack> list, ItemStackHandler handler) {
+    public static void insertListToHandler(NonNullList<ItemStack> list, ItemStackHandler handler, int startIndex, int endIndex) {
         for (ItemStack stack : list) {
             stack = stack.copy();
-            for (int i = 0; !stack.isEmpty() && i < handler.getSlots(); i++) {
-                stack = handler.insertItem(i, stack, false);
+            for (int i = startIndex; !stack.isEmpty() && i < endIndex; i++) {
+                ItemStack stackInSlot = handler.getStackInSlot(i);
+                if (stackInSlot.isEmpty()) {
+                    handler.setStackInSlot(i, stack);
+                    break;
+                }
+                if (stackInSlot.is(stack.getItem())) {
+                    int exec = stackInSlot.getCount() + stack.getCount() - stackInSlot.getMaxStackSize();
+                    if (exec <= 0) {
+                        stackInSlot.grow(stack.getCount());
+                        break;
+
+                    } else {
+                        stackInSlot.setCount(stackInSlot.getMaxStackSize());
+                        stack.setCount(exec);
+
+                    }
+                }
 
             }
         }

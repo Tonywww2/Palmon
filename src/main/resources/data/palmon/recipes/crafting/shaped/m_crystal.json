@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:ender_eye"
+    },
+    "B": {
+      "item": "cobblemon:tumblestone"
+    },
+    "C": {
+      "item": "cobblemon:dawn_stone"
+    },
+    "D": {
+      "item": "cobblemon:sky_tumblestone"
+    },
+    "E": {
+      "item": "cobblemon:black_tumblestone"
+    }
+  },
+  "pattern": [
+    " A ",
+    "BCD",
+    "CEC"
+  ],
+  "result": {
+    "item": "palmon:m_crystal"
+  }
+}

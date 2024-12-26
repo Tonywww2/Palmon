@@ -136,6 +136,12 @@ public class WorkingStationEntity extends BasicMachineEntity implements MenuProv
                 }
                 be.resetTicker();
             }
+        } else {
+            if (be.pokemonEntity != null) {
+                be.pokemonEntity.tick();
+
+            }
+
         }
     }
 

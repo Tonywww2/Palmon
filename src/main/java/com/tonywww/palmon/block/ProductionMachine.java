@@ -105,8 +105,8 @@ public class ProductionMachine extends BaseEntityBlock {
                             if (!pPlayer.getInventory().add(result.getResult())) {
                                 serverLevel.addFreshEntity(new ItemEntity(serverLevel, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), result.getResult()));
                             }
-                            entity.inventoryChanged();
                         }
+                        entity.inventoryChanged();
 
                     });
 

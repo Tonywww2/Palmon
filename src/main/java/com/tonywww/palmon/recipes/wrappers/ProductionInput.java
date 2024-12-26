@@ -1,4 +1,4 @@
-package com.tonywww.palmon.api;
+package com.tonywww.palmon.recipes.wrappers;
 
 import com.cobblemon.mod.common.api.types.ElementalType;
 import net.minecraftforge.items.IItemHandlerModifiable;

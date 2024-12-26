@@ -1,5 +1,6 @@
 {
   "type": "palmon:production",
+  "category": "misc",
   "focus_stat": "HP",
   "min_level": 1,
   "required_type": "water",

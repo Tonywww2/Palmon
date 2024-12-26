@@ -2,7 +2,8 @@ package com.tonywww.palmon.recipes;
 
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.types.ElementalType;
-import com.tonywww.palmon.recipes.wrappers.ProductionInput;
+import com.tonywww.palmon.api.CountableIngredient;
+import com.tonywww.palmon.recipes.wrappers.ProcessingInput;
 import com.tonywww.palmon.registeries.ModRecipes;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
@@ -15,7 +16,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ProductionRecipe implements Recipe<ProductionInput> {
+public class ProcessingRecipe implements Recipe<ProcessingInput> {
     private final ResourceLocation id;
 
     private final Stats focusStat;
@@ -32,17 +33,18 @@ public class ProductionRecipe implements Recipe<ProductionInput> {
 
     private final NonNullList<Ingredient> areaBlocks;
     private final int blockCount;
+    private final NonNullList<CountableIngredient> inputItems;
+    private final int inputEnergy;
+    private final FluidStack inputFluid;
 
     private final int tick;
 
     private final NonNullList<ItemStack> resultItems;
-    private final int resultPower;
-    private final FluidStack resultFluid;
 
-    public ProductionRecipe(ResourceLocation id, Stats focusStat, int minLevel, ElementalType requiredType,
+    public ProcessingRecipe(ResourceLocation id, Stats focusStat, int minLevel, ElementalType requiredType,
                             int baseHP, int baseATK, int baseDEF, int baseSPA, int baseSPD, int baseSPE,
-                            NonNullList<Ingredient> areaBlocks, int blockCount, int tick,
-                            NonNullList<ItemStack> resultItems, int resultPower, FluidStack resultFluid) {
+                            NonNullList<Ingredient> areaBlocks, int blockCount, NonNullList<CountableIngredient> inputItems, int inputEnergy, FluidStack inputFluid, int tick,
+                            NonNullList<ItemStack> resultItems) {
         this.id = id;
         this.focusStat = focusStat;
         this.minLevel = minLevel;
@@ -53,47 +55,66 @@ public class ProductionRecipe implements Recipe<ProductionInput> {
         this.baseSPA = baseSPA;
         this.baseSPD = baseSPD;
         this.baseSPE = baseSPE;
+
         this.areaBlocks = areaBlocks;
         this.blockCount = blockCount;
+
+        this.inputItems = inputItems;
+        this.inputEnergy = inputEnergy;
+        this.inputFluid = inputFluid;
         this.tick = tick;
 
         this.resultItems = resultItems;
-        this.resultPower = resultPower;
-        this.resultFluid = resultFluid;
     }
 
     @Override
-    public boolean matches(ProductionInput input, Level level) {
+    public boolean matches(ProcessingInput input, Level level) {
         if (input.getLevel() >= this.minLevel && (this.requiredType == null || this.requiredType.equals(input.getType())) &&
                 input.getBaseHP() >= this.baseHP && input.getBaseATK() >= this.baseATK && input.getBaseDEF() >= this.baseDEF &&
-                input.getBaseSPA() >= this.baseSPA && input.getBaseSPD() >= this.baseSPD && input.getBaseSPE() >= this.baseSPE
-        ) {
-            int[] matches = new int[this.areaBlocks.size()];
-            for (int i = 0; i < this.areaBlocks.size(); i++) {
-                boolean match = false;
-                for (int j = 0; j < input.getContainerSize(); j++) {
-                    ItemStack item = input.getItem(j);
-                    if (!item.isEmpty() && this.areaBlocks.get(i).test(item)) {
-                        matches[i] += item.getCount();
-                        match = true;
-
+                input.getBaseSPA() >= this.baseSPA && input.getBaseSPD() >= this.baseSPD && input.getBaseSPE() >= this.baseSPE &&
+                input.getEnergy() >= this.getInputEnergy()) {
+            if (this.inputFluid == null || this.inputFluid.isEmpty() || (input.getFluidInput() != null && !input.getFluidInput().isEmpty() &&
+                    this.inputFluid.getFluid().isSame(input.getFluidInput().getFluid()) && input.getFluidInput().getAmount() >= this.inputFluid.getAmount())) {
+                int[] matches = new int[this.areaBlocks.size()];
+                for (int i = 0; i < this.areaBlocks.size(); i++) {
+                    boolean match = false;
+                    for (int j = 0; j < input.getContainerSize(); j++) {
+                        ItemStack item = input.getItem(j);
+                        if (!item.isEmpty() && this.areaBlocks.get(i).test(item)) {
+                            matches[i] += item.getCount();
+                            match = true;
+                        }
+                    }
+                    if (!match) return false;
+                }
+                for (int match : matches) {
+                    if (match < this.blockCount) {
+                        return false;
                     }
                 }
-                if (!match) return false;
-            }
+                int matchedCount = 0;
+                for (CountableIngredient i : this.inputItems) {
+                    int still = i.getCount();
+                    for (int j = 0; j < input.getItemInput().getSlots(); j++) {
+                        ItemStack stack = input.getItemInput().getStackInSlot(j);
+                        if (!stack.isEmpty() && i.getIngredient().test(stack)) {
+                            still -= stack.getCount();
+                        }
+                        if (still <= 0) {
+                            matchedCount++;
+                            break;
+                        }
+                    }
 
-            for (int match : matches) {
-                if (match < this.blockCount) {
-                    return false;
                 }
+                return matchedCount >= this.inputItems.size();
             }
-            return true;
         }
         return false;
     }
 
     @Override
-    public ItemStack assemble(ProductionInput arg, RegistryAccess arg2) {
+    public ItemStack assemble(ProcessingInput arg, RegistryAccess arg2) {
         return null;
     }
 
@@ -114,12 +135,12 @@ public class ProductionRecipe implements Recipe<ProductionInput> {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return ModRecipes.PRODUCTION_SERIALIZER.get();
+        return ModRecipes.PROCESSING_SERIALIZER.get();
     }
 
     @Override
     public RecipeType<?> getType() {
-        return ProductionRecipeType.INSTANCE;
+        return ProcessingRecipeType.INSTANCE;
     }
 
     public Stats getFocusStat() {
@@ -174,17 +195,21 @@ public class ProductionRecipe implements Recipe<ProductionInput> {
         return resultItems;
     }
 
-    public int getResultPower() {
-        return resultPower;
+    public NonNullList<CountableIngredient> getInputItems() {
+        return inputItems;
     }
 
-    public FluidStack getResultFluid() {
-        return resultFluid;
+    public int getInputEnergy() {
+        return inputEnergy;
     }
 
-    public static class ProductionRecipeType implements RecipeType<ProductionRecipe> {
-        public static final ProductionRecipeType INSTANCE = new ProductionRecipeType();
-        public static final String ID = "production";
+    public FluidStack getInputFluid() {
+        return inputFluid;
+    }
+
+    public static class ProcessingRecipeType implements RecipeType<ProcessingRecipe> {
+        public static final ProcessingRecipeType INSTANCE = new ProcessingRecipeType();
+        public static final String ID = "processing";
 
     }
 

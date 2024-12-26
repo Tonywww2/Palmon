@@ -7,7 +7,7 @@ import com.cobblemon.mod.common.api.types.ElementalType;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.google.common.collect.Queues;
 import com.tonywww.palmon.api.IEnergyStorage;
-import com.tonywww.palmon.api.ProductionInput;
+import com.tonywww.palmon.recipes.wrappers.ProductionInput;
 import com.tonywww.palmon.block.BoostFrame;
 import com.tonywww.palmon.menu.ProductionMachineContainer;
 import com.tonywww.palmon.recipes.ProductionRecipe;
@@ -439,7 +439,7 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
                                         int times = (int) (be.currentTick / be.targetTick);
                                         for (int i = 0; i < times; i++) {
                                             if (!rec.getResultItems().isEmpty()) {
-                                                insertListToHandler(rec.getResultItems(), be.itemStackHandler);
+                                                insertListToHandler(rec.getResultItems(), be.itemStackHandler, 0, be.itemStackHandler.getSlots());
 
                                             }
                                             if (rec.getResultPower() > 0) {
@@ -471,6 +471,8 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
                             } else {
                                 be.focusMultiplier = 0;
                                 be.efficiency = 0;
+                                be.currentTick = 0;
+                                be.targetTick = 0;
                                 be.currentRecipe = null;
                             }
                         }

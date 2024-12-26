@@ -1,0 +1,57 @@
+{
+  "type": "palmon:processing",
+  "category": "misc",
+  "focus_stat": "SPECIAL_ATTACK",
+  "min_level": 50,
+  "required_type": "fire",
+  "base_hp": 30,
+  "base_atk": 90,
+  "base_def": 30,
+  "base_spa": 90,
+  "base_spd": 30,
+  "base_spe": 30,
+  "area_blocks": [
+    {
+      "item": "minecraft:blast_furnace"
+    },
+    {
+      "item": "minecraft:magma_block"
+    },
+    {
+      "item": "minecraft:crying_obsidian"
+    },
+    {
+      "item": "minecraft:nether_bricks"
+    },
+    {
+      "tag": "minecraft:anvil"
+    }
+  ],
+  "block_count": 3,
+  "input_items": [
+    {
+      "tag": "forge:ingots/iron",
+      "count": 5
+    },
+    {
+      "tag": "forge:gems/amethyst",
+      "count": 1
+    },
+    {
+      "tag": "minecraft:coals",
+      "count": 2
+    }
+  ],
+  "input_power": 0,
+  "input_fluid": {
+    "fluid": "minecraft:lava",
+    "amount": 2000
+  },
+  "tick": 1800,
+  "result_items": [
+    {
+      "item": "palmon:refined_steel_ingot",
+      "count": 2
+    }
+  ]
+}

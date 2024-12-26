@@ -1,6 +1,7 @@
 package com.tonywww.palmon.block;
 
 import com.tonywww.palmon.block.entites.ProcessingStationEntity;
+import com.tonywww.palmon.block.entites.ProductionMachineEntity;
 import com.tonywww.palmon.registeries.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -15,6 +16,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -91,6 +94,7 @@ public class ProcessingStation extends BaseEntityBlock {
                                 stackInHand.shrink(1);
                                 pPlayer.getInventory().add(handler.getContainer());
                             }
+                            entity.inventoryChanged();
                         }
 
                     });
@@ -122,6 +126,10 @@ public class ProcessingStation extends BaseEntityBlock {
 
             super.onRemove(pState, level, pos, pNewState, pIsMoving);
         }
+    }
+
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        return createTickerHelper(blockEntityType, ModBlockEntities.PROCESSING_STATION_ENTITY.get(), ProcessingStationEntity::tick);
     }
 
     @Override

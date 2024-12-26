@@ -2,8 +2,9 @@ package com.tonywww.palmon.compat.jei;
 
 import com.cobblemon.mod.common.client.gui.TypeIcon;
 import com.tonywww.palmon.Palmon;
+import com.tonywww.palmon.api.CountableIngredient;
 import com.tonywww.palmon.compat.JEITypes;
-import com.tonywww.palmon.recipes.ProductionRecipe;
+import com.tonywww.palmon.recipes.ProcessingRecipe;
 import com.tonywww.palmon.registeries.ModBlocks;
 import com.tonywww.palmon.registeries.ModItems;
 import mezz.jei.api.constants.VanillaTypes;
@@ -20,18 +21,20 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
-public class ProductionCategory implements IRecipeCategory<ProductionRecipe> {
-    public static ResourceLocation BG = new ResourceLocation(Palmon.MOD_ID, "textures/gui/production_jei.png");
+public class ProcessingCategory implements IRecipeCategory<ProcessingRecipe> {
+    public static ResourceLocation BG = new ResourceLocation(Palmon.MOD_ID, "textures/gui/processing_jei.png");
 
     private final IDrawable bg;
     private final IDrawable icon;
 
-    public ProductionCategory(IGuiHelper helper) {
-        this.bg = helper.createDrawable(BG, 0, 0, 192, 128);
-        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, ModBlocks.PRODUCTION_MACHINE.get().asItem().getDefaultInstance());
+    public ProcessingCategory(IGuiHelper helper) {
+        this.bg = helper.createDrawable(BG, 0, 0, 192, 152);
+        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, ModBlocks.PROCESSING_STATION.get().asItem().getDefaultInstance());
 
     }
 
@@ -42,17 +45,17 @@ public class ProductionCategory implements IRecipeCategory<ProductionRecipe> {
 
     @Override
     public int getHeight() {
-        return 128;
+        return 152;
     }
 
     @Override
-    public RecipeType<ProductionRecipe> getRecipeType() {
-        return JEITypes.PRODUCTION;
+    public RecipeType<ProcessingRecipe> getRecipeType() {
+        return JEITypes.PROCESSING;
     }
 
     @Override
     public Component getTitle() {
-        return Component.translatable("jei.palmon.production");
+        return Component.translatable("jei.palmon.processing");
     }
 
     @Override
@@ -61,11 +64,12 @@ public class ProductionCategory implements IRecipeCategory<ProductionRecipe> {
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, ProductionRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, ProcessingRecipe recipe, IFocusGroup focuses) {
         var level = Minecraft.getInstance().level;
         assert level != null;
 
-        var inputs = recipe.getAreaBlocks();
+        var areaBlocks = recipe.getAreaBlocks();
+        var inputs = recipe.getInputItems();
         var outputs = recipe.getResultItems();
 
         int x = 99;
@@ -74,34 +78,54 @@ public class ProductionCategory implements IRecipeCategory<ProductionRecipe> {
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 4; j++) {
                 int index = j + (4 * i);
-                if (index >= inputs.size()) break OUTER;
-                builder.addSlot(RecipeIngredientRole.INPUT, x + (18 * j), y + (18 * i)).addIngredients(inputs.get(index));
+                if (index >= areaBlocks.size()) break OUTER;
+                builder.addSlot(RecipeIngredientRole.INPUT, x + (18 * j), y + (18 * i)).addIngredients(areaBlocks.get(index));
 
             }
         }
 
         x = 16;
         y = 81;
+        OUTER:
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 4; j++) {
+                int index = j + (4 * i);
+                if (index >= inputs.size()) break OUTER;
+                CountableIngredient countableIngredient = inputs.get(index);
+                ItemStack[] itemStacks = new ItemStack[countableIngredient.getIngredient().getItems().length];
+
+                for (int k = 0; k < countableIngredient.getIngredient().getItems().length; k++) {
+                    itemStacks[k] = countableIngredient.getIngredient().getItems()[k].copy();
+                    itemStacks[k].setCount(countableIngredient.getCount());
+                }
+                Ingredient finalIngredient = Ingredient.of(itemStacks);
+                builder.addSlot(RecipeIngredientRole.INPUT, x + (18 * j), y + (18 * i)).addIngredients(finalIngredient);
+
+            }
+        }
+
+        x = 135;
+        y = 81;
         for (int i = 0; i < outputs.size(); i++) {
             builder.addSlot(RecipeIngredientRole.OUTPUT, x, y + (18 * i)).addItemStack(outputs.get(i));
 
         }
 
-        FluidStack fluidStack = recipe.getResultFluid();
+        FluidStack fluidStack = recipe.getInputFluid();
         if (fluidStack != null) {
-            builder.addSlot(RecipeIngredientRole.OUTPUT, 16, 101).addFluidStack(fluidStack.getFluid(), fluidStack.getAmount());
+            builder.addSlot(RecipeIngredientRole.INPUT, 16, 125).addFluidStack(fluidStack.getFluid(), fluidStack.getAmount());
 
         }
 
-        if (recipe.getResultPower() > 0) {
-            builder.addSlot(RecipeIngredientRole.OUTPUT, 88, 101).addItemStack(ModItems.FE_SYMBOL.get().getDefaultInstance());
+        if (recipe.getInputEnergy() > 0) {
+            builder.addSlot(RecipeIngredientRole.INPUT, 88, 125).addItemStack(ModItems.FE_SYMBOL.get().getDefaultInstance());
 
         }
 
     }
 
     @Override
-    public void draw(ProductionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(ProcessingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         this.bg.draw(guiGraphics);
         Font font = Minecraft.getInstance().font;
 
@@ -117,28 +141,28 @@ public class ProductionCategory implements IRecipeCategory<ProductionRecipe> {
         guiGraphics.drawString(font, Component.translatable("jei.palmon.area_blocks"), 98, 24, 3012040);
         guiGraphics.drawString(font, Component.literal("* " + recipe.getBlockCount()), 172, 49, 3012040);
 
-        if (recipe.getResultFluid() != null) {
-            guiGraphics.drawString(font, Component.literal(recipe.getResultFluid().getAmount() + "mb"), 35, 109, 3012040);
+        if (recipe.getInputFluid() != null) {
+            guiGraphics.drawString(font, Component.literal(recipe.getInputFluid().getAmount() + "mb"), 35, 133, 3012040);
 
         }
-        if (recipe.getResultPower() >= 0) {
-            guiGraphics.drawString(font, Component.literal(recipe.getResultPower() + "FE"), 107, 109, 16711680);
+        if (recipe.getInputEnergy() >= 0) {
+            guiGraphics.drawString(font, Component.literal(recipe.getInputEnergy() + "FE"), 107, 133, 16711680);
 
         }
 
         guiGraphics.drawString(font, Component.literal("HP >= " + recipe.getBaseHP()), 17, 5, 3955720);
-        guiGraphics.blit(BG, 17, 5, 0, 140, getBarWidth(recipe.getBaseHP()), 8);
+        guiGraphics.blit(BG, 17, 5, 0, 164, getBarWidth(recipe.getBaseHP()), 8);
         guiGraphics.drawString(font, Component.literal("ATK >= " + recipe.getBaseATK()), 17, 17, 6764548);
-        guiGraphics.blit(BG, 17, 17, 0, 148, getBarWidth(recipe.getBaseATK()), 8);
+        guiGraphics.blit(BG, 17, 17, 0, 172, getBarWidth(recipe.getBaseATK()), 8);
         guiGraphics.drawString(font, Component.literal("DEF >= " + recipe.getBaseDEF()), 17, 29, 6699796);
-        guiGraphics.blit(BG, 17, 29, 0, 156, getBarWidth(recipe.getBaseDEF()), 8);
+        guiGraphics.blit(BG, 17, 29, 0, 180, getBarWidth(recipe.getBaseDEF()), 8);
         guiGraphics.drawString(font, Component.literal("SPA >= " + recipe.getBaseSPA()), 17, 41, 2121322);
-        guiGraphics.blit(BG, 17, 41, 0, 164, getBarWidth(recipe.getBaseSPA()), 8);
+        guiGraphics.blit(BG, 17, 41, 0, 188, getBarWidth(recipe.getBaseSPA()), 8);
         guiGraphics.drawString(font, Component.literal("SPD >= " + recipe.getBaseSPD()), 17, 53, 2252146);
-        guiGraphics.blit(BG, 17, 53, 0, 172, getBarWidth(recipe.getBaseSPD()), 8);
+        guiGraphics.blit(BG, 17, 53, 0, 196, getBarWidth(recipe.getBaseSPD()), 8);
         guiGraphics.drawString(font, Component.literal("SPE >= " + recipe.getBaseSPE()), 17, 65, 4995679);
-        guiGraphics.blit(BG, 17, 65, 0, 180, getBarWidth(recipe.getBaseSPE()), 8);
-        
+        guiGraphics.blit(BG, 17, 65, 0, 204, getBarWidth(recipe.getBaseSPE()), 8);
+
         int yPos = switch (recipe.getFocusStat()) {
             case HP -> 3;
             case ATTACK -> 15;
@@ -148,7 +172,7 @@ public class ProductionCategory implements IRecipeCategory<ProductionRecipe> {
             case SPEED -> 63;
             default -> 0;
         };
-        guiGraphics.blit(BG, 15, yPos, 0, 128, 81, 12);
+        guiGraphics.blit(BG, 15, yPos, 0, 152, 81, 12);
 
     }
 

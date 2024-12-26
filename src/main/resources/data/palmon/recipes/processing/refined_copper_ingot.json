@@ -1,0 +1,46 @@
+{
+  "type": "palmon:processing",
+  "category": "misc",
+  "focus_stat": "SPECIAL_ATTACK",
+  "min_level": 20,
+  "required_type": "fire",
+  "base_hp": 0,
+  "base_atk": 30,
+  "base_def": 0,
+  "base_spa": 60,
+  "base_spd": 0,
+  "base_spe": 0,
+  "area_blocks": [
+    {
+      "item": "minecraft:furnace"
+    },
+    {
+      "item": "minecraft:magma_block"
+    },
+    {
+      "tag": "forge:storage_blocks/coal"
+    },
+    {
+      "item": "minecraft:crying_obsidian"
+    }
+  ],
+  "block_count": 2,
+  "input_items": [
+    {
+      "tag": "forge:ingots/copper",
+      "count": 4
+    }
+  ],
+  "input_power": 0,
+  "input_fluid": {
+    "fluid": "minecraft:water",
+    "amount": 1000
+  },
+  "tick": 600,
+  "result_items": [
+    {
+      "item": "palmon:refined_copper_ingot",
+      "count": 1
+    }
+  ]
+}

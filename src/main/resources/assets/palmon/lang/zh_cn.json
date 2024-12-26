@@ -42,6 +42,7 @@
   "text.palmon.contract_on_other": "你无法雇佣其他玩家的宝可梦",
   "text.palmon.labor_contract_not_shift": "你需要按住[Shift]以解放宝可梦",
 
-  "jei.palmon.production": "资源生产",
+  "jei.palmon.production": "宝可梦资源生产",
+  "jei.palmon.processing": "宝可梦加工",
   "jei.palmon.area_blocks": "范围内所需方块: "
 }
