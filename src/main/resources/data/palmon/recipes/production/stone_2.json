@@ -16,7 +16,7 @@
     }
   ],
   "block_count": 12,
-  "tick": 400,
+  "tick": 2000,
   "result_items": [
     {
       "item": "palmon:stone",

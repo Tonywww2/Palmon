@@ -1,6 +1,6 @@
 {
   "type": "palmon:production",
-"category": "misc",
+  "category": "misc",
   "focus_stat": null,
   "min_level": 0,
   "required_type": null,

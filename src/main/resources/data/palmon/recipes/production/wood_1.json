@@ -19,7 +19,7 @@
     }
   ],
   "block_count": 4,
-  "tick": 400,
+  "tick": 3000,
   "result_items": [
     {
       "item": "palmon:wood",

@@ -2,12 +2,12 @@
   "type": "palmon:processing",
   "category": "misc",
   "focus_stat": "SPECIAL_ATTACK",
-  "min_level": 50,
+  "min_level": 70,
   "required_type": "fire",
   "base_hp": 30,
-  "base_atk": 60,
+  "base_atk": 120,
   "base_def": 30,
-  "base_spa": 90,
+  "base_spa": 100,
   "base_spd": 30,
   "base_spe": 30,
   "area_blocks": [
@@ -15,31 +15,31 @@
       "item": "minecraft:blast_furnace"
     },
     {
-      "item": "minecraft:magma_block"
-    },
-    {
       "item": "minecraft:crying_obsidian"
     },
     {
-      "item": "minecraft:nether_bricks"
+      "item": "cobblemon:black_tumblestone_block"
+    },
+    {
+      "item": "cobblemon:sky_tumblestone_block"
     },
     {
       "tag": "minecraft:anvil"
     }
   ],
-  "block_count": 3,
+  "block_count": 4,
   "input_items": [
     {
-      "tag": "forge:ingots/iron",
-      "count": 5
+      "item": "palmon:refined_steel_ingot",
+      "count": 4
     },
     {
-      "tag": "forge:gems/amethyst",
+      "item": "palmon:m_crystal",
+      "count": 4
+    },
+    {
+      "item": "minecraft:netherite_scrap",
       "count": 1
-    },
-    {
-      "tag": "minecraft:coals",
-      "count": 2
     }
   ],
   "input_power": 0,
@@ -50,7 +50,7 @@
   "tick": 1800,
   "result_items": [
     {
-      "item": "palmon:refined_steel_ingot",
+      "item": "palmon:refined_m_steel_ingot",
       "count": 2
     }
   ]

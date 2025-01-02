@@ -2,7 +2,7 @@
   "type": "palmon:production",
   "category": "misc",
   "focus_stat": "SPEED",
-  "min_level": 5,
+  "min_level": 35,
   "required_type": "psychic",
   "base_hp": 0,
   "base_atk": 0,
@@ -28,7 +28,7 @@
     }
   ],
   "block_count": 1,
-  "tick": 1800,
+  "tick": 3200,
   "result_items": [
     {
       "item": "palmon:m_crystal",

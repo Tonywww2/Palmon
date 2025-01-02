@@ -1,0 +1,7 @@
+{
+	"parent": "palmon:block/boost_frame_1",
+	"textures": {
+		"0": "palmon:block/boost_frame_5",
+		"particle": "palmon:block/boost_frame_5"
+	}
+}

@@ -47,14 +47,14 @@ public class ModBlocks {
                     .copy(Blocks.STONE)
                     .strength(2f, 4f)
                     .noOcclusion(),
-                    1.5d
+                    1.75d
             ));
     public static final RegistryObject<Block> BOOST_FRAME_2 = registerBlocks("boost_frame_2",
             () -> new BoostFrame(BlockBehaviour.Properties
                     .copy(Blocks.STONE)
                     .strength(2f, 4f)
                     .noOcclusion(),
-                    2.25d
+                    3.0d
             ));
 
     public static final RegistryObject<Block> BOOST_FRAME_3 = registerBlocks("boost_frame_3",
@@ -62,7 +62,7 @@ public class ModBlocks {
                     .copy(Blocks.STONE)
                     .strength(2f, 4f)
                     .noOcclusion(),
-                    3.5d
+                    4.5d
             ));
 
     public static final RegistryObject<Block> BOOST_FRAME_4 = registerBlocks("boost_frame_4",
@@ -70,7 +70,15 @@ public class ModBlocks {
                     .copy(Blocks.STONE)
                     .strength(2f, 4f)
                     .noOcclusion(),
-                    5.0d
+                    6.0d
+            ));
+
+    public static final RegistryObject<Block> BOOST_FRAME_5 = registerBlocks("boost_frame_5",
+            () -> new BoostFrame(BlockBehaviour.Properties
+                    .copy(Blocks.STONE)
+                    .strength(2f, 4f)
+                    .noOcclusion(),
+                    8.0d
             ));
 
     private static <T extends Block> RegistryObject<T> registerBlocks(String name, Supplier<T> block) {

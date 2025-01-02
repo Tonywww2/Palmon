@@ -38,6 +38,7 @@ public class ModCreativeModTabs {
                         pOutput.accept(ModBlocks.BOOST_FRAME_2.get());
                         pOutput.accept(ModBlocks.BOOST_FRAME_3.get());
                         pOutput.accept(ModBlocks.BOOST_FRAME_4.get());
+                        pOutput.accept(ModBlocks.BOOST_FRAME_5.get());
 
                     })
                     .build());

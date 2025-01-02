@@ -19,6 +19,7 @@
   "block.palmon.boost_frame_2": "§dBoost Frame Level 2",
   "block.palmon.boost_frame_3": "§dBoost Frame Level 3",
   "block.palmon.boost_frame_4": "§dBoost Frame Level 4",
+  "block.palmon.boost_frame_5": "§dBoost Frame Level 5",
 
   "creativetab.palmon_tab": "Palmon",
 
@@ -37,6 +38,7 @@
   "tooltip.palmon.boost_frame": "Place it above the machines to set the boost multiplier with ",
   "tooltip.palmon.working_station": "Place an Labor Contract in it and provide enough food,\n the Pokemon will work on the machine around it.",
   "tooltip.palmon.production_machine": "Need a Working Station.\n Let Pokemon produce resources (material, fluid, power) depends on the surrounding blocks!\n Usually requires the Pokemon to have base stats higher than certain value. ",
+  "tooltip.palmon.processing_station": "Need a Working Station.\n Let Pokemon use different resources (material, fluid, power) and the surrounding blocks to create new items/materials!\n Usually requires the Pokemon to have base stats higher than certain value. ",
 
   "text.palmon.contract_on_wild": "You cannot hire a wild pokemon",
   "text.palmon.contract_on_other": "You cannot hire other player's pokemon",

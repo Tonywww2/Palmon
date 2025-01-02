@@ -16,7 +16,7 @@
     }
   ],
   "block_count": 32,
-  "tick": 8000,
+  "tick": 16000,
   "result_items": [
     {
       "item": "minecraft:diamond",

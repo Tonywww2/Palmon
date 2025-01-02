@@ -1,0 +1,65 @@
+{
+  "type": "palmon:processing",
+  "category": "misc",
+  "focus_stat": "SPEED",
+  "min_level": 60,
+  "required_type": null,
+  "base_hp": 80,
+  "base_atk": 80,
+  "base_def": 80,
+  "base_spa": 80,
+  "base_spd": 80,
+  "base_spe": 80,
+  "area_blocks": [
+    {
+      "item": "minecraft:piston"
+    },
+    {
+      "item": "minecraft:sticky_piston"
+    },
+    {
+      "item": "minecraft:observer"
+    },
+    {
+      "item": "minecraft:smithing_table"
+    },
+    {
+      "item": "cobblemon:monitor"
+    },
+    {
+      "item": "minecraft:crafting_table"
+    }
+  ],
+  "block_count": 2,
+  "input_items": [
+    {
+      "item": "palmon:boost_frame_2",
+      "count": 1
+    },
+    {
+      "item": "palmon:refined_copper_ingot",
+      "count": 64
+    },
+    {
+      "item": "palmon:refined_steel_ingot",
+      "count": 32
+    },
+    {
+      "tag": "forge:gems/diamond",
+      "count": 16
+    },
+    {
+      "tag": "forge:dusts/redstone",
+      "count": 16
+    }
+  ],
+  "input_power": 80000,
+  "input_fluid": null,
+  "tick": 12800,
+  "result_items": [
+    {
+      "item": "palmon:boost_frame_3",
+      "count": 1
+    }
+  ]
+}

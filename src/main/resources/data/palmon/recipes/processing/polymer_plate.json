@@ -1,0 +1,68 @@
+{
+  "type": "palmon:processing",
+  "category": "misc",
+  "focus_stat": "DEFENCE",
+  "min_level": 80,
+  "required_type": "fairy",
+  "base_hp": 0,
+  "base_atk": 0,
+  "base_def": 0,
+  "base_spa": 80,
+  "base_spd": 80,
+  "base_spe": 80,
+  "area_blocks": [
+    {
+      "item": "minecraft:blast_furnace"
+    },
+    {
+      "item": "minecraft:loom"
+    },
+    {
+      "item": "cobblemon:dripstone_moon_stone_ore"
+    },
+    {
+      "tag": "cobblemon:thunder_stone_ores"
+    },
+    {
+      "item": "minecraft:cauldron"
+    },
+    {
+      "item": "minecraft:brewing_stand"
+    }
+  ],
+  "block_count": 1,
+  "input_items": [
+    {
+      "item": "minecraft:milk_bucket",
+      "count": 1
+    },
+    {
+      "item": "minecraft:paper",
+      "count": 8
+    },
+    {
+      "tag": "forge:string",
+      "count": 4
+    },
+    {
+      "item": "cobblemon:whipped_dream",
+      "count": 2
+    },
+    {
+      "tag": "cobblemon:revives",
+      "count": 1
+    }
+  ],
+  "input_power": 20000,
+  "input_fluid": {
+    "fluid": "minecraft:water",
+    "amount": 8000
+  },
+  "tick": 3600,
+  "result_items": [
+    {
+      "item": "palmon:polymer_plate",
+      "count": 1
+    }
+  ]
+}

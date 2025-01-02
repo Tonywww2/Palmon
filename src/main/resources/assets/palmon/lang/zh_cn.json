@@ -19,6 +19,7 @@
   "block.palmon.boost_frame_2": "§d二级增速框架",
   "block.palmon.boost_frame_3": "§d三级增速框架",
   "block.palmon.boost_frame_4": "§d四级增速框架",
+  "block.palmon.boost_frame_5": "§d五级增速框架",
 
   "creativetab.palmon_tab": "帕鲁梦",
 
@@ -37,6 +38,7 @@
   "tooltip.palmon.boost_frame": "放置于机器上后，将框架乘区设为 ",
   "tooltip.palmon.working_station": "将一个劳务合同至于其中，并提供充足的食物，其中的宝可梦将会在临近的机器工作。",
   "tooltip.palmon.production_machine": "需要工作站。\n 让宝可梦根据周围的方块生产各种资源（材料，流体，能量）！\n 通常需要宝可梦的种族值高于一定数值。",
+  "tooltip.palmon.processing_station": "需要工作站。\n 让宝可梦根据周围的方块并使用各种资源（材料，流体，能量）去制作新的物品/材料！\n 通常需要宝可梦的种族值高于一定数值。",
 
   "text.palmon.contract_on_wild": "你无法雇佣一个野生的宝可梦",
   "text.palmon.contract_on_other": "你无法雇佣其他玩家的宝可梦",

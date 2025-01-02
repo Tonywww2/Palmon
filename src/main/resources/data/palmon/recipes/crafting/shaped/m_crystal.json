@@ -16,12 +16,15 @@
     },
     "E": {
       "item": "cobblemon:black_tumblestone"
+    },
+    "F": {
+      "tag": "forge:gems/diamond"
     }
   },
   "pattern": [
     " A ",
     "BCD",
-    "CEC"
+    "FEF"
   ],
   "result": {
     "item": "palmon:m_crystal"
