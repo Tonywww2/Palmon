@@ -5,11 +5,14 @@ import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
+import com.tonywww.palmon.curios.LaborContractCapProvider;
 import com.tonywww.palmon.registeries.ModItems;
 import com.tonywww.palmon.utils.PokemonNBTUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -21,6 +24,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -74,13 +79,18 @@ public class LaborContract extends Item {
     }
 
     @Override
+    public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        return ModList.get().isLoaded("modID") ? new LaborContractCapProvider(stack) : super.initCapabilities(stack, nbt);
+    }
+
+    @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> toolTips, TooltipFlag flag) {
         toolTips.add(Component.translatable("tooltip.palmon.labor_contract"));
 
         CompoundTag pokemonTag = getPokemonNBT(itemStack);
         if (!pokemonTag.isEmpty()) {
             Species species = PokemonNBTUtils.getSpeciesFromNBT(pokemonTag);
-            toolTips.add(species.getTranslatedName());
+            toolTips.add(species.getTranslatedName().setStyle(species.getTranslatedName().getStyle().withColor(ChatFormatting.AQUA)));
 
             toolTips.add(Component.literal("Lv: " + PokemonNBTUtils.getLevelFromNBT(pokemonTag)));
             toolTips.add(Component.translatable("cobblemon.ui.info.type")

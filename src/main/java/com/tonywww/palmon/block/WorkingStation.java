@@ -84,7 +84,6 @@ public class WorkingStation extends BaseEntityBlock {
             }
 
         }
-
         return InteractionResult.SUCCESS;
     }
 

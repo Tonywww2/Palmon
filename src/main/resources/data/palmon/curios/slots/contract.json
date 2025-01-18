@@ -1,0 +1,7 @@
+{
+  "order": 40,
+  "size": 1,
+  "icon": "curios:slot/contract_slot",
+  "add_cosmetic": true,
+  "drop_rule": "ALWAYS_KEEP"
+}

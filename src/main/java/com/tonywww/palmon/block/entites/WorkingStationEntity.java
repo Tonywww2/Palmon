@@ -39,7 +39,7 @@ public class WorkingStationEntity extends BasicMachineEntity implements MenuProv
 
     public int food;
     public static final int MAX_FOOD = 1000;
-    public static final int FOOD_VALUE = 4;
+    public static final int FOOD_VALUE = 8;
 
     private PokemonEntity pokemonEntity;
     private float entityScale;

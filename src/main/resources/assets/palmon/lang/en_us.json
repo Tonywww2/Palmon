@@ -46,5 +46,10 @@
 
   "jei.palmon.production": "Pokemon Resources Production",
   "jei.palmon.processing": "Pokemon Processing",
-  "jei.palmon.area_blocks": "Needed Blocks: "
+  "jei.palmon.area_blocks": "Needed Blocks: ",
+
+  "curios.identifier.contract": "Contract",
+
+  "curios.modifiers.contract": "On Owning this Contract: "
+
 }

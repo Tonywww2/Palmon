@@ -46,5 +46,9 @@
 
   "jei.palmon.production": "宝可梦资源生产",
   "jei.palmon.processing": "宝可梦加工",
-  "jei.palmon.area_blocks": "范围内所需方块: "
+  "jei.palmon.area_blocks": "范围内所需方块: ",
+
+  "curios.identifier.contract": "合同",
+
+  "curios.modifiers.contract": "当拥有该合同时："
 }

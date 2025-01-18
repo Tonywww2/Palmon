@@ -467,7 +467,6 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
                                                             stackInSlot.shrink(still);
                                                         }
                                                         still -= stackInSlot.getCount();
-
                                                     }
                                                 }
 
@@ -491,7 +490,7 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
                                     be.currentTick = 0;
                                 }
                                 if (serverLevel.getRandom().nextDouble() < be.FOOD_CONSUME_CHANCE) {
-                                    be.setFood(food - be.FOOD_PER_WORKING_TICK);
+                                    be.setFood(food - serverLevel.getRandom().nextInt(be.FOOD_PER_WORKING_TICK) - 1);
                                     serverLevel.playSound(null, pos, CobblemonSounds.BERRY_EAT, SoundSource.BLOCKS);
 
                                 }

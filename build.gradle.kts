@@ -63,6 +63,8 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/groups/public/")
     maven("https://thedarkcolour.github.io/KotlinForForge/")
 
+    maven("https://maven.theillusivec4.top/")
+
     maven("https://maven.blamejared.com/")
     maven("https://modmaven.dev")
 
@@ -82,6 +84,11 @@ dependencies {
     modImplementation("com.cobblemon:forge:${property("cobblemon_version")}")
 
     implementation("thedarkcolour:kotlinforforge:4.4.0")
+
+    // Compile against only the API artifact
+    compileOnly("top.theillusivec4.curios:curios-forge:${property("curios_version")}:api")
+    // Use the full Curios API jar at runtime
+//    runtimeOnly("top.theillusivec4.curios:curios-forge:${property("curios_version")}")
 
 }
 

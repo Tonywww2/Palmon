@@ -3,22 +3,29 @@ loaderVersion = "${loader_version_range}" #mandatory This is typically bumped ev
 license = "${mod_license}"
 
 [[mods]] #mandatory
-    modId = "${mod_id}" #mandatory
-    version = "${mod_version}" #mandatory
-    displayName = "${mod_name}" #mandatory
-    authors = "${author}" #optional
-    description = '''${mod_description}'''
+modId = "${mod_id}" #mandatory
+version = "${mod_version}" #mandatory
+displayName = "${mod_name}" #mandatory
+authors = "${author}" #optional
+description = '''${mod_description}'''
 
 [[dependencies.${ mod_id }]] #optional
-    modId = "forge" #mandatory
-    mandatory = true #mandatory
-    versionRange = "${forge_version_range}" #mandatory
-    ordering = "NONE"
-    side = "BOTH"
+modId = "forge" #mandatory
+mandatory = true #mandatory
+versionRange = "${forge_version_range}" #mandatory
+ordering = "NONE"
+side = "BOTH"
 
 [[dependencies.${ mod_id }]]
-    modId = "minecraft"
-    mandatory = true
-    versionRange = "${minecraft_version_range}"
-    ordering = "NONE"
-    side = "BOTH"
+modId = "minecraft"
+mandatory = true
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${ mod_id }]]
+modId = "curios"
+mandatory = false
+versionRange = "[5.11.0+1.20.1, )"
+ordering = "NONE"
+side = "BOTH"
