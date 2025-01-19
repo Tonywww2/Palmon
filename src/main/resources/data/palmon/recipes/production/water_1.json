@@ -2,7 +2,7 @@
   "type": "palmon:production",
   "category": "misc",
   "focus_stat": "HP",
-  "min_level": 1,
+  "min_level": 5,
   "required_type": "water",
   "base_hp": 0,
   "base_atk": 0,
@@ -21,7 +21,7 @@
   "result_power": 0,
   "result_fluid": {
     "fluid": "minecraft:water",
-    "amount": 500
+    "amount": 1000
   }
 
 }

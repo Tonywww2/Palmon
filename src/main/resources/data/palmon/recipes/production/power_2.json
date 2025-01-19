@@ -2,13 +2,13 @@
   "type": "palmon:production",
   "category": "misc",
   "focus_stat": "ATTACK",
-  "min_level": 5,
+  "min_level": 20,
   "required_type": "electric",
   "base_hp": 0,
-  "base_atk": 30,
+  "base_atk": 50,
   "base_def": 0,
   "base_spa": 0,
-  "base_spd": 30,
+  "base_spd": 50,
   "base_spe": 0,
   "area_blocks": [
     {
@@ -18,9 +18,9 @@
       "tag": "forge:storage_blocks/redstone"
     }
   ],
-  "block_count": 2,
-  "tick": 400,
+  "block_count": 3,
+  "tick": 800,
   "result_items": [],
-  "result_power": 500,
+  "result_power": 3000,
   "result_fluid": null
 }
