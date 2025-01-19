@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
+import com.tonywww.palmon.Palmon;
 import com.tonywww.palmon.curios.LaborContractCapProvider;
 import com.tonywww.palmon.registeries.ModItems;
 import com.tonywww.palmon.utils.PokemonNBTUtils;
@@ -80,7 +81,8 @@ public class LaborContract extends Item {
 
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return ModList.get().isLoaded("modID") ? new LaborContractCapProvider(stack) : super.initCapabilities(stack, nbt);
+//        Palmon.getLogger().atDebug().log("PALMON_DEBUG: " + ModList.get().isLoaded("curios"));
+        return ModList.get().isLoaded("curios") ? new LaborContractCapProvider(stack) : super.initCapabilities(stack, nbt);
     }
 
     @Override

@@ -1,7 +1,9 @@
 {
-  "order": 40,
+  "replace": true,
   "size": 1,
-  "icon": "curios:slot/contract_slot",
+  "order": 1432,
+  "icon": "palmon:slot/contract_slot",
   "add_cosmetic": true,
-  "drop_rule": "ALWAYS_KEEP"
+  "drop_rule": "ALWAYS_KEEP",
+  "validators": ["curios:tag"]
 }

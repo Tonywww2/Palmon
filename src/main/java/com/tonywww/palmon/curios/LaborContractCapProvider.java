@@ -29,10 +29,10 @@ public class LaborContractCapProvider implements ICapabilityProvider {
     }
 
     public ItemStack getStack() {
-        return stack;
+        return this.stack;
     }
 
     public LaborContractCuriosWrapper getCuriosInstance() {
-        return curiosInstance;
+        return this.curiosInstance;
     }
 }

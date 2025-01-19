@@ -9,11 +9,10 @@ import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
-/**
- * From MagicHarp/confluence
- */
 public final class CuriosUtils {
-
+    /**
+     * From MagicHarp/confluence
+     */
     public static boolean noSameCurio(LivingEntity living, Predicate<ItemStack> predicate) {
         AtomicBoolean isEmpty = new AtomicBoolean(true);
         CuriosApi.getCuriosInventory(living).ifPresent(handler -> {
@@ -30,4 +29,23 @@ public final class CuriosUtils {
         });
         return isEmpty.get();
     }
+
+    /**
+     * Returns an value of [0-1] * multiplier
+     *
+     * @param iv iv of Pokemon, 0-31
+     * @param ev ev of Pokemon, 0-252
+     * @param lv level of Pokemon,1-100
+     * @param multiplier custom final multiplier
+     * @return
+     */
+    public static double computeMultiplier(int iv, int ev, int lv, double multiplier) {
+        double ivMultiplier = iv * iv * 1d / 961d; // (iv / 31) ^ 2
+        double evMultiplier = ev * 1d / 175d; // ev / 175
+        double lvMultiplier = 1d + (4d * lv * lv / 10000d); // 1 + 4 * (lv / 100) ^ 2
+
+        return (ivMultiplier + evMultiplier) * lvMultiplier * multiplier / 10;
+
+    }
+
 }
