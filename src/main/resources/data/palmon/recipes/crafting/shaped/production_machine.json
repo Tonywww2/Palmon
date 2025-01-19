@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:ingots/iron"
+    },
+    "B": {
+      "item": "minecraft:hopper"
+    },
+    "C": {
+      "item": "minecraft:bucket"
+    },
+    "D": {
+      "item": "minecraft:chest"
+    },
+    "E": {
+      "item": "cobblemon:pc"
+    },
+    "F": {
+      "tag": "forge:storage_blocks/redstone"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CFD",
+    "AEA"
+  ],
+  "result": {
+    "item": "palmon:production_machine"
+  }
+}
