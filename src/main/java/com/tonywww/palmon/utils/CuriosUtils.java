@@ -40,11 +40,11 @@ public final class CuriosUtils {
      * @return
      */
     public static double computeMultiplier(int iv, int ev, int lv, double multiplier) {
-        double ivMultiplier = iv * iv * 1d / 961d; // (iv / 31) ^ 2
-        double evMultiplier = ev * 1d / 175d; // ev / 175
+        double ivMultiplier = 1d * iv * iv / 961d; // (iv / 31) ^ 2
+        double evMultiplier = 1d * ev / 150d; // ev / 150
         double lvMultiplier = 1d + (4d * lv * lv / 10000d); // 1 + 4 * (lv / 100) ^ 2
 
-        return (ivMultiplier + evMultiplier) * lvMultiplier * multiplier / 10;
+        return (ivMultiplier + evMultiplier) * lvMultiplier * multiplier / 10d;
 
     }
 
