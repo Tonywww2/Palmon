@@ -76,7 +76,7 @@ public class LaborContractCuriosWrapper implements ICurio {
                                 PokemonNBTUtils.getLevelFromNBT(pokemonTag),
                                 PalmonConfig.contractAttributeHpMultiplier.get()
                         ),
-                        AttributeModifier.Operation.MULTIPLY_BASE));
+                        AttributeModifier.Operation.MULTIPLY_TOTAL));
 
         atts.put(Attributes.ATTACK_DAMAGE,
                 new AttributeModifier(uuid, "contract_attack_damage",
@@ -86,7 +86,7 @@ public class LaborContractCuriosWrapper implements ICurio {
                                 PokemonNBTUtils.getLevelFromNBT(pokemonTag),
                                 PalmonConfig.contractAttributeAttackMultiplier.get()
                         ),
-                        AttributeModifier.Operation.MULTIPLY_BASE));
+                        AttributeModifier.Operation.MULTIPLY_TOTAL));
 
         atts.put(Attributes.ARMOR_TOUGHNESS,
                 new AttributeModifier(uuid, "contract_armor_toughness",
@@ -96,7 +96,7 @@ public class LaborContractCuriosWrapper implements ICurio {
                                 PokemonNBTUtils.getLevelFromNBT(pokemonTag),
                                 PalmonConfig.contractAttributeDefenceMultiplier.get()
                         ),
-                        AttributeModifier.Operation.MULTIPLY_BASE));
+                        AttributeModifier.Operation.MULTIPLY_TOTAL));
 
         if (ModList.get().isLoaded("confluence")) {
             atts.put(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("confluence:armor_pass")),
@@ -117,7 +117,7 @@ public class LaborContractCuriosWrapper implements ICurio {
                                     PokemonNBTUtils.getLevelFromNBT(pokemonTag),
                                     PalmonConfig.contractAttributeSpDefenceMultiplierConfluence.get()
                             ),
-                            AttributeModifier.Operation.MULTIPLY_BASE));
+                            AttributeModifier.Operation.MULTIPLY_TOTAL));
 
             atts.put(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("confluence:dodge_chance")),
                     new AttributeModifier(uuid, "contract_dodge_chance",
