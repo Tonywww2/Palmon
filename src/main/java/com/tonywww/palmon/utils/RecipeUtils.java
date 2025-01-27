@@ -10,6 +10,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.items.ItemStackHandler;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+
 import static net.minecraft.util.GsonHelper.convertToJsonObject;
 
 public class RecipeUtils {
@@ -60,5 +63,27 @@ public class RecipeUtils {
 
             }
         }
+    }
+
+    // Writing UTF-8 string to byte array
+    public static byte[] writeUtf(String data) {
+        byte[] utf8Bytes = data.getBytes(StandardCharsets.UTF_8);
+        ByteBuffer buffer = ByteBuffer.allocate(4 + utf8Bytes.length); // 4 bytes for length + string bytes
+
+        buffer.putInt(utf8Bytes.length); // First store the length of the string
+        buffer.put(utf8Bytes);           // Then store the actual UTF-8 bytes
+
+        return buffer.array(); // Return byte array
+    }
+
+    // Reading UTF-8 string from byte array
+    public static String readUtf(byte[] data) {
+        ByteBuffer buffer = ByteBuffer.wrap(data);
+
+        int length = buffer.getInt();  // Read the length of the string
+        byte[] utf8Bytes = new byte[length];
+        buffer.get(utf8Bytes);         // Read the actual string bytes
+
+        return new String(utf8Bytes, StandardCharsets.UTF_8); // Convert bytes to string
     }
 }

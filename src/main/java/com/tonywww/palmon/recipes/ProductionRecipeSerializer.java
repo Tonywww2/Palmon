@@ -90,13 +90,15 @@ public class ProductionRecipeSerializer implements RecipeSerializer<ProductionRe
 
     @Override
     public @Nullable ProductionRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
-        Stats focusStat = Stats.valueOf(buffer.readResourceLocation().toString());
+//        Stats focusStat = Stats.valueOf(buffer.readResourceLocation().toString());
+        Stats focusStat = buffer.readEnum(Stats.class);
         int minLevel = buffer.readVarInt();
 
-        String type = buffer.readUtf();
+        // 1
         ElementalType requiredType = null;
-        if (!type.equals("null")) {
-            requiredType = ElementalTypes.INSTANCE.get(type);
+        if (buffer.readBoolean()) {
+            requiredType = ElementalTypes.INSTANCE.get(buffer.readUtf(128));
+//            requiredType = ElementalTypes.INSTANCE.get(RecipeUtils.readUtf(buffer.readByteArray()));
         }
 
         int baseHP = buffer.readVarInt();
@@ -122,7 +124,12 @@ public class ProductionRecipeSerializer implements RecipeSerializer<ProductionRe
             resultItem.add(buffer.readItem());
         }
         int resultPower = buffer.readVarInt();
-        FluidStack resultFluid = buffer.readFluidStack();
+
+        FluidStack resultFluid = null;
+        if (buffer.readBoolean()) {
+            resultFluid = buffer.readFluidStack();
+
+        }
 
 
         return new ProductionRecipe(id, focusStat, minLevel, requiredType,
@@ -133,15 +140,19 @@ public class ProductionRecipeSerializer implements RecipeSerializer<ProductionRe
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer, ProductionRecipe recipe) {
-        buffer.writeResourceLocation(recipe.getFocusStat().getIdentifier());
+//        buffer.writeResourceLocation(recipe.getFocusStat().getIdentifier());
+        buffer.writeEnum(recipe.getFocusStat());
         buffer.writeVarInt(recipe.getMinLevel());
 
+        // 1
         if (recipe.getRequiredType() == null) {
-            buffer.writeUtf("null");
+            buffer.writeBoolean(false);
 
         } else {
-            buffer.writeUtf(recipe.getRequiredType().getName());
-
+            buffer.writeBoolean(true);
+            buffer.writeUtf(recipe.getRequiredType().getName(), 128);
+//            byte[] arr = RecipeUtils.writeUtf(recipe.getRequiredType().getName());
+//            buffer.writeByteArray(arr);
         }
 
         buffer.writeVarInt(recipe.getBaseHP());
@@ -165,7 +176,14 @@ public class ProductionRecipeSerializer implements RecipeSerializer<ProductionRe
             buffer.writeItemStack(i, false);
         }
         buffer.writeVarInt(recipe.getResultPower());
-        buffer.writeFluidStack(recipe.getResultFluid());
+
+        // has fluid
+        if (recipe.getResultFluid() == null) {
+            buffer.writeBoolean(false);
+        } else {
+            buffer.writeBoolean(true);
+            buffer.writeFluidStack(recipe.getResultFluid());
+        }
 
     }
 }

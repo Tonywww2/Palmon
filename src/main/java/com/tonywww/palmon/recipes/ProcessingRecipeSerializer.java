@@ -109,13 +109,15 @@ public class ProcessingRecipeSerializer implements RecipeSerializer<ProcessingRe
 
     @Override
     public @Nullable ProcessingRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
-        Stats focusStat = Stats.valueOf(buffer.readResourceLocation().toString());
+//        Stats focusStat = Stats.valueOf(buffer.readResourceLocation().toString());
+        Stats focusStat = buffer.readEnum(Stats.class);
         int minLevel = buffer.readVarInt();
 
-        String type = buffer.readUtf();
+        // 1
         ElementalType requiredType = null;
-        if (!type.equals("null")) {
-            requiredType = ElementalTypes.INSTANCE.get(type);
+        if (buffer.readBoolean()) {
+            requiredType = ElementalTypes.INSTANCE.get(buffer.readUtf(128));
+//            requiredType = ElementalTypes.INSTANCE.get(RecipeUtils.readUtf(buffer.readByteArray()));
         }
 
         int baseHP = buffer.readVarInt();
@@ -137,12 +139,17 @@ public class ProcessingRecipeSerializer implements RecipeSerializer<ProcessingRe
         for (int i = 0; i < size1; i++) {
             Ingredient ingredient = Ingredient.fromNetwork(buffer);
             int count = buffer.readVarInt();
+
             inputItems.add(new CountableIngredient(ingredient, count));
         }
 
         int inputPower = buffer.readVarInt();
 
-        FluidStack inputFluid = buffer.readFluidStack();
+        FluidStack inputFluid = null;
+        if (buffer.readBoolean()) {
+            inputFluid = buffer.readFluidStack();
+
+        }
 
         int tick = buffer.readInt();
 
@@ -162,15 +169,19 @@ public class ProcessingRecipeSerializer implements RecipeSerializer<ProcessingRe
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer, ProcessingRecipe recipe) {
-        buffer.writeResourceLocation(recipe.getFocusStat().getIdentifier());
+//        buffer.writeResourceLocation(recipe.getFocusStat().getIdentifier());
+        buffer.writeEnum(recipe.getFocusStat());
         buffer.writeVarInt(recipe.getMinLevel());
 
+        // 1
         if (recipe.getRequiredType() == null) {
-            buffer.writeUtf("null");
+            buffer.writeBoolean(false);
 
         } else {
-            buffer.writeUtf(recipe.getRequiredType().getName());
-
+            buffer.writeBoolean(true);
+            buffer.writeUtf(recipe.getRequiredType().getName(), 128);
+//            byte[] arr = RecipeUtils.writeUtf(recipe.getRequiredType().getName());
+//            buffer.writeByteArray(arr);
         }
 
         buffer.writeVarInt(recipe.getBaseHP());
@@ -186,13 +197,22 @@ public class ProcessingRecipeSerializer implements RecipeSerializer<ProcessingRe
         }
         buffer.writeVarInt(recipe.getBlockCount());
 
-        buffer.writeVarInt(recipe.getInputItems().size() * 2);
+        buffer.writeVarInt(recipe.getInputItems().size());
         for (CountableIngredient i : recipe.getInputItems()) {
             i.getIngredient().toNetwork(buffer);
             buffer.writeVarInt(i.getCount());
         }
         buffer.writeVarInt(recipe.getInputEnergy());
-        buffer.writeFluidStack(recipe.getInputFluid());
+
+        // has input fluid
+        if (recipe.getInputFluid() == null) {
+            buffer.writeBoolean(false);
+
+        } else {
+            buffer.writeBoolean(true);
+            buffer.writeFluidStack(recipe.getInputFluid());
+
+        }
 
         buffer.writeInt(recipe.getTick());
 
