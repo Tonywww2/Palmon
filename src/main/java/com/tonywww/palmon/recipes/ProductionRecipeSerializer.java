@@ -93,7 +93,11 @@ public class ProductionRecipeSerializer implements RecipeSerializer<ProductionRe
         Stats focusStat = Stats.valueOf(buffer.readResourceLocation().toString());
         int minLevel = buffer.readVarInt();
 
-        ElementalType requiredType = ElementalTypes.INSTANCE.get(buffer.readUtf());
+        String type = buffer.readUtf();
+        ElementalType requiredType = null;
+        if (!type.equals("null")) {
+            requiredType = ElementalTypes.INSTANCE.get(type);
+        }
 
         int baseHP = buffer.readVarInt();
         int baseATK = buffer.readVarInt();
@@ -132,7 +136,13 @@ public class ProductionRecipeSerializer implements RecipeSerializer<ProductionRe
         buffer.writeResourceLocation(recipe.getFocusStat().getIdentifier());
         buffer.writeVarInt(recipe.getMinLevel());
 
-        buffer.writeUtf(recipe.getRequiredType().getName());
+        if (recipe.getRequiredType() == null) {
+            buffer.writeUtf("null");
+
+        } else {
+            buffer.writeUtf(recipe.getRequiredType().getName());
+
+        }
 
         buffer.writeVarInt(recipe.getBaseHP());
         buffer.writeVarInt(recipe.getBaseATK());
