@@ -28,8 +28,9 @@ public class ProductionMachineContainer extends IAbstractContainerMenu {
     private final IItemHandler playerInventory;
 
     private final ContainerData data;
+    private final ContainerData tickData;
 
-    public ProductionMachineContainer(int id, Inventory playerInventory, ProductionMachineEntity blockEntity, ContainerData dataAccess) {
+    public ProductionMachineContainer(int id, Inventory playerInventory, ProductionMachineEntity blockEntity, ContainerData dataAccess, ContainerData tickData) {
         super(ModMenus.PRODUCTION_MACHINE_CONTAINER.get(), id);
 
         this.blockEntity = blockEntity;
@@ -37,6 +38,7 @@ public class ProductionMachineContainer extends IAbstractContainerMenu {
         this.playerInventory = new InvWrapper(playerInventory);
 
         this.data = dataAccess;
+        this.tickData = tickData;
 
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             int i, j;
@@ -47,6 +49,7 @@ public class ProductionMachineContainer extends IAbstractContainerMenu {
             }
 
             addDataSlots(data);
+            addDataSlots(tickData);
         });
 
         ContainerUtils.layoutPlayerInventory(playerInventory, this);
@@ -56,7 +59,7 @@ public class ProductionMachineContainer extends IAbstractContainerMenu {
     public ProductionMachineContainer(final int id,
                                       final Inventory playerInventory,
                                       final FriendlyByteBuf data) {
-        this(id, playerInventory, getTileEntity(playerInventory, data), new SimpleContainerData(8));
+        this(id, playerInventory, getTileEntity(playerInventory, data), new SimpleContainerData(6), new SimpleContainerData(2));
 
     }
 
@@ -88,5 +91,9 @@ public class ProductionMachineContainer extends IAbstractContainerMenu {
 
     public ProductionMachineEntity getBlockEntity() {
         return blockEntity;
+    }
+
+    public ContainerData getTickData() {
+        return tickData;
     }
 }

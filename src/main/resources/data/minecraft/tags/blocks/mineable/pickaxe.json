@@ -3,6 +3,7 @@
   "values": [
     "palmon:working_station",
     "palmon:production_machine",
+    "palmon:processing_station",
     "palmon:boost_frame_1",
     "palmon:boost_frame_2",
     "palmon:boost_frame_3",

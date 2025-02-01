@@ -62,6 +62,7 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
     private final LazyOptional<FluidTank> fluidOptional = LazyOptional.of(() -> this.fluidTank);
 
     protected final ContainerData dataAccess;
+    protected final ContainerData tickData;
 
     private double boostMultiplier = 1.0;
     private double levelMultiplier = 1.0;
@@ -192,12 +193,6 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
                         return (int) (ProcessingStationEntity.this.efficiency * ProcessingStationEntity.ACCURACY);
                     }
                     case 5 -> {
-                        return (int) (ProcessingStationEntity.this.currentTick * ProcessingStationEntity.ACCURACY);
-                    }
-                    case 6 -> {
-                        return (int) (ProcessingStationEntity.this.targetTick * ProcessingStationEntity.ACCURACY);
-                    }
-                    case 7 -> {
                         return ProcessingStationEntity.this.energyStorage.getEnergyStored();
                     }
                 }
@@ -228,14 +223,6 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
                         break;
 
                     case 5:
-                        ProcessingStationEntity.this.currentTick = val / ProcessingStationEntity.ACCURACY;
-                        break;
-
-                    case 6:
-                        ProcessingStationEntity.this.targetTick = val / ProcessingStationEntity.ACCURACY;
-                        break;
-
-                    case 7:
                         ProcessingStationEntity.this.energyStorage.setEnergyStored(val);
                         break;
 
@@ -245,7 +232,40 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
 
             @Override
             public int getCount() {
-                return 8;
+                return 6;
+            }
+        };
+
+        this.tickData = new ContainerData() {
+            @Override
+            public int get(int index) {
+                switch (index) {
+                    case 0 -> {
+                        return (int) (ProcessingStationEntity.this.currentTick);
+                    }
+                    case 1 -> {
+                        return (int) (ProcessingStationEntity.this.targetTick);
+                    }
+                }
+                return 0;
+            }
+
+            @Override
+            public void set(int index, int val) {
+                switch (index) {
+                    case 0:
+                        ProcessingStationEntity.this.currentTick = val;
+                        break;
+                    case 1:
+                        ProcessingStationEntity.this.targetTick = val;
+                        break;
+                }
+
+            }
+
+            @Override
+            public int getCount() {
+                return 2;
             }
         };
 
@@ -253,7 +273,7 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new ProcessingStationContainer(id, inventory, this, this.dataAccess);
+        return new ProcessingStationContainer(id, inventory, this, this.dataAccess, this.tickData);
     }
 
     @Override

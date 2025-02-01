@@ -30,8 +30,9 @@ public class ProcessingStationContainer extends IAbstractContainerMenu {
     private final IItemHandler playerInventory;
 
     private final ContainerData data;
+    private final ContainerData tickData;
 
-    public ProcessingStationContainer(int id, Inventory playerInventory, ProcessingStationEntity blockEntity, ContainerData dataAccess) {
+    public ProcessingStationContainer(int id, Inventory playerInventory, ProcessingStationEntity blockEntity, ContainerData dataAccess, ContainerData tickData) {
         super(ModMenus.PROCESSING_STATION_CONTAINER.get(), id);
 
         this.blockEntity = blockEntity;
@@ -39,6 +40,7 @@ public class ProcessingStationContainer extends IAbstractContainerMenu {
         this.playerInventory = new InvWrapper(playerInventory);
 
         this.data = dataAccess;
+        this.tickData = tickData;
 
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(h -> {
             int i = 0;
@@ -65,7 +67,7 @@ public class ProcessingStationContainer extends IAbstractContainerMenu {
     public ProcessingStationContainer(final int id,
                                       final Inventory playerInventory,
                                       final FriendlyByteBuf data) {
-        this(id, playerInventory, getTileEntity(playerInventory, data), new SimpleContainerData(8));
+        this(id, playerInventory, getTileEntity(playerInventory, data), new SimpleContainerData(6), new SimpleContainerData(2));
 
     }
 
@@ -96,5 +98,9 @@ public class ProcessingStationContainer extends IAbstractContainerMenu {
 
     public ProcessingStationEntity getBlockEntity() {
         return blockEntity;
+    }
+
+    public ContainerData getTickData() {
+        return tickData;
     }
 }
