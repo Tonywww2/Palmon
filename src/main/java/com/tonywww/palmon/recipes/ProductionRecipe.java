@@ -3,6 +3,7 @@ package com.tonywww.palmon.recipes;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.types.ElementalType;
 import com.tonywww.palmon.recipes.wrappers.ProductionInput;
+import com.tonywww.palmon.registeries.ModItems;
 import com.tonywww.palmon.registeries.ModRecipes;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
@@ -104,7 +105,7 @@ public class ProductionRecipe implements Recipe<ProductionInput> {
 
     @Override
     public ItemStack getResultItem(RegistryAccess arg) {
-        return null;
+        return ModItems.EMPTY.get().getDefaultInstance();
     }
 
     @Override

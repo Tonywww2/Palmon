@@ -172,28 +172,28 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
             public int get(int index) {
                 switch (index) {
                     case 0 -> {
-                        return (int) (boostMultiplier * ACCURACY);
+                        return (int) (ProductionMachineEntity.this.boostMultiplier * ProductionMachineEntity.ACCURACY);
                     }
                     case 1 -> {
-                        return (int) (levelMultiplier * ACCURACY);
+                        return (int) (ProductionMachineEntity.this.levelMultiplier * ProductionMachineEntity.ACCURACY);
                     }
                     case 2 -> {
-                        return (int) (ovaStatsMultiplier * ACCURACY);
+                        return (int) (ProductionMachineEntity.this.ovaStatsMultiplier * ProductionMachineEntity.ACCURACY);
                     }
                     case 3 -> {
-                        return (int) (focusMultiplier * ACCURACY);
+                        return (int) (ProductionMachineEntity.this.focusMultiplier * ProductionMachineEntity.ACCURACY);
                     }
                     case 4 -> {
-                        return (int) (efficiency * ACCURACY);
+                        return (int) (ProductionMachineEntity.this.efficiency * ProductionMachineEntity.ACCURACY);
                     }
                     case 5 -> {
-                        return (int) (currentTick * ACCURACY);
+                        return (int) (ProductionMachineEntity.this.currentTick * ProductionMachineEntity.ACCURACY);
                     }
                     case 6 -> {
-                        return (int) (targetTick * ACCURACY);
+                        return (int) (ProductionMachineEntity.this.targetTick * ProductionMachineEntity.ACCURACY);
                     }
                     case 7 -> {
-                        return energyStorage.getEnergyStored();
+                        return ProductionMachineEntity.this.energyStorage.getEnergyStored();
                     }
                 }
                 return 0;
@@ -203,35 +203,35 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
             public void set(int index, int val) {
                 switch (index) {
                     case 0:
-                        boostMultiplier = val / ACCURACY;
+                        ProductionMachineEntity.this.boostMultiplier = val / ProductionMachineEntity.ACCURACY;
                         break;
 
                     case 1:
-                        levelMultiplier = val / ACCURACY;
+                        ProductionMachineEntity.this.levelMultiplier = val / ProductionMachineEntity.ACCURACY;
                         break;
 
                     case 2:
-                        ovaStatsMultiplier = val / ACCURACY;
+                        ProductionMachineEntity.this.ovaStatsMultiplier = val / ProductionMachineEntity.ACCURACY;
                         break;
 
                     case 3:
-                        focusMultiplier = val / ACCURACY;
+                        ProductionMachineEntity.this.focusMultiplier = val / ProductionMachineEntity.ACCURACY;
                         break;
 
                     case 4:
-                        efficiency = val / ACCURACY;
+                        ProductionMachineEntity.this.efficiency = val / ProductionMachineEntity.ACCURACY;
                         break;
 
                     case 5:
-                        currentTick = val;
+                        ProductionMachineEntity.this.currentTick = val / ProductionMachineEntity.ACCURACY;
                         break;
 
                     case 6:
-                        targetTick = val;
+                        ProductionMachineEntity.this.targetTick = val / ProductionMachineEntity.ACCURACY;
                         break;
 
                     case 7:
-                        energyStorage.setEnergyStored(val);
+                        ProductionMachineEntity.this.energyStorage.setEnergyStored(val);
                         break;
 
                 }

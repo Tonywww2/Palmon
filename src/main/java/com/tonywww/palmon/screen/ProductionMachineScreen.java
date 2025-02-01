@@ -134,7 +134,7 @@ public class ProductionMachineScreen extends AbstractContainerScreen<ProductionM
         guiGraphics.drawString(this.font, Component.translatable("ui.palmon.overall_multiplier"), this.titleLabelX + 111, this.titleLabelY - 22, 3012040, false);
         guiGraphics.drawString(this.font, Component.literal(String.valueOf(decodeData(data, 4))), this.titleLabelX + 111, this.titleLabelY - 10, 3012040, false);
 
-//        guiGraphics.drawString(this.font, Component.literal(decodeData(data, 5) + "/ " + decodeData(data, 6)), this.titleLabelX + 111, this.titleLabelY, 3012040, false);
+        guiGraphics.drawString(this.font, Component.literal(decodeData(data, 5) + "/ " + decodeData(data, 6)), this.titleLabelX + 111, this.titleLabelY, 3012040, false);
 
     }
 
