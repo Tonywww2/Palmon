@@ -88,7 +88,6 @@ public class ProductionMachineContainer extends IAbstractContainerMenu {
         return data;
     }
 
-
     public ProductionMachineEntity getBlockEntity() {
         return blockEntity;
     }

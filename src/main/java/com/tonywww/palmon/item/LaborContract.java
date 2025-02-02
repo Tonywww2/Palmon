@@ -65,6 +65,9 @@ public class LaborContract extends Item {
                         );
                         serverLevel.playSound(null, player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
 
+                        player.getCooldowns().addCooldown(this, 10);
+                        player.getCooldowns().addCooldown(ModItems.EMPTY_CONTRACT.get(), 10);
+
                     }
 
                 } else {

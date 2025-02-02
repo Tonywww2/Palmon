@@ -57,6 +57,7 @@ public class ProcessingStationContainer extends IAbstractContainerMenu {
             }
 
             addDataSlots(this.data);
+            addDataSlots(this.tickData);
 
         });
 

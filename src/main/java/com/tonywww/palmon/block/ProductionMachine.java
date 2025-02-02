@@ -34,6 +34,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -87,43 +88,75 @@ public class ProductionMachine extends BaseEntityBlock {
         return ModBlockEntities.PRODUCTION_MACHINE_BLOCK_ENTITY.get().create(pos, state);
     }
 
+    //    @Override
+//    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+//
+//        if (pLevel instanceof ServerLevel serverLevel) {
+//            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+//            if (blockEntity instanceof ProductionMachineEntity entity) {
+//                ItemStack stackInHand = pPlayer.getItemInHand(pHand);
+//                AtomicBoolean flag = new AtomicBoolean(false);
+//                if (!stackInHand.isEmpty()) {
+//                    LazyOptional<IFluidHandlerItem> fluidItem = stackInHand.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM);
+//                    fluidItem.ifPresent(handler -> {
+//                        flag.set(true);
+//                        FluidActionResult result = FluidUtil.tryFillContainer(stackInHand, entity.fluidTank, 1000, pPlayer, true);
+//                        if (result.isSuccess()) {
+//                            stackInHand.shrink(1);
+//                            if (!pPlayer.getInventory().add(result.getResult())) {
+//                                serverLevel.addFreshEntity(new ItemEntity(serverLevel, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), result.getResult()));
+//                            }
+//                        }
+//                        entity.inventoryChanged();
+//
+//                    });
+//
+//                }
+//                if (!flag.get()) {
+//                    NetworkHooks.openScreen((ServerPlayer) pPlayer, entity, pPos);
+//
+//                }
+//
+//            } else {
+//                throw new IllegalStateException("Container provider is missing");
+//            }
+//
+//        }
+//
+//        return InteractionResult.SUCCESS;
+//    }
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-
-        if (pLevel instanceof ServerLevel serverLevel) {
+        if (!pLevel.isClientSide) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
             if (blockEntity instanceof ProductionMachineEntity entity) {
                 ItemStack stackInHand = pPlayer.getItemInHand(pHand);
-                AtomicBoolean flag = new AtomicBoolean(false);
-                if (!stackInHand.isEmpty()) {
+                if (!stackInHand.isEmpty() && !pPlayer.isShiftKeyDown()) {
                     LazyOptional<IFluidHandlerItem> fluidItem = stackInHand.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM);
-                    fluidItem.ifPresent(handler -> {
-                        flag.set(true);
-                        FluidActionResult result = FluidUtil.tryFillContainer(stackInHand, entity.fluidTank, 1000, pPlayer, true);
-                        if (result.isSuccess()) {
-                            stackInHand.shrink(1);
-                            if (!pPlayer.getInventory().add(result.getResult())) {
-                                serverLevel.addFreshEntity(new ItemEntity(serverLevel, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), result.getResult()));
-                            }
-                        }
-                        entity.inventoryChanged();
-
+                    LazyOptional<IItemHandler> playerInventory = pPlayer.getCapability(ForgeCapabilities.ITEM_HANDLER);
+                    return fluidItem.map(handler -> playerInventory.map(inventory -> {
+                                // Attempt to fill the container in hand with the fluid from the tank, or empty it into the tank using player's inventory handler
+                                FluidActionResult fluidActionResult = FluidUtil.tryFillContainerAndStow(stackInHand, entity.fluidTank, inventory, Integer.MAX_VALUE, pPlayer, true);
+                                if (fluidActionResult.isSuccess()) {
+                                    pPlayer.setItemInHand(pHand, fluidActionResult.getResult());
+                                    entity.setChanged(); // Notify that the entity's state has changed
+                                    return InteractionResult.SUCCESS;
+                                }
+                                return InteractionResult.FAIL;
+                            }).orElse(InteractionResult.FAIL) // In case the player inventory capability is not present
+                    ).orElseGet(() -> {
+                        // If the stack in hand is not a fluid handler, open the GUI
+                        NetworkHooks.openScreen((ServerPlayer) pPlayer, entity, pPos);
+                        return InteractionResult.SUCCESS;
                     });
-
-                }
-                if (!flag.get()) {
+                } else {
                     NetworkHooks.openScreen((ServerPlayer) pPlayer, entity, pPos);
-
                 }
-
-            } else {
-                throw new IllegalStateException("Container provider is missing");
             }
-
         }
-
         return InteractionResult.SUCCESS;
     }
+
 
     @Override
     public void onRemove(BlockState pState, Level level, BlockPos pos, BlockState pNewState, boolean pIsMoving) {

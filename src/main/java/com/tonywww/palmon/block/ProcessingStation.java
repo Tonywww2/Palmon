@@ -29,8 +29,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,44 +81,78 @@ public class ProcessingStation extends BaseEntityBlock {
         return RenderShape.MODEL;
     }
 
+    //    @Override
+//    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+//        if (pLevel instanceof ServerLevel serverLevel) {
+//            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+//            if (blockEntity instanceof ProcessingStationEntity entity) {
+//                ItemStack stackInHand = pPlayer.getItemInHand(pHand);
+//                AtomicBoolean flag = new AtomicBoolean(false);
+//                if (!stackInHand.isEmpty()) {
+//                    LazyOptional<IFluidHandlerItem> fluidItem = stackInHand.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM);
+//                    fluidItem.ifPresent(handler -> {
+//                        flag.set(true);
+//                        int amountToDrain = entity.fluidTank.getCapacity() - entity.fluidTank.getFluidAmount();
+//                        int amount = handler.drain(amountToDrain, IFluidHandler.FluidAction.SIMULATE).getAmount();
+//                        if (amount > 0) {
+//                            entity.fluidTank.fill(handler.drain(amount, IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+//                            if (amount <= amountToDrain) {
+//                                stackInHand.shrink(1);
+//                                pPlayer.getInventory().add(handler.getContainer());
+//                            }
+//                            entity.inventoryChanged();
+//                        }
+//
+//                    });
+//
+//                }
+//                if (!flag.get()) {
+//                    NetworkHooks.openScreen((ServerPlayer) pPlayer, entity, pPos);
+//
+//                }
+//
+//            } else {
+//                throw new IllegalStateException("Container provider is missing");
+//            }
+//
+//        }
+//
+//        return InteractionResult.SUCCESS;
+//    }
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        if (pLevel instanceof ServerLevel serverLevel) {
+        if (!pLevel.isClientSide) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
             if (blockEntity instanceof ProcessingStationEntity entity) {
                 ItemStack stackInHand = pPlayer.getItemInHand(pHand);
-                AtomicBoolean flag = new AtomicBoolean(false);
-                if (!stackInHand.isEmpty()) {
-                    LazyOptional<IFluidHandlerItem> fluidItem = stackInHand.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM);
-                    fluidItem.ifPresent(handler -> {
-                        flag.set(true);
-                        int amountToDrain = entity.fluidTank.getCapacity() - entity.fluidTank.getFluidAmount();
-                        int amount = handler.drain(amountToDrain, IFluidHandler.FluidAction.SIMULATE).getAmount();
-                        if (amount > 0) {
-                            entity.fluidTank.fill(handler.drain(amount, IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
-                            if (amount <= amountToDrain) {
-                                stackInHand.shrink(1);
-                                pPlayer.getInventory().add(handler.getContainer());
-                            }
-                            entity.inventoryChanged();
+                if (!stackInHand.isEmpty() && !pPlayer.isShiftKeyDown()) {
+                    LazyOptional<IFluidHandlerItem> fluidHandlerItem = stackInHand.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM);
+                    LazyOptional<IItemHandler> playerInventory = pPlayer.getCapability(ForgeCapabilities.ITEM_HANDLER);
+
+                    return fluidHandlerItem.map(handler -> {
+                        // Attempt to empty the container into the fluid tank of the block entity
+                        FluidActionResult fluidActionResult = FluidUtil.tryEmptyContainerAndStow(stackInHand, entity.fluidTank, playerInventory.orElse(null), Integer.MAX_VALUE, pPlayer, true);
+                        if (fluidActionResult.isSuccess()) {
+                            // Update the player's hand with the new item container after the transfer
+                            pPlayer.setItemInHand(pHand, fluidActionResult.getResult());
+                            entity.setChanged(); // Notify that the entity's state has changed
+                            pLevel.sendBlockUpdated(pPos, pState, pState, Block.UPDATE_ALL);
+                            return InteractionResult.SUCCESS;
                         }
-
+                        return InteractionResult.FAIL;
+                    }).orElseGet(() -> {
+                        // Open the GUI if the item in hand doesn't have a fluid handler
+                        NetworkHooks.openScreen((ServerPlayer) pPlayer, entity, pPos);
+                        return InteractionResult.SUCCESS;
                     });
-
-                }
-                if (!flag.get()) {
+                } else {
                     NetworkHooks.openScreen((ServerPlayer) pPlayer, entity, pPos);
-
                 }
-
-            } else {
-                throw new IllegalStateException("Container provider is missing");
             }
-
         }
-
         return InteractionResult.SUCCESS;
     }
+
 
     @Override
     public void onRemove(BlockState pState, Level level, BlockPos pos, BlockState pNewState, boolean pIsMoving) {

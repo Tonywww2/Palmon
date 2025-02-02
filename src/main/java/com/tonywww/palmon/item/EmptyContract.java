@@ -66,6 +66,7 @@ public class EmptyContract extends Item {
                     serverLevel.playSound(null, player.blockPosition(), SoundEvents.VILLAGER_TRADE, SoundSource.BLOCKS, 1f, 1f);
 
                     player.getCooldowns().addCooldown(this, 10);
+                    player.getCooldowns().addCooldown(ModItems.LABOR_CONTRACT.get(), 10);
 
                 }
             }
