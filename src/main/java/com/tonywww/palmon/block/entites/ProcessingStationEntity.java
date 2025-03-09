@@ -22,6 +22,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -394,21 +395,6 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
     }
 
     public ItemStackHandler getItemInput() {
-//        HashMap<Item, Integer> map = new HashMap<>();
-//        for (int i = 0; i < ITEM_INPUT_SIZE; i++) {
-//            ItemStack stack = this.itemStackHandler.getStackInSlot(i);
-//            if (!stack.isEmpty()) {
-//                map.put(stack.getItem(), map.getOrDefault(stack.getItem(), 0) + stack.getCount());
-//            }
-//        }
-//
-//        ItemStackHandler stackHandler = new ItemStackHandler(map.size());
-//        int i = 0;
-//        for (Item item : map.keySet()) {
-//            stackHandler.setStackInSlot(i++, new ItemStack(item, map.get(item)));
-//        }
-//        System.out.println(stackHandler.serializeNBT());
-
         ItemStackHandler stackHandler = new ItemStackHandler(8);
         for (int i = 0; i < ITEM_INPUT_SIZE; i++) {
             stackHandler.setStackInSlot(i, this.itemStackHandler.getStackInSlot(i));
@@ -457,10 +443,10 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
                             be.ovaStatsMultiplier = be.getOvaStatsMultiplier(ivs);
 
                             if (recipe.isPresent()) {
-                                ProcessingRecipe rec = recipe.get();
-                                if (rec.getId().equals(be.currentRecipe)) {
+                                ProcessingRecipe rcp = recipe.get();
+                                if (rcp.getId().equals(be.currentRecipe)) {
                                     // keep ticking
-                                    be.focusMultiplier = be.getFocusMultiplier(species.getBaseStats().get(rec.getFocusStat()), PokemonNBTUtils.getIVFromNBT(ivs, rec.getFocusStat()));
+                                    be.focusMultiplier = be.getFocusMultiplier(species.getBaseStats().get(rcp.getFocusStat()), PokemonNBTUtils.getIVFromNBT(ivs, rcp.getFocusStat()));
                                     // equation: boost(1-5) * level(1-2.5) * ovaStats(1-5.5, With sum of Ivs) * focusStats(1-11.0, with the Ev and Iv)
                                     be.efficiency = be.boostMultiplier * be.levelMultiplier * be.ovaStatsMultiplier * be.focusMultiplier;
 
@@ -469,43 +455,46 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
 
                                     // finished a cycle
                                     if (be.currentTick >= be.targetTick) {
-                                        if (!rec.getResultItems().isEmpty()) {
-                                            insertListToHandler(rec.getResultItems(), be.itemStackHandler, ITEM_INPUT_SIZE, be.itemStackHandler.getSlots());
+                                        if (!rcp.getResultItems().isEmpty()) {
+                                            insertListToHandler(rcp.getResultItems(), be.itemStackHandler, ITEM_INPUT_SIZE, be.itemStackHandler.getSlots());
                                         }
 
-                                        if (!rec.getInputItems().isEmpty()) {
-                                            for (CountableIngredient recipeStack : rec.getInputItems()) {
+                                        if (!rcp.getInputItems().isEmpty()) {
+                                            for (CountableIngredient recipeStack : rcp.getInputItems()) {
                                                 Ingredient ingredient = recipeStack.getIngredient();
                                                 int still = recipeStack.getCount();
 
                                                 for (int i = 0; i < ITEM_INPUT_SIZE && still > 0; i++) {
                                                     ItemStack stackInSlot = be.itemStackHandler.getStackInSlot(i);
                                                     if (!stackInSlot.isEmpty() && ingredient.test(stackInSlot)) {
+                                                        int count = stackInSlot.getCount();
                                                         if (still - stackInSlot.getCount() > 0) {
-                                                            stackInSlot.setCount(0);
+                                                            stackInSlot.shrink(count);
                                                         } else {
                                                             stackInSlot.shrink(still);
                                                         }
-                                                        still -= stackInSlot.getCount();
+                                                        still -= count;
                                                     }
                                                 }
 
                                             }
                                         }
 
-                                        be.energyStorage.setEnergyStored(be.energyStorage.getEnergyStored() - rec.getInputEnergy());
+                                        be.energyStorage.setEnergyStored(be.energyStorage.getEnergyStored() - rcp.getInputEnergy());
 
-                                        if (rec.getInputFluid() != null) {
-                                            be.fluidTank.drain(rec.getInputFluid().getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                                        if (rcp.getInputFluid() != null) {
+                                            be.fluidTank.drain(rcp.getInputFluid().getAmount(), IFluidHandler.FluidAction.EXECUTE);
                                         }
 
                                         be.currentTick -= be.targetTick;
+                                        serverLevel.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS);
+
                                     }
 
                                 } else {
                                     // new recipe
-                                    be.currentRecipe = rec.getId();
-                                    be.targetTick = rec.getTick();
+                                    be.currentRecipe = rcp.getId();
+                                    be.targetTick = rcp.getTick();
 
                                     be.currentTick = 0;
                                 }

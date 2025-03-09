@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "palmon:wood"
+  },
+  "result": {
+    "item": "minecraft:charcoal",
+    "count": 1
+  },
+  "experience": 0.2,
+  "cookingtime": 100
+}

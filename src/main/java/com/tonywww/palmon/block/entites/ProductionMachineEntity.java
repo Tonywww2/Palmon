@@ -21,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -473,6 +474,7 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
                                             }
                                         }
                                         be.currentTick = be.currentTick % be.targetTick;
+                                        serverLevel.playSound(null, pos, CobblemonSounds.EVOLVE, SoundSource.BLOCKS);
                                     }
 
                                 } else {
