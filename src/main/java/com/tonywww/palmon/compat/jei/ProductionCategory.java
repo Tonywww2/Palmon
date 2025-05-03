@@ -83,7 +83,7 @@ public class ProductionCategory implements IRecipeCategory<ProductionRecipe> {
         x = 16;
         y = 81;
         for (int i = 0; i < outputs.size(); i++) {
-            builder.addSlot(RecipeIngredientRole.OUTPUT, x, y + (18 * i)).addItemStack(outputs.get(i));
+            builder.addSlot(RecipeIngredientRole.OUTPUT, x + (18 * i), y).addItemStack(outputs.get(i));
 
         }
 

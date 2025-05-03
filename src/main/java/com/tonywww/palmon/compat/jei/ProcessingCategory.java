@@ -107,7 +107,7 @@ public class ProcessingCategory implements IRecipeCategory<ProcessingRecipe> {
         x = 135;
         y = 81;
         for (int i = 0; i < outputs.size(); i++) {
-            builder.addSlot(RecipeIngredientRole.OUTPUT, x + (i / 2 * 18), y + (i % 2 * 18)).addItemStack(outputs.get(i));
+            builder.addSlot(RecipeIngredientRole.OUTPUT, x + (i % 2 * 18), y + (i / 2 * 18)).addItemStack(outputs.get(i));
 
         }
 
