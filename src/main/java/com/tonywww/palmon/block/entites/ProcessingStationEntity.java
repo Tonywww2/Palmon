@@ -77,8 +77,8 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
     private ResourceLocation currentRecipe;
 
     public static final int ITEM_INPUT_SIZE = 8;
-    public static int MAX_ENERGY = 5000000;
-    public static int MAX_FLUID = 8000;
+    public static int MAX_ENERGY = 500000000;
+    public static int MAX_FLUID = 12000;
 
     public static final double ACCURACY = 100d;
     public static final int RADIUS = 2;
