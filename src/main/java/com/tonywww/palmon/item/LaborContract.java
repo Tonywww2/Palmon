@@ -93,7 +93,7 @@ public class LaborContract extends Item {
         toolTips.add(Component.translatable("tooltip.palmon.labor_contract"));
 
         CompoundTag pokemonTag = getPokemonNBT(itemStack);
-        if (!pokemonTag.isEmpty()) {
+        if (pokemonTag != null &&!pokemonTag.isEmpty()) {
             Species species = PokemonNBTUtils.getSpeciesFromNBT(pokemonTag);
             toolTips.add(species.getTranslatedName().setStyle(species.getTranslatedName().getStyle().withColor(ChatFormatting.AQUA)));
 
