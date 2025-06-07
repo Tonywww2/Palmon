@@ -65,6 +65,8 @@ public class LaborContractCuriosWrapper implements ICurio {
         if (!slotContext.identifier().equalsIgnoreCase("contract"))
             return atts;
         CompoundTag pokemonTag = LaborContract.getPokemonNBT(this.getStack());
+        if (pokemonTag == null) return atts;
+
         Species species = PokemonNBTUtils.getSpeciesFromNBT(pokemonTag);
         CompoundTag ivs = PokemonNBTUtils.getAllIVsFromNBT(pokemonTag);
 
