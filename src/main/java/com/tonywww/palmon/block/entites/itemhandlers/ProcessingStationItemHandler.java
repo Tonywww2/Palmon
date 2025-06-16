@@ -37,8 +37,24 @@ public class ProcessingStationItemHandler implements IItemHandler {
     }
 
     @Override
-    public @NotNull ItemStack extractItem(int i, int j, boolean bl) {
-        return this.itemHandler.extractItem(i, j, bl);
+    public @NotNull ItemStack extractItem(int slot, int amount, boolean bl) {
+        if (this.side == null) {
+            return this.itemHandler.extractItem(slot, amount, bl);
+        }
+
+        if (this.side == Direction.UP) {
+            if (slot < 8) {
+                return this.itemHandler.extractItem(slot, amount, bl);
+            }
+        }
+
+        if (this.side == Direction.DOWN) {
+            if (slot >= 8) {
+                return this.itemHandler.extractItem(slot, amount, bl);
+            }
+        }
+
+        return ItemStack.EMPTY;
     }
 
     @Override
