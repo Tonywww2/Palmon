@@ -16,7 +16,7 @@
     }
   ],
   "block_count": 1,
-  "tick": 200,
+  "tick": 100,
   "result_items": null,
   "result_power": 0,
   "result_fluid": {

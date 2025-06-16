@@ -22,7 +22,7 @@
         }
     ],
     "block_count": 4,
-    "tick": 1200,
+    "tick": 800,
     "result_items": [
         {
             "item": "palmon:poke_food",

@@ -4,19 +4,19 @@
   "focus_stat": "ATTACK",
   "min_level": 5,
   "required_type": null,
-  "base_hp": 100,
+  "base_hp": 90,
   "base_atk": 120,
-  "base_def": 150,
-  "base_spa": 100,
-  "base_spd": 100,
-  "base_spe": 100,
+  "base_def": 120,
+  "base_spa": 90,
+  "base_spd": 90,
+  "base_spe": 80,
   "area_blocks": [
     {
       "tag": "forge:storage_blocks/coal"
     }
   ],
   "block_count": 32,
-  "tick": 16000,
+  "tick": 12000,
   "result_items": [
     {
       "item": "minecraft:diamond",

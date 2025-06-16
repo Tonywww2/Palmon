@@ -19,7 +19,7 @@
     }
   ],
   "block_count": 4,
-  "tick": 1200,
+  "tick": 800,
   "result_items": [],
   "result_power": 10000,
   "result_fluid": null

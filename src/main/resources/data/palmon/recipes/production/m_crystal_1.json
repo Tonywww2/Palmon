@@ -28,7 +28,7 @@
     }
   ],
   "block_count": 1,
-  "tick": 3200,
+  "tick": 2400,
   "result_items": [
     {
       "item": "palmon:m_crystal",
