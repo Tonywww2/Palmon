@@ -8,7 +8,6 @@ import com.cobblemon.mod.common.pokemon.Species;
 import com.google.common.collect.Queues;
 import com.tonywww.palmon.api.IEnergyStorage;
 import com.tonywww.palmon.recipes.wrappers.ProductionInput;
-import com.tonywww.palmon.block.BoostFrame;
 import com.tonywww.palmon.menu.ProductionMachineContainer;
 import com.tonywww.palmon.recipes.ProductionRecipe;
 import com.tonywww.palmon.registeries.ModBlockEntities;
@@ -21,7 +20,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,7 +28,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -61,15 +58,6 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
     protected final ContainerData dataAccess;
     protected final ContainerData tickData;
 
-    private double boostMultiplier = 1.0;
-    private double levelMultiplier = 1.0;
-    private double ovaStatsMultiplier = 1.0;
-    private double focusMultiplier = 0.0;
-    private double efficiency = 0.0;
-
-    private double currentTick = 0.0;
-    private double targetTick = 0.0;
-
     private ResourceLocation currentRecipe;
 
     public static int MAX_ENERGY = 5000000;
@@ -77,9 +65,7 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
 
     public static int MAX_TRANSFER = 5000000;
 
-    public static final double ACCURACY = 100d;
-    public static final int RADIUS = 2;
-    public static final int HEIGHT = 4;
+    public static final double ACCURACY = BasicMachineEntity.ACCURACY;
 
     private ItemStackHandler createItemHandler() {
         return new ItemStackHandler(18) {
@@ -180,7 +166,7 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
                         return (int) (ProductionMachineEntity.this.levelMultiplier * ProductionMachineEntity.ACCURACY);
                     }
                     case 2 -> {
-                        return (int) (ProductionMachineEntity.this.ovaStatsMultiplier * ProductionMachineEntity.ACCURACY);
+                        return (int) (ProductionMachineEntity.this.individualMultiplier * ProductionMachineEntity.ACCURACY);
                     }
                     case 3 -> {
                         return (int) (ProductionMachineEntity.this.focusMultiplier * ProductionMachineEntity.ACCURACY);
@@ -207,7 +193,7 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
                         break;
 
                     case 2:
-                        ProductionMachineEntity.this.ovaStatsMultiplier = val / ProductionMachineEntity.ACCURACY;
+                        ProductionMachineEntity.this.individualMultiplier = val / ProductionMachineEntity.ACCURACY;
                         break;
 
                     case 3:
@@ -288,11 +274,7 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
     }
 
     public NonNullList<ItemStack> getDroppableInventory() {
-        NonNullList<ItemStack> drops = NonNullList.create();
-        for (int i = 0; i < itemStackHandler.getSlots(); ++i) {
-            drops.add(itemStackHandler.getStackInSlot(i));
-        }
-        return drops;
+        return super.getDroppableInventory(itemStackHandler);
     }
 
     @Nonnull
@@ -300,7 +282,6 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return this.itemOptional.cast();
-
         }
 
         if (cap == ForgeCapabilities.ENERGY) {
@@ -309,7 +290,6 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
 
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return this.fluidOptional.cast();
-
         }
 
         return super.getCapability(cap, side);
@@ -325,60 +305,8 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
         return new ProductionMachineContainer(id, inventory, this, this.dataAccess, this.tickData);
     }
 
-    public double getBoostMultiplier() {
-        BlockState state = null;
-        if (this.level != null) {
-            state = this.level.getBlockState(this.getBlockPos().above());
-        }
-        if (state != null && state.getBlock() instanceof BoostFrame boostFrame) {
-            return boostFrame.efficiency;
-        }
-        return 1.0d;
-
-    }
-
-    public double getLevelMultiplier(int level) {
-        return (0.00015d * level * level) + 1;
-    }
-
-    public double getFocusMultiplier(int ev, int iv) {
-        return Math.max(1, (Math.pow(ev, 3) + (1000d * Math.pow(iv - 1, 3))) / 4000000d);
-    }
-
-    public double getOvaStatsMultiplier(CompoundTag ivs) {
-        int sumIvs = PokemonNBTUtils.getIVFromNBT(ivs, Stats.HP) +
-                PokemonNBTUtils.getIVFromNBT(ivs, Stats.ATTACK) +
-                PokemonNBTUtils.getIVFromNBT(ivs, Stats.DEFENCE) +
-                PokemonNBTUtils.getIVFromNBT(ivs, Stats.SPECIAL_ATTACK) +
-                PokemonNBTUtils.getIVFromNBT(ivs, Stats.SPECIAL_DEFENCE) +
-                PokemonNBTUtils.getIVFromNBT(ivs, Stats.SPEED);
-
-        return Math.max(1, (Math.pow(sumIvs - 5, 3) / 1000000d) + 0.3d);
-    }
-
     public ItemStackHandler getAreaBlocks() {
-        HashMap<Block, Integer> map = new HashMap<>();
-        if (this.getLevel() != null) {
-            for (int i = 0; i <= HEIGHT; i++) {
-                for (int j = -RADIUS; j <= RADIUS; j++) {
-                    for (int k = -RADIUS; k <= RADIUS; k++) {
-                        if (i == 0 && j == 0 && k == 0) continue;
-                        Block cur = this.getLevel().getBlockState(this.getBlockPos().offset(j, i, k)).getBlock();
-                        if (cur.equals(ModBlocks.PRODUCTION_MACHINE.get())) return null;
-                        map.put(cur, map.getOrDefault(cur, 0) + 1);
-
-                    }
-                }
-            }
-        }
-
-        ItemStackHandler stackHandler = new ItemStackHandler(map.size());
-        int i = 0;
-        for (Block key : map.keySet()) {
-            stackHandler.setStackInSlot(i++, new ItemStack(key, map.get(key)));
-
-        }
-        return stackHandler;
+        return super.getAreaBlocks(ModBlocks.PRODUCTION_MACHINE.get());
     }
 
     private final Queue<Direction> directionQueue = Queues.newArrayDeque(Direction.Plane.HORIZONTAL);
@@ -409,109 +337,134 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
 
     public static void tick(Level level, BlockPos pos, BlockState state, ProductionMachineEntity be) {
         if (level instanceof ServerLevel serverLevel) {
-            be.tick(1);
+            be.tickBase(1);
             int food = be.getFood();
-            if (be.isWorkingTick() && food > be.FOOD_PER_WORKING_TICK) {
-                CompoundTag pokemonNBT = be.getPokemonNBT();
-                if (pokemonNBT != null) {
-                    Species species = PokemonNBTUtils.getSpeciesFromNBT(pokemonNBT);
-                    if (species != null) {
+            if (!be.isWorkingTick() || food <= be.FOOD_PER_WORKING_TICK) return;
 
-                        ElementalType type1 = PokemonNBTUtils.getType1FromSpecies(species);
-                        ElementalType type2 = PokemonNBTUtils.getType2FromSpecies(species);
+            CompoundTag pokemonNBT = be.getPokemonNBT();
+            if (pokemonNBT == null) {
+                be.resetMultipliers();
+                be.distributeEnergy();
+                be.resetTicker();
+                return;
+            }
 
-                        int pokemonLevel = PokemonNBTUtils.getLevelFromNBT(pokemonNBT);
+            Species species = PokemonNBTUtils.getSpeciesFromNBT(pokemonNBT);
+            if (species == null) {
+                be.resetMultipliers();
+                be.distributeEnergy();
+                be.resetTicker();
+                return;
+            }
 
-                        CompoundTag ivs = PokemonNBTUtils.getAllIVsFromNBT(pokemonNBT);
-                        HashMap<Stat, Integer> baseStats = species.getBaseStats();
+            ElementalType type1 = PokemonNBTUtils.getType1FromSpecies(species);
+            ElementalType type2 = PokemonNBTUtils.getType2FromSpecies(species);
+            int pokemonLevel = PokemonNBTUtils.getLevelFromNBT(pokemonNBT);
+            CompoundTag ivs = PokemonNBTUtils.getAllIVsFromNBT(pokemonNBT);
+            HashMap<Stat, Integer> baseStats = species.getBaseStats();
+            ItemStackHandler areaBlocks = be.getAreaBlocks();
 
-                        ItemStackHandler areaBlocks = be.getAreaBlocks();
-                        if (areaBlocks != null) {
-                            ProductionInput input = new ProductionInput(areaBlocks, pokemonLevel, type1,
-                                    baseStats.get(Stats.HP), baseStats.get(Stats.ATTACK), baseStats.get(Stats.DEFENCE),
-                                    baseStats.get(Stats.SPECIAL_ATTACK), baseStats.get(Stats.SPECIAL_DEFENCE), baseStats.get(Stats.SPEED));
+            if (areaBlocks == null) {
+                be.resetMultipliers();
+                be.distributeEnergy();
+                be.resetTicker();
+                return;
+            }
 
-                            Optional<ProductionRecipe> recipe = serverLevel.getRecipeManager()
-                                    .getRecipeFor(ProductionRecipe.ProductionRecipeType.INSTANCE, input, serverLevel);
+            ProductionInput input = new ProductionInput(areaBlocks, pokemonLevel, type1,
+                    baseStats.get(Stats.HP), baseStats.get(Stats.ATTACK), baseStats.get(Stats.DEFENCE),
+                    baseStats.get(Stats.SPECIAL_ATTACK), baseStats.get(Stats.SPECIAL_DEFENCE), baseStats.get(Stats.SPEED));
 
-                            if (recipe.isEmpty() && type2 != null) {
-                                input.setType(type2);
-                                recipe = serverLevel.getRecipeManager()
-                                        .getRecipeFor(ProductionRecipe.ProductionRecipeType.INSTANCE, input, serverLevel);
-                            }
+            Optional<ProductionRecipe> recipe = findRecipe(serverLevel, input, type2);
 
-                            be.boostMultiplier = be.getBoostMultiplier();
-                            be.levelMultiplier = be.getLevelMultiplier(PokemonNBTUtils.getLevelFromNBT(pokemonNBT));
-                            be.ovaStatsMultiplier = be.getOvaStatsMultiplier(ivs);
+            if (recipe.isPresent()) {
+                ProductionRecipe rcp = recipe.get();
+                if (rcp.getId().equals(be.currentRecipe)) {
+                    Stats focusStat = rcp.getFocusStat();
+                    int focusEv = species.getBaseStats().get(focusStat);
+                    int focusIv = PokemonNBTUtils.getIVFromNBT(ivs, focusStat);
+                    be.updateMultipliers(
+                            pokemonNBT,
+                            ivs,
+                            true,
+                            focusEv,
+                            focusIv,
+                            rcp.getTick()
+                    );
+                    be.processRecipe(rcp, serverLevel, pos);
+                    be.tryConsumeFood(serverLevel, pos, food);
+                } else {
+                    be.resetRecipeState();
+                    be.startNewRecipe(rcp);
+                }
 
-                            if (recipe.isPresent()) {
-                                ProductionRecipe rec = recipe.get();
-                                if (rec.getId().equals(be.currentRecipe)) {
-                                    // keep ticking
-                                    be.focusMultiplier = be.getFocusMultiplier(species.getBaseStats().get(rec.getFocusStat()), PokemonNBTUtils.getIVFromNBT(ivs, rec.getFocusStat()));
-                                    // equation: boost(1-5) * level(1-2.5) * ovaStats(1-5.5, With sum of Ivs) * focusStats(1-11.0, with the Ev and Iv)
-                                    be.efficiency = be.boostMultiplier * be.levelMultiplier * be.ovaStatsMultiplier * be.focusMultiplier;
+            } else {
+                be.resetRecipeState();
+            }
 
-                                    // Basic Machine multiplier
-                                    be.currentTick += be.efficiency * be.tickPerOperation;
+            be.distributeEnergy();
+            be.resetTicker();
+        }
+    }
 
-                                    // finished a cycle
-                                    if (be.currentTick >= be.targetTick) {
-                                        int times = (int) (be.currentTick / be.targetTick);
-                                        for (int i = 0; i < times; i++) {
-                                            if (!rec.getResultItems().isEmpty()) {
-                                                insertListToHandler(rec.getResultItems(), be.itemStackHandler, 0, be.itemStackHandler.getSlots());
+    private static Optional<ProductionRecipe> findRecipe(ServerLevel serverLevel, ProductionInput input, ElementalType type2) {
+        Optional<ProductionRecipe> recipe = serverLevel.getRecipeManager()
+                .getRecipeFor(ProductionRecipe.ProductionRecipeType.INSTANCE, input, serverLevel);
+        if (recipe.isEmpty() && type2 != null) {
+            input.setType(type2);
+            recipe = serverLevel.getRecipeManager()
+                    .getRecipeFor(ProductionRecipe.ProductionRecipeType.INSTANCE, input, serverLevel);
+        }
+        return recipe;
+    }
 
-                                            }
-                                            if (rec.getResultPower() > 0) {
-                                                be.energyStorage.setEnergyStored(be.energyStorage.getEnergyStored() + rec.getResultPower());
-
-                                            }
-
-                                            if (rec.getResultFluid() != null) {
-                                                be.fluidTank.fill(rec.getResultFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
-
-                                            }
-                                        }
-                                        be.currentTick = be.currentTick % be.targetTick;
-                                        serverLevel.playSound(null, pos, CobblemonSounds.EVOLVE, SoundSource.BLOCKS);
-                                    }
-
-                                } else {
-                                    // new recipe
-                                    be.currentRecipe = rec.getId();
-                                    be.targetTick = rec.getTick();
-
-                                    be.currentTick = 0;
-                                }
-                                if (serverLevel.getRandom().nextDouble() < be.FOOD_CONSUME_CHANCE) {
-                                    be.setFood(food - serverLevel.getRandom().nextInt(be.FOOD_PER_WORKING_TICK) - 1);
-                                    serverLevel.playSound(null, pos, CobblemonSounds.BERRY_EAT, SoundSource.BLOCKS);
-
-                                }
-
-                            } else {
-                                be.focusMultiplier = 0;
-                                be.efficiency = 0;
-                                be.currentTick = 0;
-                                be.targetTick = 0;
-                                be.currentRecipe = null;
-                            }
-                        }
-                    } else {
-                        be.boostMultiplier = 1.0;
-                        be.levelMultiplier = 1.0;
-                        be.ovaStatsMultiplier = 1.0;
-                        be.focusMultiplier = 0;
-                        be.efficiency = 0;
-
-                    }
-                    be.distributeEnergy();
-                    be.resetTicker();
+    private void processRecipe(ProductionRecipe rec, ServerLevel serverLevel, BlockPos pos) {
+        this.currentTick += this.efficiency * this.tickPerOperation;
+        if (this.currentTick >= this.targetTick) {
+            int times = (int) (this.currentTick / this.targetTick);
+            for (int i = 0; i < times; i++) {
+                if (!rec.getResultItems().isEmpty()) {
+                    insertListToHandler(rec.getResultItems(), this.itemStackHandler, 0, this.itemStackHandler.getSlots());
+                }
+                if (rec.getResultPower() > 0) {
+                    this.energyStorage.setEnergyStored(this.energyStorage.getEnergyStored() + rec.getResultPower());
+                }
+                if (rec.getResultFluid() != null) {
+                    this.fluidTank.fill(rec.getResultFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
                 }
             }
+            this.currentTick = this.currentTick % this.targetTick;
+            serverLevel.playSound(null, pos, CobblemonSounds.EVOLVE, SoundSource.BLOCKS);
         }
+    }
 
+    private void startNewRecipe(ProductionRecipe rec) {
+        this.currentRecipe = rec.getId();
+        this.targetTick = rec.getTick();
+        this.currentTick = 0;
+    }
+
+    private void tryConsumeFood(ServerLevel serverLevel, BlockPos pos, int food) {
+        if (serverLevel.getRandom().nextDouble() < this.FOOD_CONSUME_CHANCE) {
+            setFood(food - serverLevel.getRandom().nextInt(this.FOOD_PER_WORKING_TICK) - 1);
+            serverLevel.playSound(null, pos, CobblemonSounds.BERRY_EAT, SoundSource.BLOCKS);
+        }
+    }
+
+    private void resetMultipliers() {
+        this.boostMultiplier = 1.0;
+        this.levelMultiplier = 1.0;
+        this.individualMultiplier = 1.0;
+        this.focusMultiplier = 0;
+        this.efficiency = 0;
+    }
+
+    private void resetRecipeState() {
+        this.focusMultiplier = 0;
+        this.efficiency = 0;
+        this.currentTick = 0;
+        this.targetTick = 0;
+        this.currentRecipe = null;
     }
 
 }

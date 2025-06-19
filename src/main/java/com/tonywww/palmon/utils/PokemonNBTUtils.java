@@ -20,6 +20,10 @@ public class PokemonNBTUtils {
         return nbt.getShort(DataKeys.POKEMON_LEVEL);
     }
 
+    public static boolean getShinyFromNBT(CompoundTag nbt) {
+        return nbt.getBoolean(DataKeys.POKEMON_SHINY);
+    }
+
     public static CompoundTag getAllIVsFromNBT(CompoundTag nbt) {
         return nbt.getCompound(DataKeys.POKEMON_IVS);
     }

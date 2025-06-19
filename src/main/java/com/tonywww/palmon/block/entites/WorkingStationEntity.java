@@ -123,8 +123,9 @@ public class WorkingStationEntity extends BasicMachineEntity implements MenuProv
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, WorkingStationEntity be) {
+        // 本 tick 已较为简洁，无需进一步拆分
         if (level instanceof ServerLevel serverLevel) {
-            be.tick(1);
+            be.tickBase(1);
             if (be.isWorkingTick()) {
                 ItemStack itemStack = be.itemStackHandler.getStackInSlot(1);
                 if (itemStack.is(ModItems.POKE_FOOD.get())) {

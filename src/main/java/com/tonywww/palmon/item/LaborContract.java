@@ -13,6 +13,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -93,9 +94,15 @@ public class LaborContract extends Item {
         toolTips.add(Component.translatable("tooltip.palmon.labor_contract"));
 
         CompoundTag pokemonTag = getPokemonNBT(itemStack);
-        if (pokemonTag != null &&!pokemonTag.isEmpty()) {
+        if (pokemonTag != null && !pokemonTag.isEmpty()) {
             Species species = PokemonNBTUtils.getSpeciesFromNBT(pokemonTag);
-            toolTips.add(species.getTranslatedName().setStyle(species.getTranslatedName().getStyle().withColor(ChatFormatting.AQUA)));
+            boolean isShiny = PokemonNBTUtils.getShinyFromNBT(pokemonTag);
+            MutableComponent name = species.getTranslatedName();
+            if (isShiny) {
+                name.append(" ⭐ ");
+            }
+            toolTips.add(name.setStyle(species.getTranslatedName().getStyle()
+                    .withColor(isShiny ? ChatFormatting.AQUA : ChatFormatting.WHITE)));
 
             toolTips.add(Component.literal("Lv: " + PokemonNBTUtils.getLevelFromNBT(pokemonTag)));
             toolTips.add(Component.translatable("cobblemon.ui.info.type")
