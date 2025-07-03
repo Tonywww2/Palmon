@@ -8,6 +8,25 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class ContainerUtils {
+
+    public static short splitIntToShortLow(int value) {
+        return (short) (value & 0xFFFF);
+    }
+    public static short splitIntToShortHigh(int value) {
+        return (short) ((value >>> 16) & 0xFFFF);
+    }
+
+    /**
+     * 将2个short合并为一个int，低16位在前，高16位在后
+     *
+     * @param low  低位short
+     * @param high 高位short
+     * @return 合并后的int
+     */
+    public static int combineShortsToInt(short low, short high) {
+        return ((high & 0xFFFF) << 16) | (low & 0xFFFF);
+    }
+
     public static @NotNull ItemStack quickMoveHelper(IAbstractContainerMenu menu, Player player, int slotNumber, int invCount) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = menu.slots.get(slotNumber);

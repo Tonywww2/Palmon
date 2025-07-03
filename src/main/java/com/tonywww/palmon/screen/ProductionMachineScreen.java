@@ -3,6 +3,7 @@ package com.tonywww.palmon.screen;
 import com.tonywww.palmon.Palmon;
 import com.tonywww.palmon.block.entites.ProductionMachineEntity;
 import com.tonywww.palmon.menu.ProductionMachineContainer;
+import com.tonywww.palmon.utils.ContainerUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -40,7 +41,7 @@ public class ProductionMachineScreen extends AbstractContainerScreen<ProductionM
         this.renderTooltip(guiGraphics, pMouseX, pMouseY);
 
         if (isHovering(ENERGY_TANK_X, ENERGY_TANK_Y, 16, ENERGY_TANK_HEIGHT, pMouseX, pMouseY)) {
-            Component component = Component.literal("(%s/%sFE)".formatted(this.menu.getData().get(5), this.menu.getBlockEntity().energyStorage.getMaxEnergyStored()));
+            Component component = Component.literal("(%s/%sFE)".formatted(ContainerUtils.combineShortsToInt((short) this.menu.getData().get(5), (short) this.menu.getData().get(6)), this.menu.getBlockEntity().energyStorage.getMaxEnergyStored()));
 
             guiGraphics.renderTooltip(this.font, component, pMouseX, pMouseY);
 
@@ -90,7 +91,7 @@ public class ProductionMachineScreen extends AbstractContainerScreen<ProductionM
 
         ContainerData data = this.menu.getData();
         ContainerData tickData = this.getMenu().getTickData();
-        int energyHeight = getEnergyHeight(data.get(5), this.menu.getBlockEntity().energyStorage.getMaxEnergyStored());
+        int energyHeight = getEnergyHeight(ContainerUtils.combineShortsToInt((short) this.menu.getData().get(5), (short) this.menu.getData().get(6)), this.menu.getBlockEntity().energyStorage.getMaxEnergyStored());
         guiGraphics.blit(GUI, this.leftPos + ENERGY_TANK_X, getEnergyY(energyHeight), 204, ENERGY_TANK_HEIGHT - energyHeight + 1, 16, energyHeight);
 
         guiGraphics.blit(GUI, this.leftPos + 11, this.topPos + 109, 0, 220, (int) (153d * tickData.get(0) / tickData.get(1)), 4);

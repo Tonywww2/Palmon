@@ -13,6 +13,7 @@ import com.tonywww.palmon.recipes.ProcessingRecipe;
 import com.tonywww.palmon.recipes.wrappers.ProcessingInput;
 import com.tonywww.palmon.registeries.ModBlockEntities;
 import com.tonywww.palmon.registeries.ModBlocks;
+import com.tonywww.palmon.utils.ContainerUtils;
 import com.tonywww.palmon.utils.PokemonNBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -66,7 +67,7 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
     private ResourceLocation currentRecipe;
 
     public static final int ITEM_INPUT_SIZE = 8;
-    public static int MAX_ENERGY = 500000000;
+    public static int MAX_ENERGY = 100000000;
     public static int MAX_FLUID = 12000;
 
     public static final double ACCURACY = BasicMachineEntity.ACCURACY;
@@ -181,7 +182,10 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
                         return (int) (ProcessingStationEntity.this.efficiency * ProcessingStationEntity.ACCURACY);
                     }
                     case 5 -> {
-                        return ProcessingStationEntity.this.energyStorage.getEnergyStored();
+                        return ContainerUtils.splitIntToShortLow(ProcessingStationEntity.this.energyStorage.getEnergyStored());
+                    }
+                    case 6 -> {
+                        return ContainerUtils.splitIntToShortHigh(ProcessingStationEntity.this.energyStorage.getEnergyStored());
                     }
                 }
                 return 0;
@@ -211,7 +215,11 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
                         break;
 
                     case 5:
-                        ProcessingStationEntity.this.energyStorage.setEnergyStored(val);
+                        ProcessingStationEntity.this.energyStorage.setEnergyStored(ContainerUtils.combineShortsToInt((short) val, (short) ProcessingStationEntity.this.dataAccess.get(6)));
+                        break;
+
+                    case 6:
+                        ProcessingStationEntity.this.energyStorage.setEnergyStored(ContainerUtils.combineShortsToInt((short) ProcessingStationEntity.this.dataAccess.get(5), (short) val));
                         break;
 
                 }
@@ -220,7 +228,7 @@ public class ProcessingStationEntity extends BasicMachineEntity implements MenuP
 
             @Override
             public int getCount() {
-                return 6;
+                return 7;
             }
         };
 

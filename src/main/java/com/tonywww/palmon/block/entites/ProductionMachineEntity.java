@@ -12,6 +12,7 @@ import com.tonywww.palmon.menu.ProductionMachineContainer;
 import com.tonywww.palmon.recipes.ProductionRecipe;
 import com.tonywww.palmon.registeries.ModBlockEntities;
 import com.tonywww.palmon.registeries.ModBlocks;
+import com.tonywww.palmon.utils.ContainerUtils;
 import com.tonywww.palmon.utils.PokemonNBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -106,9 +107,10 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
             @Override
             public int extractEnergy(int maxExtract, boolean simulate) {
                 int energy = this.getEnergyStored();
+                if (energy <= 0) return 0;
                 int diff = Math.min(energy, maxExtract);
                 if (!simulate) {
-                    this.setEnergyStored(this.getEnergyStored() + diff);
+                    this.setEnergyStored(this.getEnergyStored() - diff);
                     if (diff != 0) {
                         inventoryChanged();
                     }
@@ -175,7 +177,10 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
                         return (int) (ProductionMachineEntity.this.efficiency * ProductionMachineEntity.ACCURACY);
                     }
                     case 5 -> {
-                        return ProductionMachineEntity.this.energyStorage.getEnergyStored();
+                        return ContainerUtils.splitIntToShortLow(ProductionMachineEntity.this.energyStorage.getEnergyStored());
+                    }
+                    case 6 -> {
+                        return ContainerUtils.splitIntToShortHigh(ProductionMachineEntity.this.energyStorage.getEnergyStored());
                     }
                 }
                 return 0;
@@ -205,7 +210,11 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
                         break;
 
                     case 5:
-                        ProductionMachineEntity.this.energyStorage.setEnergyStored(val);
+                        ProductionMachineEntity.this.energyStorage.setEnergyStored(ContainerUtils.combineShortsToInt((short) val, (short) ProductionMachineEntity.this.dataAccess.get(6)));
+                        break;
+
+                    case 6:
+                        ProductionMachineEntity.this.energyStorage.setEnergyStored(ContainerUtils.combineShortsToInt((short) ProductionMachineEntity.this.dataAccess.get(5), (short) val));
                         break;
 
                 }
@@ -214,7 +223,7 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
 
             @Override
             public int getCount() {
-                return 6;
+                return 7;
             }
         };
 
@@ -313,9 +322,7 @@ public class ProductionMachineEntity extends BasicMachineEntity implements MenuP
 
     private void distributeEnergy() {
         if (this.getLevel() != null) {
-            if (this.energyStorage.getEnergyStored() <= 0) {
-                return;
-            }
+            if (this.energyStorage.getEnergyStored() <= 0) return;
             this.directionQueue.offer(this.directionQueue.remove());
             for (Direction dir : directionQueue) {
                 BlockEntity be = this.getLevel().getBlockEntity(this.getBlockPos().offset(dir.getNormal()));

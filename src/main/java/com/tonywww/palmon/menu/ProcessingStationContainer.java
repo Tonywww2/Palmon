@@ -68,7 +68,7 @@ public class ProcessingStationContainer extends IAbstractContainerMenu {
     public ProcessingStationContainer(final int id,
                                       final Inventory playerInventory,
                                       final FriendlyByteBuf data) {
-        this(id, playerInventory, getTileEntity(playerInventory, data), new SimpleContainerData(6), new SimpleContainerData(2));
+        this(id, playerInventory, getTileEntity(playerInventory, data), new SimpleContainerData(7), new SimpleContainerData(2));
 
     }
 
