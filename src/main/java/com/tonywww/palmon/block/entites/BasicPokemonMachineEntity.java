@@ -1,5 +1,9 @@
 package com.tonywww.palmon.block.entites;
 
+import com.cobblemon.mod.common.api.pokemon.stats.Stat;
+import com.cobblemon.mod.common.api.types.ElementalType;
+import com.cobblemon.mod.common.pokemon.FormData;
+import com.cobblemon.mod.common.pokemon.Species;
 import com.tonywww.palmon.block.BoostFrame;
 import com.tonywww.palmon.utils.PokemonNBTUtils;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
@@ -15,8 +19,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.HashMap;
+import java.util.Map;
 
-public class BasicMachineEntity extends SyncedBlockEntity {
+public class BasicPokemonMachineEntity extends SyncedBlockEntity {
 
     protected int executeTick = 0;
     protected int tickPerOperation = 4;
@@ -39,7 +44,7 @@ public class BasicMachineEntity extends SyncedBlockEntity {
     protected double currentTick = 0.0;
     protected double targetTick = 0.0;
 
-    public BasicMachineEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+    public BasicPokemonMachineEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
         super(tileEntityTypeIn, pos, state);
     }
 
@@ -70,7 +75,7 @@ public class BasicMachineEntity extends SyncedBlockEntity {
 
     }
 
-    private WorkingStationEntity getWorkingStation() {
+    private WorkingStationEntityPokemon getWorkingStation() {
         int x = 0, z = 0;
         switch (this.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)) {
             case NORTH:
@@ -91,7 +96,7 @@ public class BasicMachineEntity extends SyncedBlockEntity {
         }
         if (this.level != null) {
             BlockEntity blockEntity = this.level.getBlockEntity(this.getBlockPos().offset(x, 0, z));
-            if (blockEntity instanceof WorkingStationEntity workingStationEntity) {
+            if (blockEntity instanceof WorkingStationEntityPokemon workingStationEntity) {
                 return workingStationEntity;
             }
         }
@@ -99,7 +104,7 @@ public class BasicMachineEntity extends SyncedBlockEntity {
     }
 
     public CompoundTag getPokemonNBT() {
-        WorkingStationEntity workingStation = this.getWorkingStation();
+        WorkingStationEntityPokemon workingStation = this.getWorkingStation();
         if (workingStation != null) {
             return workingStation.getPokemonNBT();
         }
@@ -108,7 +113,7 @@ public class BasicMachineEntity extends SyncedBlockEntity {
     }
 
     public int getFood() {
-        WorkingStationEntity workingStation = this.getWorkingStation();
+        WorkingStationEntityPokemon workingStation = this.getWorkingStation();
         if (workingStation != null) {
             return workingStation.food;
         }
@@ -116,7 +121,7 @@ public class BasicMachineEntity extends SyncedBlockEntity {
     }
 
     public void setFood(int i) {
-        WorkingStationEntity workingStation = this.getWorkingStation();
+        WorkingStationEntityPokemon workingStation = this.getWorkingStation();
         if (workingStation != null) {
             workingStation.food = i;
 
@@ -213,6 +218,49 @@ public class BasicMachineEntity extends SyncedBlockEntity {
             drops.add(handler.getStackInSlot(i));
         }
         return drops;
+    }
+    /**
+     * 从宝可梦NBT数据中提取常用信息的通用方法
+     */
+    protected PokemonData extractPokemonData(CompoundTag pokemonNBT) {
+        if (pokemonNBT == null) {
+            return null;
+        }
+
+        Species species = PokemonNBTUtils.getSpeciesFromNBT(pokemonNBT);
+        FormData form = PokemonNBTUtils.getFormFromNBT(pokemonNBT, species);
+
+        ElementalType type1 = PokemonNBTUtils.getType1FromForm(form);
+        ElementalType type2 = PokemonNBTUtils.getType2FromForm(form);
+        int pokemonLevel = PokemonNBTUtils.getLevelFromNBT(pokemonNBT);
+        CompoundTag ivs = PokemonNBTUtils.getAllIVsFromNBT(pokemonNBT);
+        Map<Stat, Integer> baseStats = form.getBaseStats();
+
+        return new PokemonData(species, form, type1, type2, pokemonLevel, ivs, baseStats);
+    }
+
+    /**
+     * 封装宝可梦数据的内部类
+     */
+    public static class PokemonData {
+        public final Species species;
+        public final FormData form;
+        public final ElementalType type1;
+        public final ElementalType type2;
+        public final int level;
+        public final CompoundTag ivs;
+        public final Map<Stat, Integer> baseStats;
+
+        public PokemonData(Species species, FormData form, ElementalType type1, ElementalType type2,
+                           int level, CompoundTag ivs, Map<Stat, Integer> baseStats) {
+            this.species = species;
+            this.form = form;
+            this.type1 = type1;
+            this.type2 = type2;
+            this.level = level;
+            this.ivs = ivs;
+            this.baseStats = baseStats;
+        }
     }
 
 }

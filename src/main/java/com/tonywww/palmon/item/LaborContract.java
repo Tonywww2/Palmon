@@ -3,6 +3,7 @@ package com.tonywww.palmon.item;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
+import com.cobblemon.mod.common.pokemon.FormData;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.tonywww.palmon.Palmon;
@@ -98,19 +99,22 @@ public class LaborContract extends Item {
             Species species = PokemonNBTUtils.getSpeciesFromNBT(pokemonTag);
             boolean isShiny = PokemonNBTUtils.getShinyFromNBT(pokemonTag);
             MutableComponent name = species.getTranslatedName();
+            FormData form = PokemonNBTUtils.getFormFromNBT(pokemonTag, species);
+
+            toolTips.add(name.setStyle(species.getTranslatedName().getStyle()
+                    .withColor(isShiny ? ChatFormatting.AQUA : ChatFormatting.WHITE)).append(" ").append(form.getName()));
+
             if (isShiny) {
                 name.append(" ⭐ ");
             }
-            toolTips.add(name.setStyle(species.getTranslatedName().getStyle()
-                    .withColor(isShiny ? ChatFormatting.AQUA : ChatFormatting.WHITE)));
 
             toolTips.add(Component.literal("Lv: " + PokemonNBTUtils.getLevelFromNBT(pokemonTag)));
             toolTips.add(Component.translatable("cobblemon.ui.info.type")
-                    .append(": ").append(species.getPrimaryType().getDisplayName()).append(" ")
-                    .append(species.getSecondaryType() == null ? Component.empty() : species.getSecondaryType().getDisplayName()));
+                    .append(": ").append(form.getPrimaryType().getDisplayName()).append(" ")
+                    .append(form.getSecondaryType() == null ? Component.empty() : form.getSecondaryType().getDisplayName()));
 
             CompoundTag ivs = PokemonNBTUtils.getAllIVsFromNBT(pokemonTag);
-            Map<Stat, Integer> base = species.getBaseStats();
+            Map<Stat, Integer> base = form.getBaseStats();
             toolTips.add(Component.translatable("cobblemon.ui.stats.ivs")
                     .append(" | ").append(Component.translatable("cobblemon.ui.stats.base")));
 

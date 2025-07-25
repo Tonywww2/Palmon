@@ -1,7 +1,7 @@
 package com.tonywww.palmon.screen;
 
 import com.tonywww.palmon.Palmon;
-import com.tonywww.palmon.block.entites.ProcessingStationEntity;
+import com.tonywww.palmon.block.entites.ProcessingStationEntityPokemon;
 import com.tonywww.palmon.menu.ProcessingStationContainer;
 import com.tonywww.palmon.utils.ContainerUtils;
 import net.minecraft.client.gui.GuiGraphics;
@@ -143,7 +143,7 @@ public class ProcessingStationScreen extends AbstractContainerScreen<ProcessingS
     }
 
     double decodeData(ContainerData data, int index) {
-        return data.get(index) / ProcessingStationEntity.ACCURACY;
+        return data.get(index) / ProcessingStationEntityPokemon.ACCURACY;
 
     }
 

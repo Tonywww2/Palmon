@@ -18,10 +18,7 @@
       "item": "minecraft:crying_obsidian"
     },
     {
-      "item": "cobblemon:black_tumblestone_block"
-    },
-    {
-      "item": "cobblemon:sky_tumblestone_block"
+      "item": "cobblemon:tumblestone_block"
     },
     {
       "tag": "minecraft:anvil"

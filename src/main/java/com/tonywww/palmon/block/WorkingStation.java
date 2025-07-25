@@ -1,6 +1,6 @@
 package com.tonywww.palmon.block;
 
-import com.tonywww.palmon.block.entites.WorkingStationEntity;
+import com.tonywww.palmon.block.entites.WorkingStationEntityPokemon;
 import com.tonywww.palmon.registeries.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -77,7 +77,7 @@ public class WorkingStation extends BaseEntityBlock {
         if (!pLevel.isClientSide) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
 
-            if (blockEntity instanceof WorkingStationEntity entity) {
+            if (blockEntity instanceof WorkingStationEntityPokemon entity) {
                 NetworkHooks.openScreen((ServerPlayer) pPlayer, entity, pPos);
             } else {
                 throw new IllegalStateException("Container provider is missing");
@@ -96,7 +96,7 @@ public class WorkingStation extends BaseEntityBlock {
     public void onRemove(BlockState pState, Level level, BlockPos pos, BlockState pNewState, boolean pIsMoving) {
         if (!pState.is(pNewState.getBlock())) {
             BlockEntity tileEntity = level.getBlockEntity(pos);
-            if (tileEntity instanceof WorkingStationEntity tile) {
+            if (tileEntity instanceof WorkingStationEntityPokemon tile) {
                 Containers.dropContents(level, pos, tile.getDroppableInventory());
                 level.updateNeighbourForOutputSignal(pos, this);
 
@@ -108,7 +108,7 @@ public class WorkingStation extends BaseEntityBlock {
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, ModBlockEntities.WORKING_STATION_BLOCK_ENTITY.get(), WorkingStationEntity::tick);
+        return createTickerHelper(blockEntityType, ModBlockEntities.WORKING_STATION_BLOCK_ENTITY.get(), WorkingStationEntityPokemon::tick);
     }
 
     @Override

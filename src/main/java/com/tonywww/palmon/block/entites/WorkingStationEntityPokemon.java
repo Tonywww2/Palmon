@@ -7,6 +7,7 @@ import com.tonywww.palmon.item.LaborContract;
 import com.tonywww.palmon.menu.WorkingStationContainer;
 import com.tonywww.palmon.registeries.ModBlockEntities;
 import com.tonywww.palmon.registeries.ModItems;
+import com.tonywww.palmon.utils.PokemonNBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -31,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
-public class WorkingStationEntity extends BasicMachineEntity implements MenuProvider {
+public class WorkingStationEntityPokemon extends BasicPokemonMachineEntity implements MenuProvider {
     public final ItemStackHandler itemStackHandler;
     private final LazyOptional<ItemStackHandler> handler;
 
@@ -46,7 +47,7 @@ public class WorkingStationEntity extends BasicMachineEntity implements MenuProv
 
     public static final float SCALE_THRESHOLD = 1.25f;
 
-    public WorkingStationEntity(BlockPos pos, BlockState state) {
+    public WorkingStationEntityPokemon(BlockPos pos, BlockState state) {
         super(ModBlockEntities.WORKING_STATION_BLOCK_ENTITY.get(), pos, state);
         this.itemStackHandler = createHandler();
         this.handler = LazyOptional.of(() -> itemStackHandler);
@@ -122,7 +123,7 @@ public class WorkingStationEntity extends BasicMachineEntity implements MenuProv
         };
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, WorkingStationEntity be) {
+    public static void tick(Level level, BlockPos pos, BlockState state, WorkingStationEntityPokemon be) {
         // 本 tick 已较为简洁，无需进一步拆分
         if (level instanceof ServerLevel serverLevel) {
             be.tickBase(1);
@@ -193,6 +194,8 @@ public class WorkingStationEntity extends BasicMachineEntity implements MenuProv
 
     private void updatePokemonEntity() {
         if (this.getLevel() != null && this.getPokemonNBT() != null && !this.getPokemonNBT().isEmpty()) {
+            Pokemon pokemon = PokemonNBTUtils.loadSafePokemon(this.getPokemonNBT(), this.getLevel().isClientSide());
+            if (pokemon == null) return;
             float angle = switch (this.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)) {
                 case NORTH -> 0;
                 case EAST -> 90f;
@@ -200,7 +203,7 @@ public class WorkingStationEntity extends BasicMachineEntity implements MenuProv
                 case WEST -> 270f;
                 default -> 0f;
             };
-            this.pokemonEntity = new PokemonEntity(this.getLevel(), Pokemon.Companion.loadFromNBT(this.getPokemonNBT()), CobblemonEntities.POKEMON) {
+            this.pokemonEntity = new PokemonEntity(this.getLevel(), pokemon, CobblemonEntities.POKEMON) {
                 @Override
                 public boolean shouldRender(double d, double e, double f) {
                     return true;

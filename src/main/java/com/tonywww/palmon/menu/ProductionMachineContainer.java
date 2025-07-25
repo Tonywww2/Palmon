@@ -1,7 +1,7 @@
 package com.tonywww.palmon.menu;
 
 import com.tonywww.palmon.api.IAbstractContainerMenu;
-import com.tonywww.palmon.block.entites.ProductionMachineEntity;
+import com.tonywww.palmon.block.entites.ProductionPokemonMachineEntity;
 import com.tonywww.palmon.registeries.ModBlocks;
 import com.tonywww.palmon.registeries.ModMenus;
 import com.tonywww.palmon.utils.ContainerUtils;
@@ -15,7 +15,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -23,14 +22,14 @@ import static com.tonywww.palmon.utils.ContainerUtils.quickMoveHelper;
 
 public class ProductionMachineContainer extends IAbstractContainerMenu {
 
-    private final ProductionMachineEntity blockEntity;
+    private final ProductionPokemonMachineEntity blockEntity;
     private final ContainerLevelAccess canInteractWithCallable;
     private final IItemHandler playerInventory;
 
     private final ContainerData data;
     private final ContainerData tickData;
 
-    public ProductionMachineContainer(int id, Inventory playerInventory, ProductionMachineEntity blockEntity, ContainerData dataAccess, ContainerData tickData) {
+    public ProductionMachineContainer(int id, Inventory playerInventory, ProductionPokemonMachineEntity blockEntity, ContainerData dataAccess, ContainerData tickData) {
         super(ModMenus.PRODUCTION_MACHINE_CONTAINER.get(), id);
 
         this.blockEntity = blockEntity;
@@ -63,11 +62,11 @@ public class ProductionMachineContainer extends IAbstractContainerMenu {
 
     }
 
-    private static ProductionMachineEntity getTileEntity(final Inventory playerInventory, final FriendlyByteBuf data) {
+    private static ProductionPokemonMachineEntity getTileEntity(final Inventory playerInventory, final FriendlyByteBuf data) {
         Objects.requireNonNull(playerInventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
         final BlockEntity tileAtPos = playerInventory.player.level().getBlockEntity(data.readBlockPos());
-        if (tileAtPos instanceof ProductionMachineEntity tile) {
+        if (tileAtPos instanceof ProductionPokemonMachineEntity tile) {
             return tile;
         }
         throw new IllegalStateException("Tile entity is not correct! " + tileAtPos);
@@ -88,7 +87,7 @@ public class ProductionMachineContainer extends IAbstractContainerMenu {
         return data;
     }
 
-    public ProductionMachineEntity getBlockEntity() {
+    public ProductionPokemonMachineEntity getBlockEntity() {
         return blockEntity;
     }
 

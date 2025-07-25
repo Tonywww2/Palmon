@@ -1,13 +1,12 @@
 package com.tonywww.palmon.events;
 
-import com.tonywww.palmon.block.entites.WorkingStationRenderer;
+import com.tonywww.palmon.block.WorkingStationRenderer;
 import com.tonywww.palmon.registeries.ModBlockEntities;
 import com.tonywww.palmon.registeries.ModMenus;
 import com.tonywww.palmon.screen.ProcessingStationScreen;
 import com.tonywww.palmon.screen.ProductionMachineScreen;
 import com.tonywww.palmon.screen.WorkingStationScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

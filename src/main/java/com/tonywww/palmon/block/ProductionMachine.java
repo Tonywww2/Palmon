@@ -1,15 +1,13 @@
 package com.tonywww.palmon.block;
 
-import com.tonywww.palmon.block.entites.ProductionMachineEntity;
+import com.tonywww.palmon.block.entites.ProductionPokemonMachineEntity;
 import com.tonywww.palmon.registeries.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -30,17 +28,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidActionResult;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ProductionMachine extends BaseEntityBlock {
     public ProductionMachine(Properties arg) {
@@ -129,7 +123,7 @@ public class ProductionMachine extends BaseEntityBlock {
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof ProductionMachineEntity entity) {
+            if (blockEntity instanceof ProductionPokemonMachineEntity entity) {
                 ItemStack stackInHand = pPlayer.getItemInHand(pHand);
                 if (!stackInHand.isEmpty() && !pPlayer.isShiftKeyDown()) {
                     LazyOptional<IFluidHandlerItem> fluidItem = stackInHand.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM);
@@ -162,7 +156,7 @@ public class ProductionMachine extends BaseEntityBlock {
     public void onRemove(BlockState pState, Level level, BlockPos pos, BlockState pNewState, boolean pIsMoving) {
         if (!pState.is(pNewState.getBlock())) {
             BlockEntity tileEntity = level.getBlockEntity(pos);
-            if (tileEntity instanceof ProductionMachineEntity tile) {
+            if (tileEntity instanceof ProductionPokemonMachineEntity tile) {
                 Containers.dropContents(level, pos, tile.getDroppableInventory());
                 level.updateNeighbourForOutputSignal(pos, this);
 
@@ -174,7 +168,7 @@ public class ProductionMachine extends BaseEntityBlock {
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, ModBlockEntities.PRODUCTION_MACHINE_BLOCK_ENTITY.get(), ProductionMachineEntity::tick);
+        return createTickerHelper(blockEntityType, ModBlockEntities.PRODUCTION_MACHINE_BLOCK_ENTITY.get(), ProductionPokemonMachineEntity::tick);
     }
 
     @Override

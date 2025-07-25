@@ -1,7 +1,7 @@
 package com.tonywww.palmon.screen;
 
 import com.tonywww.palmon.Palmon;
-import com.tonywww.palmon.block.entites.ProductionMachineEntity;
+import com.tonywww.palmon.block.entites.ProductionPokemonMachineEntity;
 import com.tonywww.palmon.menu.ProductionMachineContainer;
 import com.tonywww.palmon.utils.ContainerUtils;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,7 +14,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
@@ -142,7 +141,7 @@ public class ProductionMachineScreen extends AbstractContainerScreen<ProductionM
     }
 
     double decodeData(ContainerData data, int index) {
-        return data.get(index) / ProductionMachineEntity.ACCURACY;
+        return data.get(index) / ProductionPokemonMachineEntity.ACCURACY;
 
     }
 

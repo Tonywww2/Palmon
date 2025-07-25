@@ -36,7 +36,7 @@
   "tooltip.palmon.empty_contract": "对着你的宝可梦使用以签署劳务合同。\n 去干活！",
   "tooltip.palmon.labor_contract": "放置在工作站内，让宝可梦开始工作！\n 或者潜行右键以释放宝可梦。",
   "tooltip.palmon.boost_frame": "放置于机器上后，将框架乘区设为 ",
-  "tooltip.palmon.working_station": "将一个劳务合同至于其中，并提供充足的食物，其中的宝可梦将会在临近的机器工作。",
+  "tooltip.palmon.working_station": "将一个劳务合同置于其中，并提供充足的食物，其中的宝可梦将会在临近的机器工作。",
   "tooltip.palmon.production_machine": "需要工作站。\n 让宝可梦根据周围的方块生产各种资源（材料，流体，能量）！\n 通常需要宝可梦的种族值高于一定数值。",
   "tooltip.palmon.processing_station": "需要工作站。\n 让宝可梦根据周围的方块并使用各种资源（材料，流体，能量）去制作新的物品/材料！\n 通常需要宝可梦的种族值高于一定数值。",
 

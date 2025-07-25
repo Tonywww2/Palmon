@@ -12,13 +12,13 @@
   "base_spe": 0,
   "area_blocks": [
     {
-      "tag": "forge:storage_blocks/copper"
+      "tag": "minecraft:cut_copper_stairs"
     },
     {
       "tag": "forge:storage_blocks/redstone"
     }
   ],
-  "block_count": 6,
+  "block_count": 8,
   "tick": 1200,
   "result_items": [],
   "result_power": 40000,
