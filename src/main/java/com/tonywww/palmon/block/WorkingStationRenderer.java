@@ -10,6 +10,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.phys.Vec3;
 
+import static com.tonywww.palmon.PalmonConfig.workingStationRenderDistant;
+
 public class WorkingStationRenderer implements BlockEntityRenderer<WorkingStationEntityPokemon> {
     public WorkingStationRenderer(BlockEntityRendererProvider.Context context) {
 
@@ -56,7 +58,7 @@ public class WorkingStationRenderer implements BlockEntityRenderer<WorkingStatio
 
     @Override
     public int getViewDistance() {
-        return 128;
+        return workingStationRenderDistant.get();
     }
 
 }

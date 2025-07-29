@@ -16,6 +16,8 @@ public final class PalmonConfig {
     public static final ForgeConfigSpec.ConfigValue<Double> contractAttributeSpDefenceMultiplierConfluence;
     public static final ForgeConfigSpec.ConfigValue<Double> contractAttributeSpeedMultiplierConfluence;
 
+    public static final ForgeConfigSpec.ConfigValue<Integer> workingStationRenderDistant;
+
     static {
         contractAttributeHpMultiplier = BUILDER.comment("\nThe multiplier of the HP.")
                 .defineInRange("contractAttributeHpMultiplier", 1.0d, 0d, 1000.0d);
@@ -44,6 +46,8 @@ public final class PalmonConfig {
         contractAttributeSpeedMultiplierConfluence = BUILDER.comment("\nThe multiplier of the SPEED with mod Confluence loaded.")
                 .defineInRange("contractAttributeSpeedMultiplierConfluence", 0.2d, 0d, 1000.0d);
 
+        workingStationRenderDistant = BUILDER.comment("\nThe max distant that the working station's Pokemon will be rendered.")
+                .defineInRange("workingStationRenderDistant", 128, 0, 256);
 
 
         COMMON_CONFIG = BUILDER.build();
