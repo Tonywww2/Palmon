@@ -12,7 +12,7 @@
   "base_spe": 0,
   "area_blocks": [
     {
-      "tag": "minecraft:cut_copper_stairs"
+      "item": "minecraft:cut_copper_stairs"
     },
     {
       "tag": "forge:storage_blocks/redstone"
