@@ -23,7 +23,7 @@ public class WorkingStationRenderer implements BlockEntityRenderer<WorkingStatio
             PokemonEntity pokemonEntity = blockEntity.getPokemonEntity();
             if (pokemonEntity != null) {
                 poseStack.pushPose();
-                poseStack.translate(0.5, 0.125, 0.5);
+                poseStack.translate(0.5, 0.0625, 0.5);
                 poseStack.mulPose(Axis.YP.rotationDegrees(pokemonEntity.getYRot()));
 
 //                float scale = 0.75f;
