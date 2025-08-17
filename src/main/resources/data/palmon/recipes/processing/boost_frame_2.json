@@ -2,14 +2,14 @@
   "type": "palmon:processing",
   "category": "misc",
   "focus_stat": "SPEED",
-  "min_level": 45,
+  "min_level": 60,
   "required_type": null,
-  "base_hp": 60,
-  "base_atk": 60,
-  "base_def": 60,
-  "base_spa": 60,
-  "base_spd": 60,
-  "base_spe": 60,
+  "base_hp": 50,
+  "base_atk": 50,
+  "base_def": 50,
+  "base_spa": 50,
+  "base_spd": 50,
+  "base_spe": 50,
   "area_blocks": [
     {
       "item": "minecraft:piston"

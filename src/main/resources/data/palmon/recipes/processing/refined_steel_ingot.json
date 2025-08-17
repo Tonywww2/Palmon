@@ -2,7 +2,7 @@
   "type": "palmon:processing",
   "category": "misc",
   "focus_stat": "SPECIAL_ATTACK",
-  "min_level": 50,
+  "min_level": 40,
   "required_type": "fire",
   "base_hp": 30,
   "base_atk": 60,

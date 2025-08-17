@@ -412,6 +412,10 @@ public class ProcessingStationEntityPokemon extends BasicPokemonMachineEntity im
         }
     }
 
+    public void tryConsumeFood(ServerLevel serverLevel, BlockPos pos, int food) {
+        super.tryConsumeFood(serverLevel, pos, food);
+    }
+
     private static Optional<ProcessingRecipe> findRecipe(ServerLevel serverLevel, ProcessingInput input, ElementalType type2) {
         Optional<ProcessingRecipe> recipe = serverLevel.getRecipeManager()
                 .getRecipeFor(ProcessingRecipe.ProcessingRecipeType.INSTANCE, input, serverLevel);
@@ -464,13 +468,6 @@ public class ProcessingStationEntityPokemon extends BasicPokemonMachineEntity im
         this.currentRecipe = rcp.getId();
         this.targetTick = rcp.getTick();
         this.currentTick = 0;
-    }
-
-    private void tryConsumeFood(ServerLevel serverLevel, BlockPos pos, int food) {
-        if (serverLevel.getRandom().nextDouble() < this.FOOD_CONSUME_CHANCE) {
-            setFood(food - serverLevel.getRandom().nextInt(this.FOOD_PER_WORKING_TICK) - 1);
-            serverLevel.playSound(null, pos, CobblemonSounds.BERRY_EAT, SoundSource.BLOCKS);
-        }
     }
 
     private void resetMultipliers() {

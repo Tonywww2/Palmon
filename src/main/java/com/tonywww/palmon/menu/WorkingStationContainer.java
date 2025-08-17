@@ -1,7 +1,7 @@
 package com.tonywww.palmon.menu;
 
 import com.tonywww.palmon.api.IAbstractContainerMenu;
-import com.tonywww.palmon.block.entites.WorkingStationEntityPokemon;
+import com.tonywww.palmon.block.entites.WorkingStationEntity;
 import com.tonywww.palmon.registeries.ModBlocks;
 import com.tonywww.palmon.registeries.ModMenus;
 import com.tonywww.palmon.utils.ContainerUtils;
@@ -28,7 +28,7 @@ public class WorkingStationContainer extends IAbstractContainerMenu {
 
     private final ContainerData data;
 
-    public WorkingStationContainer(int id, Inventory playerInventory, WorkingStationEntityPokemon blockEntity, ContainerData dataAccess) {
+    public WorkingStationContainer(int id, Inventory playerInventory, WorkingStationEntity blockEntity, ContainerData dataAccess) {
         super(ModMenus.WORKING_STATION_CONTAINER.get(), id);
 
         this.blockEntity = blockEntity;
@@ -55,11 +55,11 @@ public class WorkingStationContainer extends IAbstractContainerMenu {
 
     }
 
-    private static WorkingStationEntityPokemon getTileEntity(final Inventory playerInventory, final FriendlyByteBuf data) {
+    private static WorkingStationEntity getTileEntity(final Inventory playerInventory, final FriendlyByteBuf data) {
         Objects.requireNonNull(playerInventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
         final BlockEntity tileAtPos = playerInventory.player.level().getBlockEntity(data.readBlockPos());
-        if (tileAtPos instanceof WorkingStationEntityPokemon tile) {
+        if (tileAtPos instanceof WorkingStationEntity tile) {
             return tile;
         }
         throw new IllegalStateException("Tile entity is not correct! " + tileAtPos);

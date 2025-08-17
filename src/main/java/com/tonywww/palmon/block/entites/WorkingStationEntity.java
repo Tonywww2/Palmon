@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
-public class WorkingStationEntityPokemon extends BasicPokemonMachineEntity implements MenuProvider {
+public class WorkingStationEntity extends BasicPokemonMachineEntity implements MenuProvider {
     public final ItemStackHandler itemStackHandler;
     private final LazyOptional<ItemStackHandler> handler;
 
@@ -47,7 +47,9 @@ public class WorkingStationEntityPokemon extends BasicPokemonMachineEntity imple
 
     public static final float SCALE_THRESHOLD = 1.25f;
 
-    public WorkingStationEntityPokemon(BlockPos pos, BlockState state) {
+    private int machineType = -1;
+
+    public WorkingStationEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.WORKING_STATION_BLOCK_ENTITY.get(), pos, state);
         this.itemStackHandler = createHandler();
         this.handler = LazyOptional.of(() -> itemStackHandler);
@@ -123,8 +125,7 @@ public class WorkingStationEntityPokemon extends BasicPokemonMachineEntity imple
         };
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, WorkingStationEntityPokemon be) {
-        // 本 tick 已较为简洁，无需进一步拆分
+    public static void tick(Level level, BlockPos pos, BlockState state, WorkingStationEntity be) {
         if (level instanceof ServerLevel serverLevel) {
             be.tickBase(1);
             if (be.isWorkingTick()) {
@@ -277,5 +278,13 @@ public class WorkingStationEntityPokemon extends BasicPokemonMachineEntity imple
 
     public float getEntityScale() {
         return entityScale;
+    }
+
+    public int getMachineType() {
+        return machineType;
+    }
+
+    public void setMachineType(int machineType) {
+        this.machineType = machineType;
     }
 }

@@ -9,7 +9,7 @@
   "base_def": 0,
   "base_spa": 0,
   "base_spd": 0,
-  "base_spe": 110,
+  "base_spe": 100,
   "area_blocks": [
     {
       "tag": "forge:storage_blocks/netherite"

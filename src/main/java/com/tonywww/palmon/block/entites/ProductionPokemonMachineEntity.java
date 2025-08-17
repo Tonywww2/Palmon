@@ -409,6 +409,10 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
         }
     }
 
+    public void tryConsumeFood(ServerLevel serverLevel, BlockPos pos, int food) {
+        super.tryConsumeFood(serverLevel, pos, food);
+    }
+
     private static Optional<ProductionRecipe> findRecipe(ServerLevel serverLevel, ProductionInput input, ElementalType type2) {
         Optional<ProductionRecipe> recipe = serverLevel.getRecipeManager()
                 .getRecipeFor(ProductionRecipe.ProductionRecipeType.INSTANCE, input, serverLevel);
@@ -444,13 +448,6 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
         this.currentRecipe = rec.getId();
         this.targetTick = rec.getTick();
         this.currentTick = 0;
-    }
-
-    private void tryConsumeFood(ServerLevel serverLevel, BlockPos pos, int food) {
-        if (serverLevel.getRandom().nextDouble() < this.FOOD_CONSUME_CHANCE) {
-            setFood(food - serverLevel.getRandom().nextInt(this.FOOD_PER_WORKING_TICK) - 1);
-            serverLevel.playSound(null, pos, CobblemonSounds.BERRY_EAT, SoundSource.BLOCKS);
-        }
     }
 
     private void resetMultipliers() {

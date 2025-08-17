@@ -1,5 +1,6 @@
 package com.tonywww.palmon.block.entites;
 
+import com.cobblemon.mod.common.CobblemonSounds;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.types.ElementalType;
 import com.cobblemon.mod.common.pokemon.FormData;
@@ -10,6 +11,8 @@ import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -75,7 +78,7 @@ public class BasicPokemonMachineEntity extends SyncedBlockEntity {
 
     }
 
-    private WorkingStationEntityPokemon getWorkingStation() {
+    public WorkingStationEntity getWorkingStation() {
         int x = 0, z = 0;
         switch (this.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)) {
             case NORTH:
@@ -96,7 +99,7 @@ public class BasicPokemonMachineEntity extends SyncedBlockEntity {
         }
         if (this.level != null) {
             BlockEntity blockEntity = this.level.getBlockEntity(this.getBlockPos().offset(x, 0, z));
-            if (blockEntity instanceof WorkingStationEntityPokemon workingStationEntity) {
+            if (blockEntity instanceof WorkingStationEntity workingStationEntity) {
                 return workingStationEntity;
             }
         }
@@ -104,7 +107,7 @@ public class BasicPokemonMachineEntity extends SyncedBlockEntity {
     }
 
     public CompoundTag getPokemonNBT() {
-        WorkingStationEntityPokemon workingStation = this.getWorkingStation();
+        WorkingStationEntity workingStation = this.getWorkingStation();
         if (workingStation != null) {
             return workingStation.getPokemonNBT();
         }
@@ -113,7 +116,7 @@ public class BasicPokemonMachineEntity extends SyncedBlockEntity {
     }
 
     public int getFood() {
-        WorkingStationEntityPokemon workingStation = this.getWorkingStation();
+        WorkingStationEntity workingStation = this.getWorkingStation();
         if (workingStation != null) {
             return workingStation.food;
         }
@@ -121,10 +124,17 @@ public class BasicPokemonMachineEntity extends SyncedBlockEntity {
     }
 
     public void setFood(int i) {
-        WorkingStationEntityPokemon workingStation = this.getWorkingStation();
+        WorkingStationEntity workingStation = this.getWorkingStation();
         if (workingStation != null) {
             workingStation.food = i;
 
+        }
+    }
+
+    public void tryConsumeFood(ServerLevel serverLevel, BlockPos pos, int food) {
+        if (serverLevel.getRandom().nextDouble() < this.FOOD_CONSUME_CHANCE) {
+            setFood(food - serverLevel.getRandom().nextInt(this.FOOD_PER_WORKING_TICK) - 1);
+            serverLevel.playSound(null, pos, CobblemonSounds.BERRY_EAT, SoundSource.BLOCKS);
         }
     }
 
@@ -219,6 +229,7 @@ public class BasicPokemonMachineEntity extends SyncedBlockEntity {
         }
         return drops;
     }
+
     /**
      * 从宝可梦NBT数据中提取常用信息的通用方法
      */

@@ -1,0 +1,52 @@
+{
+  "type": "palmon:processing",
+  "category": "misc",
+  "focus_stat": "HP",
+  "min_level": 95,
+  "required_type": null,
+  "base_hp": 80,
+  "base_atk": 80,
+  "base_def": 80,
+  "base_spa": 80,
+  "base_spd": 80,
+  "base_spe": 80,
+  "area_blocks": [
+    {
+      "item": "cobblemon:healing_machine"
+    },
+    {
+      "item": "cobblemon:monitor"
+    }
+  ],
+  "block_count": 8,
+  "input_items": [
+    {
+      "item": "minecraft:sugar",
+      "count": 64
+    },    {
+      "item": "minecraft:honey_bottle",
+      "count": 48
+    },    {
+      "item": "minecraft:paper",
+      "count": 32
+    },    {
+      "item": "minecraft:sugar",
+      "count": 48
+    },    {
+      "item": "palmon:m_crystal",
+      "count": 32
+    }
+  ],
+  "input_power": 204800,
+  "input_fluid": {
+    "fluid": "minecraft:water",
+    "amount": 8000
+  },
+  "tick": 1600,
+  "result_items": [
+    {
+      "item": "cobblemon:rare_candy",
+      "count": 1
+    }
+  ]
+}

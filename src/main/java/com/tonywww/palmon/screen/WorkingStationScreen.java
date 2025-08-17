@@ -1,7 +1,7 @@
 package com.tonywww.palmon.screen;
 
 import com.tonywww.palmon.Palmon;
-import com.tonywww.palmon.block.entites.WorkingStationEntityPokemon;
+import com.tonywww.palmon.block.entites.WorkingStationEntity;
 import com.tonywww.palmon.menu.WorkingStationContainer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -37,7 +37,7 @@ public class WorkingStationScreen extends AbstractContainerScreen<WorkingStation
         guiGraphics.blit(GUI, i - 14, j - 23, 0, 0, 183, 220);
 
         ContainerData data = this.getMenu().getData();
-        guiGraphics.blit(GUI, i + 56, j + 86, 0, 220, (int) (67d * data.get(0) / WorkingStationEntityPokemon.MAX_FOOD), 6);
+        guiGraphics.blit(GUI, i + 56, j + 86, 0, 220, (int) (67d * data.get(0) / WorkingStationEntity.MAX_FOOD), 6);
 
     }
 
@@ -46,6 +46,6 @@ public class WorkingStationScreen extends AbstractContainerScreen<WorkingStation
         guiGraphics.drawString(this.font, this.title, this.titleLabelX + 52, this.titleLabelY - 18, 3012040, false);
 
         ContainerData data = this.getMenu().getData();
-        guiGraphics.drawString(this.font, data.get(0) + "/ " + WorkingStationEntityPokemon.MAX_FOOD, this.titleLabelX + 48, this.titleLabelY + 88, 16769411, false);
+        guiGraphics.drawString(this.font, data.get(0) + "/ " + WorkingStationEntity.MAX_FOOD, this.titleLabelX + 48, this.titleLabelY + 88, 16769411, false);
     }
 }

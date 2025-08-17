@@ -4,12 +4,12 @@
   "focus_stat": "SPEED",
   "min_level": 30,
   "required_type": null,
-  "base_hp": 40,
-  "base_atk": 40,
-  "base_def": 40,
-  "base_spa": 40,
-  "base_spd": 40,
-  "base_spe": 40,
+  "base_hp": 30,
+  "base_atk": 30,
+  "base_def": 30,
+  "base_spa": 30,
+  "base_spd": 30,
+  "base_spe": 30,
   "area_blocks": [
     {
       "item": "minecraft:piston"
