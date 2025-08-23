@@ -1,7 +1,7 @@
 package com.tonywww.palmon.menu;
 
 import com.tonywww.palmon.api.IAbstractContainerMenu;
-import com.tonywww.palmon.block.entites.ProcessingStationEntityPokemon;
+import com.tonywww.palmon.block.entites.ProcessingStationEntity;
 import com.tonywww.palmon.registeries.ModBlocks;
 import com.tonywww.palmon.registeries.ModMenus;
 import com.tonywww.palmon.utils.ContainerUtils;
@@ -24,14 +24,14 @@ import static com.tonywww.palmon.utils.ContainerUtils.quickMoveHelper;
 
 public class ProcessingStationContainer extends IAbstractContainerMenu {
 
-    private final ProcessingStationEntityPokemon blockEntity;
+    private final ProcessingStationEntity blockEntity;
     private final ContainerLevelAccess canInteractWithCallable;
     private final IItemHandler playerInventory;
 
     private final ContainerData data;
     private final ContainerData tickData;
 
-    public ProcessingStationContainer(int id, Inventory playerInventory, ProcessingStationEntityPokemon blockEntity, ContainerData dataAccess, ContainerData tickData) {
+    public ProcessingStationContainer(int id, Inventory playerInventory, ProcessingStationEntity blockEntity, ContainerData dataAccess, ContainerData tickData) {
         super(ModMenus.PROCESSING_STATION_CONTAINER.get(), id);
 
         this.blockEntity = blockEntity;
@@ -71,11 +71,11 @@ public class ProcessingStationContainer extends IAbstractContainerMenu {
 
     }
 
-    private static ProcessingStationEntityPokemon getTileEntity(final Inventory playerInventory, final FriendlyByteBuf data) {
+    private static ProcessingStationEntity getTileEntity(final Inventory playerInventory, final FriendlyByteBuf data) {
         Objects.requireNonNull(playerInventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
         final BlockEntity tileAtPos = playerInventory.player.level().getBlockEntity(data.readBlockPos());
-        if (tileAtPos instanceof ProcessingStationEntityPokemon tile) {
+        if (tileAtPos instanceof ProcessingStationEntity tile) {
             return tile;
         }
         throw new IllegalStateException("Tile entity is not correct! " + tileAtPos);
@@ -96,7 +96,7 @@ public class ProcessingStationContainer extends IAbstractContainerMenu {
         return data;
     }
 
-    public ProcessingStationEntityPokemon getBlockEntity() {
+    public ProcessingStationEntity getBlockEntity() {
         return blockEntity;
     }
 

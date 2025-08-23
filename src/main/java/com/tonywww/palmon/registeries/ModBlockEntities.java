@@ -1,8 +1,8 @@
 package com.tonywww.palmon.registeries;
 
 import com.tonywww.palmon.Palmon;
-import com.tonywww.palmon.block.entites.ProcessingStationEntityPokemon;
-import com.tonywww.palmon.block.entites.ProductionPokemonMachineEntity;
+import com.tonywww.palmon.block.entites.ProcessingStationEntity;
+import com.tonywww.palmon.block.entites.ProductionMachineEntity;
 import com.tonywww.palmon.block.entites.WorkingStationEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -18,13 +18,13 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("working_station",
                     () -> BlockEntityType.Builder.of(WorkingStationEntity::new, ModBlocks.WORKING_STATION.get()).build(null));
 
-    public static RegistryObject<BlockEntityType<ProductionPokemonMachineEntity>> PRODUCTION_MACHINE_BLOCK_ENTITY =
+    public static RegistryObject<BlockEntityType<ProductionMachineEntity>> PRODUCTION_MACHINE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("production_machine",
-                    () -> BlockEntityType.Builder.of(ProductionPokemonMachineEntity::new, ModBlocks.PRODUCTION_MACHINE.get()).build(null));
+                    () -> BlockEntityType.Builder.of(ProductionMachineEntity::new, ModBlocks.PRODUCTION_MACHINE.get()).build(null));
 
-    public static RegistryObject<BlockEntityType<ProcessingStationEntityPokemon>> PROCESSING_STATION_ENTITY =
+    public static RegistryObject<BlockEntityType<ProcessingStationEntity>> PROCESSING_STATION_ENTITY =
             BLOCK_ENTITIES.register("processing_station",
-                    () -> BlockEntityType.Builder.of(ProcessingStationEntityPokemon::new, ModBlocks.PROCESSING_STATION.get()).build(null));
+                    () -> BlockEntityType.Builder.of(ProcessingStationEntity::new, ModBlocks.PROCESSING_STATION.get()).build(null));
 
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);

@@ -1,6 +1,6 @@
 package com.tonywww.palmon.block;
 
-import com.tonywww.palmon.block.entites.ProductionPokemonMachineEntity;
+import com.tonywww.palmon.block.entites.ProductionMachineEntity;
 import com.tonywww.palmon.registeries.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -123,7 +123,7 @@ public class ProductionMachine extends BaseEntityBlock {
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof ProductionPokemonMachineEntity entity) {
+            if (blockEntity instanceof ProductionMachineEntity entity) {
                 ItemStack stackInHand = pPlayer.getItemInHand(pHand);
                 if (!stackInHand.isEmpty() && !pPlayer.isShiftKeyDown()) {
                     LazyOptional<IFluidHandlerItem> fluidItem = stackInHand.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM);
@@ -156,7 +156,7 @@ public class ProductionMachine extends BaseEntityBlock {
     public void onRemove(BlockState pState, Level level, BlockPos pos, BlockState pNewState, boolean pIsMoving) {
         if (!pState.is(pNewState.getBlock())) {
             BlockEntity tileEntity = level.getBlockEntity(pos);
-            if (tileEntity instanceof ProductionPokemonMachineEntity tile) {
+            if (tileEntity instanceof ProductionMachineEntity tile) {
                 Containers.dropContents(level, pos, tile.getDroppableInventory());
                 level.updateNeighbourForOutputSignal(pos, this);
 
@@ -168,7 +168,7 @@ public class ProductionMachine extends BaseEntityBlock {
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, ModBlockEntities.PRODUCTION_MACHINE_BLOCK_ENTITY.get(), ProductionPokemonMachineEntity::tick);
+        return createTickerHelper(blockEntityType, ModBlockEntities.PRODUCTION_MACHINE_BLOCK_ENTITY.get(), ProductionMachineEntity::tick);
     }
 
     @Override

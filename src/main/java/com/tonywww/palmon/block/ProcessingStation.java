@@ -1,6 +1,6 @@
 package com.tonywww.palmon.block;
 
-import com.tonywww.palmon.block.entites.ProcessingStationEntityPokemon;
+import com.tonywww.palmon.block.entites.ProcessingStationEntity;
 import com.tonywww.palmon.registeries.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -119,7 +119,7 @@ public class ProcessingStation extends BaseEntityBlock {
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof ProcessingStationEntityPokemon entity) {
+            if (blockEntity instanceof ProcessingStationEntity entity) {
                 ItemStack stackInHand = pPlayer.getItemInHand(pHand);
                 if (!stackInHand.isEmpty() && !pPlayer.isShiftKeyDown()) {
                     LazyOptional<IFluidHandlerItem> fluidHandlerItem = stackInHand.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM);
@@ -154,7 +154,7 @@ public class ProcessingStation extends BaseEntityBlock {
     public void onRemove(BlockState pState, Level level, BlockPos pos, BlockState pNewState, boolean pIsMoving) {
         if (!pState.is(pNewState.getBlock())) {
             BlockEntity tileEntity = level.getBlockEntity(pos);
-            if (tileEntity instanceof ProcessingStationEntityPokemon tile) {
+            if (tileEntity instanceof ProcessingStationEntity tile) {
                 Containers.dropContents(level, pos, tile.getDroppableInventory());
                 level.updateNeighbourForOutputSignal(pos, this);
 
@@ -165,7 +165,7 @@ public class ProcessingStation extends BaseEntityBlock {
     }
 
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, ModBlockEntities.PROCESSING_STATION_ENTITY.get(), ProcessingStationEntityPokemon::tick);
+        return createTickerHelper(blockEntityType, ModBlockEntities.PROCESSING_STATION_ENTITY.get(), ProcessingStationEntity::tick);
     }
 
     @Override

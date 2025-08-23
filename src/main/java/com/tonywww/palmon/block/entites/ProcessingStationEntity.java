@@ -1,16 +1,13 @@
 package com.tonywww.palmon.block.entites;
 
-import com.cobblemon.mod.common.CobblemonSounds;
-import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.types.ElementalType;
-import com.cobblemon.mod.common.pokemon.FormData;
-import com.cobblemon.mod.common.pokemon.Species;
-import com.google.common.collect.Queues;
+import com.tonywww.palmon.api.CountableIngredient;
 import com.tonywww.palmon.api.IEnergyStorage;
-import com.tonywww.palmon.recipes.wrappers.ProductionInput;
-import com.tonywww.palmon.menu.ProductionMachineContainer;
-import com.tonywww.palmon.recipes.ProductionRecipe;
+import com.tonywww.palmon.block.entites.itemhandlers.ProcessingStationItemHandler;
+import com.tonywww.palmon.menu.ProcessingStationContainer;
+import com.tonywww.palmon.recipes.ProcessingRecipe;
+import com.tonywww.palmon.recipes.wrappers.ProcessingInput;
 import com.tonywww.palmon.registeries.ModBlockEntities;
 import com.tonywww.palmon.registeries.ModBlocks;
 import com.tonywww.palmon.utils.ContainerUtils;
@@ -22,6 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,8 +27,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -42,18 +40,20 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Queue;
 
 import static com.tonywww.palmon.utils.RecipeUtils.insertListToHandler;
 
-public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity implements MenuProvider {
+public class ProcessingStationEntity extends BasicPokemonMachineEntity implements MenuProvider {
+
     public ItemStackHandler itemStackHandler;
     public IEnergyStorage energyStorage;
     public FluidTank fluidTank;
 
     private final LazyOptional<ItemStackHandler> itemOptional = LazyOptional.of(() -> this.itemStackHandler);
+    private final LazyOptional<ProcessingStationItemHandler> itemInputOptional = LazyOptional.of(() -> new ProcessingStationItemHandler(this.itemStackHandler, Direction.UP));
+    private final LazyOptional<ProcessingStationItemHandler> itemOutputOptional = LazyOptional.of(() -> new ProcessingStationItemHandler(this.itemStackHandler, Direction.DOWN));
+
     private final LazyOptional<EnergyStorage> energyOptional = LazyOptional.of(() -> this.energyStorage);
     private final LazyOptional<FluidTank> fluidOptional = LazyOptional.of(() -> this.fluidTank);
 
@@ -62,15 +62,15 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
 
     private ResourceLocation currentRecipe;
 
-    public static int MAX_ENERGY = 5000000;
-    public static int MAX_FLUID = 8000;
-
-    public static int MAX_TRANSFER = 5000000;
+    public static final int ITEM_INPUT_SIZE = 8;
+    public static int MAX_ENERGY = 100000000;
+    public static int MAX_FLUID = 12000;
 
     public static final double ACCURACY = BasicPokemonMachineEntity.ACCURACY;
 
-    private ItemStackHandler createItemHandler() {
-        return new ItemStackHandler(18) {
+    // 0-7 input, 8-11 output
+    private ItemStackHandler createInputItemHandler() {
+        return new ItemStackHandler(12) {
             @Override
             protected void onContentsChanged(int slot) {
                 inventoryChanged();
@@ -78,7 +78,7 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return true;
+                return slot <= 7;
             }
 
             @Override
@@ -98,25 +98,25 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
         };
     }
 
+
     private IEnergyStorage createEnergyHandler() {
         return new IEnergyStorage(MAX_ENERGY) {
             @Override
             public int receiveEnergy(int maxReceive, boolean simulate) {
-                return 0;
-            }
-
-            @Override
-            public int extractEnergy(int maxExtract, boolean simulate) {
-                int energy = this.getEnergyStored();
-                if (energy <= 0) return 0;
-                int diff = Math.min(energy, maxExtract);
+                int energySpace = this.getMaxEnergyStored() - this.getEnergyStored();
+                int diff = Math.min(energySpace, maxReceive);
                 if (!simulate) {
-                    this.setEnergyStored(this.getEnergyStored() - diff);
+                    this.setEnergyStored(this.getEnergyStored() + diff);
                     if (diff != 0) {
                         inventoryChanged();
                     }
                 }
                 return diff;
+            }
+
+            @Override
+            public int extractEnergy(int maxExtract, boolean simulate) {
+                return 0;
             }
 
             @Override
@@ -131,12 +131,12 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
 
             @Override
             public boolean canExtract() {
-                return true;
+                return false;
             }
 
             @Override
             public boolean canReceive() {
-                return false;
+                return true;
             }
         };
     }
@@ -151,10 +151,10 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
         };
     }
 
-    public ProductionPokemonMachineEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.PRODUCTION_MACHINE_BLOCK_ENTITY.get(), pos, state);
+    public ProcessingStationEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.PROCESSING_STATION_ENTITY.get(), pos, state);
 
-        this.itemStackHandler = createItemHandler();
+        this.itemStackHandler = createInputItemHandler();
         this.energyStorage = createEnergyHandler();
         this.fluidTank = createFluidTank();
 
@@ -163,25 +163,25 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
             public int get(int index) {
                 switch (index) {
                     case 0 -> {
-                        return (int) (ProductionPokemonMachineEntity.this.boostMultiplier * ProductionPokemonMachineEntity.ACCURACY);
+                        return (int) (ProcessingStationEntity.this.boostMultiplier * ProcessingStationEntity.ACCURACY);
                     }
                     case 1 -> {
-                        return (int) (ProductionPokemonMachineEntity.this.levelMultiplier * ProductionPokemonMachineEntity.ACCURACY);
+                        return (int) (ProcessingStationEntity.this.levelMultiplier * ProcessingStationEntity.ACCURACY);
                     }
                     case 2 -> {
-                        return (int) (ProductionPokemonMachineEntity.this.individualMultiplier * ProductionPokemonMachineEntity.ACCURACY);
+                        return (int) (ProcessingStationEntity.this.individualMultiplier * ProcessingStationEntity.ACCURACY);
                     }
                     case 3 -> {
-                        return (int) (ProductionPokemonMachineEntity.this.focusMultiplier * ProductionPokemonMachineEntity.ACCURACY);
+                        return (int) (ProcessingStationEntity.this.focusMultiplier * ProcessingStationEntity.ACCURACY);
                     }
                     case 4 -> {
-                        return (int) (ProductionPokemonMachineEntity.this.efficiency * ProductionPokemonMachineEntity.ACCURACY);
+                        return (int) (ProcessingStationEntity.this.efficiency * ProcessingStationEntity.ACCURACY);
                     }
                     case 5 -> {
-                        return ContainerUtils.splitIntToShortLow(ProductionPokemonMachineEntity.this.energyStorage.getEnergyStored());
+                        return ContainerUtils.splitIntToShortLow(ProcessingStationEntity.this.energyStorage.getEnergyStored());
                     }
                     case 6 -> {
-                        return ContainerUtils.splitIntToShortHigh(ProductionPokemonMachineEntity.this.energyStorage.getEnergyStored());
+                        return ContainerUtils.splitIntToShortHigh(ProcessingStationEntity.this.energyStorage.getEnergyStored());
                     }
                 }
                 return 0;
@@ -191,31 +191,31 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
             public void set(int index, int val) {
                 switch (index) {
                     case 0:
-                        ProductionPokemonMachineEntity.this.boostMultiplier = val / ProductionPokemonMachineEntity.ACCURACY;
+                        ProcessingStationEntity.this.boostMultiplier = val / ProcessingStationEntity.ACCURACY;
                         break;
 
                     case 1:
-                        ProductionPokemonMachineEntity.this.levelMultiplier = val / ProductionPokemonMachineEntity.ACCURACY;
+                        ProcessingStationEntity.this.levelMultiplier = val / ProcessingStationEntity.ACCURACY;
                         break;
 
                     case 2:
-                        ProductionPokemonMachineEntity.this.individualMultiplier = val / ProductionPokemonMachineEntity.ACCURACY;
+                        ProcessingStationEntity.this.individualMultiplier = val / ProcessingStationEntity.ACCURACY;
                         break;
 
                     case 3:
-                        ProductionPokemonMachineEntity.this.focusMultiplier = val / ProductionPokemonMachineEntity.ACCURACY;
+                        ProcessingStationEntity.this.focusMultiplier = val / ProcessingStationEntity.ACCURACY;
                         break;
 
                     case 4:
-                        ProductionPokemonMachineEntity.this.efficiency = val / ProductionPokemonMachineEntity.ACCURACY;
+                        ProcessingStationEntity.this.efficiency = val / ProcessingStationEntity.ACCURACY;
                         break;
 
                     case 5:
-                        ProductionPokemonMachineEntity.this.energyStorage.setEnergyStored(ContainerUtils.combineShortsToInt((short) val, (short) ProductionPokemonMachineEntity.this.dataAccess.get(6)));
+                        ProcessingStationEntity.this.energyStorage.setEnergyStored(ContainerUtils.combineShortsToInt((short) val, (short) ProcessingStationEntity.this.dataAccess.get(6)));
                         break;
 
                     case 6:
-                        ProductionPokemonMachineEntity.this.energyStorage.setEnergyStored(ContainerUtils.combineShortsToInt((short) ProductionPokemonMachineEntity.this.dataAccess.get(5), (short) val));
+                        ProcessingStationEntity.this.energyStorage.setEnergyStored(ContainerUtils.combineShortsToInt((short) ProcessingStationEntity.this.dataAccess.get(5), (short) val));
                         break;
 
                 }
@@ -233,10 +233,10 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
             public int get(int index) {
                 switch (index) {
                     case 0 -> {
-                        return (int) (ProductionPokemonMachineEntity.this.currentTick);
+                        return (int) (ProcessingStationEntity.this.currentTick);
                     }
                     case 1 -> {
-                        return (int) (ProductionPokemonMachineEntity.this.targetTick);
+                        return (int) (ProcessingStationEntity.this.targetTick);
                     }
                 }
                 return 0;
@@ -246,10 +246,10 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
             public void set(int index, int val) {
                 switch (index) {
                     case 0:
-                        ProductionPokemonMachineEntity.this.currentTick = val;
+                        ProcessingStationEntity.this.currentTick = val;
                         break;
                     case 1:
-                        ProductionPokemonMachineEntity.this.targetTick = val;
+                        ProcessingStationEntity.this.targetTick = val;
                         break;
                 }
 
@@ -261,6 +261,11 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
             }
         };
 
+    }
+
+    @Override
+    public @Nullable AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+        return new ProcessingStationContainer(id, inventory, this, this.dataAccess, this.tickData);
     }
 
     @Override
@@ -291,7 +296,16 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.itemOptional.cast();
+            if (side == null) {
+                // Player
+                return this.itemOptional.cast();
+            }
+            if (side == Direction.DOWN) {
+                return this.itemOutputOptional.cast();
+            }
+            if (side == Direction.NORTH || side == Direction.EAST || side == Direction.SOUTH || side == Direction.WEST) {
+                return this.itemInputOptional.cast();
+            }
         }
 
         if (cap == ForgeCapabilities.ENERGY) {
@@ -300,6 +314,7 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
 
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return this.fluidOptional.cast();
+
         }
 
         return super.getCapability(cap, side);
@@ -307,43 +322,22 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("screen.palmon.production_machine");
-    }
-
-    @Override
-    public @Nullable AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new ProductionMachineContainer(id, inventory, this, this.dataAccess, this.tickData);
+        return Component.translatable("screen.palmon.processing_station");
     }
 
     public ItemStackHandler getAreaBlocks() {
-        return super.getAreaBlocks(ModBlocks.PRODUCTION_MACHINE.get());
+        return super.getAreaBlocks(ModBlocks.PROCESSING_STATION.get());
     }
 
-    private final Queue<Direction> directionQueue = Queues.newArrayDeque(Direction.Plane.HORIZONTAL);
-
-    private void distributeEnergy() {
-        if (this.getLevel() != null) {
-            if (this.energyStorage.getEnergyStored() <= 0) return;
-            this.directionQueue.offer(this.directionQueue.remove());
-            for (Direction dir : directionQueue) {
-                BlockEntity be = this.getLevel().getBlockEntity(this.getBlockPos().offset(dir.getNormal()));
-                if (be != null) {
-                    be.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite()).ifPresent(e -> {
-                        if (e.canReceive()) {
-                            int diff = e.receiveEnergy(Math.min(MAX_TRANSFER, this.energyStorage.getEnergyStored()), false);
-                            if (diff != 0) {
-                                this.energyStorage.setEnergyStored(this.energyStorage.getEnergyStored() - diff);
-                                this.inventoryChanged();
-                            }
-                        }
-                    });
-                }
-
-            }
+    public ItemStackHandler getItemInput() {
+        ItemStackHandler stackHandler = new ItemStackHandler(8);
+        for (int i = 0; i < ITEM_INPUT_SIZE; i++) {
+            stackHandler.setStackInSlot(i, this.itemStackHandler.getStackInSlot(i));
         }
+        return stackHandler;
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, ProductionPokemonMachineEntity be) {
+    public static void tick(Level level, BlockPos pos, BlockState state, ProcessingStationEntity be) {
         if (level instanceof ServerLevel serverLevel) {
             be.tickBase(1);
             int food = be.getFood();
@@ -366,8 +360,9 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
             }
 
             ItemStackHandler areaBlocks = be.getAreaBlocks();
-
-            ProductionInput input = new ProductionInput(areaBlocks,
+            if (areaBlocks == null) return;
+            ItemStackHandler itemInput = be.getItemInput();
+            ProcessingInput input = new ProcessingInput(areaBlocks,
                     pokemonData.level,
                     pokemonData.type1,
                     pokemonData.baseStats.get(Stats.HP),
@@ -375,12 +370,15 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
                     pokemonData.baseStats.get(Stats.DEFENCE),
                     pokemonData.baseStats.get(Stats.SPECIAL_ATTACK),
                     pokemonData.baseStats.get(Stats.SPECIAL_DEFENCE),
-                    pokemonData.baseStats.get(Stats.SPEED));
+                    pokemonData.baseStats.get(Stats.SPEED),
+                    itemInput, be.fluidTank.getFluid(),
+                    be.energyStorage.getEnergyStored());
 
-            Optional<ProductionRecipe> recipe = findRecipe(serverLevel, input, pokemonData.type2);
+
+            Optional<ProcessingRecipe> recipe = findRecipe(serverLevel, input, pokemonData.type2);
 
             if (recipe.isPresent()) {
-                ProductionRecipe rcp = recipe.get();
+                ProcessingRecipe rcp = recipe.get();
                 if (rcp.getId().equals(be.currentRecipe)) {
                     Stats focusStat = rcp.getFocusStat();
                     int focusEv = pokemonData.form.getBaseStats().get(focusStat);
@@ -404,7 +402,7 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
                 be.resetRecipeState();
             }
 
-            be.distributeEnergy();
+            be.inventoryChanged();
             be.resetTicker();
         }
     }
@@ -413,40 +411,57 @@ public class ProductionPokemonMachineEntity extends BasicPokemonMachineEntity im
         super.tryConsumeFood(serverLevel, pos, food);
     }
 
-    private static Optional<ProductionRecipe> findRecipe(ServerLevel serverLevel, ProductionInput input, ElementalType type2) {
-        Optional<ProductionRecipe> recipe = serverLevel.getRecipeManager()
-                .getRecipeFor(ProductionRecipe.ProductionRecipeType.INSTANCE, input, serverLevel);
+    private static Optional<ProcessingRecipe> findRecipe(ServerLevel serverLevel, ProcessingInput input, ElementalType type2) {
+        Optional<ProcessingRecipe> recipe = serverLevel.getRecipeManager()
+                .getRecipeFor(ProcessingRecipe.ProcessingRecipeType.INSTANCE, input, serverLevel);
         if (recipe.isEmpty() && type2 != null) {
             input.setType(type2);
             recipe = serverLevel.getRecipeManager()
-                    .getRecipeFor(ProductionRecipe.ProductionRecipeType.INSTANCE, input, serverLevel);
+                    .getRecipeFor(ProcessingRecipe.ProcessingRecipeType.INSTANCE, input, serverLevel);
         }
         return recipe;
     }
 
-    private void processRecipe(ProductionRecipe rec, ServerLevel serverLevel, BlockPos pos) {
+    private void processRecipe(ProcessingRecipe rcp, ServerLevel serverLevel, BlockPos pos) {
         this.currentTick += this.efficiency * this.tickPerOperation;
         if (this.currentTick >= this.targetTick) {
-            int times = (int) (this.currentTick / this.targetTick);
-            for (int i = 0; i < times; i++) {
-                if (!rec.getResultItems().isEmpty()) {
-                    insertListToHandler(rec.getResultItems(), this.itemStackHandler, 0, this.itemStackHandler.getSlots());
-                }
-                if (rec.getResultPower() > 0) {
-                    this.energyStorage.setEnergyStored(this.energyStorage.getEnergyStored() + rec.getResultPower());
-                }
-                if (rec.getResultFluid() != null) {
-                    this.fluidTank.fill(rec.getResultFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
-                }
+            if (!rcp.getResultItems().isEmpty()) {
+                insertListToHandler(rcp.getResultItems(), this.itemStackHandler, ITEM_INPUT_SIZE, this.itemStackHandler.getSlots());
             }
-            this.currentTick = this.currentTick % this.targetTick;
-            serverLevel.playSound(null, pos, CobblemonSounds.EVOLVE, SoundSource.BLOCKS);
+            if (!rcp.getInputItems().isEmpty()) {
+                consumeInputItems(rcp);
+            }
+            this.energyStorage.setEnergyStored(this.energyStorage.getEnergyStored() - rcp.getInputEnergy());
+            if (rcp.getInputFluid() != null) {
+                this.fluidTank.drain(rcp.getInputFluid().getAmount(), IFluidHandler.FluidAction.EXECUTE);
+            }
+            this.currentTick -= this.targetTick;
+            serverLevel.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS);
         }
     }
 
-    private void startNewRecipe(ProductionRecipe rec) {
-        this.currentRecipe = rec.getId();
-        this.targetTick = rec.getTick();
+    private void consumeInputItems(ProcessingRecipe rcp) {
+        for (CountableIngredient recipeStack : rcp.getInputItems()) {
+            Ingredient ingredient = recipeStack.getIngredient();
+            int still = recipeStack.getCount();
+            for (int i = 0; i < ITEM_INPUT_SIZE && still > 0; i++) {
+                ItemStack stackInSlot = this.itemStackHandler.getStackInSlot(i);
+                if (!stackInSlot.isEmpty() && ingredient.test(stackInSlot)) {
+                    int count = stackInSlot.getCount();
+                    if (still - count > 0) {
+                        stackInSlot.shrink(count);
+                    } else {
+                        stackInSlot.shrink(still);
+                    }
+                    still -= count;
+                }
+            }
+        }
+    }
+
+    private void startNewRecipe(ProcessingRecipe rcp) {
+        this.currentRecipe = rcp.getId();
+        this.targetTick = rcp.getTick();
         this.currentTick = 0;
     }
 
