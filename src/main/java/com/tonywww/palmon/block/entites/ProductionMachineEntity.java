@@ -171,7 +171,7 @@ public class ProductionMachineEntity extends BasicPokemonMachineEntity implement
                         return (int) (ProductionMachineEntity.this.focusMultiplier * ProductionMachineEntity.ACCURACY);
                     }
                     case 4 -> {
-                        return (int) (ProductionMachineEntity.this.efficiency * ProductionMachineEntity.ACCURACY);
+                        return (int) (ProductionMachineEntity.this.efficiency - 32000);
                     }
                     case 5 -> {
                         return ContainerUtils.splitIntToShortLow(ProductionMachineEntity.this.energyStorage.getEnergyStored());
@@ -203,7 +203,7 @@ public class ProductionMachineEntity extends BasicPokemonMachineEntity implement
                         break;
 
                     case 4:
-                        ProductionMachineEntity.this.efficiency = val / ProductionMachineEntity.ACCURACY;
+                        ProductionMachineEntity.this.efficiency = val + 32000;
                         break;
 
                     case 5:
@@ -229,10 +229,10 @@ public class ProductionMachineEntity extends BasicPokemonMachineEntity implement
             public int get(int index) {
                 switch (index) {
                     case 0 -> {
-                        return (int) (ProductionMachineEntity.this.currentTick);
+                        return (int) (ProductionMachineEntity.this.currentTick - 32000);
                     }
                     case 1 -> {
-                        return (int) (ProductionMachineEntity.this.targetTick);
+                        return (int) (ProductionMachineEntity.this.targetTick - 32000);
                     }
                 }
                 return 0;
@@ -242,10 +242,10 @@ public class ProductionMachineEntity extends BasicPokemonMachineEntity implement
             public void set(int index, int val) {
                 switch (index) {
                     case 0:
-                        ProductionMachineEntity.this.currentTick = val;
+                        ProductionMachineEntity.this.currentTick = val + 32000;
                         break;
                     case 1:
-                        ProductionMachineEntity.this.targetTick = val;
+                        ProductionMachineEntity.this.targetTick = val + 32000;
                         break;
                 }
 

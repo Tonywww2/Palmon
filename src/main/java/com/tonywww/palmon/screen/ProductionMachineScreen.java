@@ -93,7 +93,7 @@ public class ProductionMachineScreen extends AbstractContainerScreen<ProductionM
         int energyHeight = getEnergyHeight(ContainerUtils.combineShortsToInt((short) this.menu.getData().get(5), (short) this.menu.getData().get(6)), this.menu.getBlockEntity().energyStorage.getMaxEnergyStored());
         guiGraphics.blit(GUI, this.leftPos + ENERGY_TANK_X, getEnergyY(energyHeight), 204, ENERGY_TANK_HEIGHT - energyHeight + 1, 16, energyHeight);
 
-        guiGraphics.blit(GUI, this.leftPos + 11, this.topPos + 109, 0, 220, (int) (153d * tickData.get(0) / tickData.get(1)), 4);
+        guiGraphics.blit(GUI, this.leftPos + 11, this.topPos + 109, 0, 220, (int) (153d * (tickData.get(0) + 32000) / (tickData.get(1) + 32000)), 4);
 
     }
 
@@ -134,9 +134,9 @@ public class ProductionMachineScreen extends AbstractContainerScreen<ProductionM
         guiGraphics.drawString(this.font, Component.literal(String.valueOf(decodeData(data, 3))), this.titleLabelX + 78, 36, 3012040, false);
 
         guiGraphics.drawString(this.font, Component.translatable("ui.palmon.overall_multiplier"), this.titleLabelX + 111, this.titleLabelY - 22, 3012040, false);
-        guiGraphics.drawString(this.font, Component.literal(String.valueOf(decodeData(data, 4))), this.titleLabelX + 111, this.titleLabelY - 10, 3012040, false);
+        guiGraphics.drawString(this.font, Component.literal(String.valueOf(data.get(4) + 32000)), this.titleLabelX + 111, this.titleLabelY - 10, 3012040, false);
 
-        guiGraphics.drawString(this.font, Component.literal(tickData.get(0) + "/ " + tickData.get(1)), this.titleLabelX + 111, this.titleLabelY, 3012040, false);
+        guiGraphics.drawString(this.font, Component.literal((tickData.get(0) + 32000) + "/ " + (tickData.get(1) + 32000)), this.titleLabelX + 111, this.titleLabelY, 3012040, false);
 
     }
 

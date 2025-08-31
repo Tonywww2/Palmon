@@ -175,7 +175,7 @@ public class ProcessingStationEntity extends BasicPokemonMachineEntity implement
                         return (int) (ProcessingStationEntity.this.focusMultiplier * ProcessingStationEntity.ACCURACY);
                     }
                     case 4 -> {
-                        return (int) (ProcessingStationEntity.this.efficiency * ProcessingStationEntity.ACCURACY);
+                        return (int) (ProcessingStationEntity.this.efficiency - 32000);
                     }
                     case 5 -> {
                         return ContainerUtils.splitIntToShortLow(ProcessingStationEntity.this.energyStorage.getEnergyStored());
@@ -207,7 +207,7 @@ public class ProcessingStationEntity extends BasicPokemonMachineEntity implement
                         break;
 
                     case 4:
-                        ProcessingStationEntity.this.efficiency = val / ProcessingStationEntity.ACCURACY;
+                        ProcessingStationEntity.this.efficiency = val + 32000;
                         break;
 
                     case 5:
@@ -233,10 +233,10 @@ public class ProcessingStationEntity extends BasicPokemonMachineEntity implement
             public int get(int index) {
                 switch (index) {
                     case 0 -> {
-                        return (int) (ProcessingStationEntity.this.currentTick);
+                        return (int) (ProcessingStationEntity.this.currentTick - 32000);
                     }
                     case 1 -> {
-                        return (int) (ProcessingStationEntity.this.targetTick);
+                        return (int) (ProcessingStationEntity.this.targetTick - 32000);
                     }
                 }
                 return 0;
@@ -246,10 +246,10 @@ public class ProcessingStationEntity extends BasicPokemonMachineEntity implement
             public void set(int index, int val) {
                 switch (index) {
                     case 0:
-                        ProcessingStationEntity.this.currentTick = val;
+                        ProcessingStationEntity.this.currentTick = val + 32000;
                         break;
                     case 1:
-                        ProcessingStationEntity.this.targetTick = val;
+                        ProcessingStationEntity.this.targetTick = val + 32000;
                         break;
                 }
 
