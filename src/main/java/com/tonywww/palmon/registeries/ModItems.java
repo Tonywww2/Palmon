@@ -1,6 +1,7 @@
 package com.tonywww.palmon.registeries;
 
 import com.tonywww.palmon.Palmon;
+import com.tonywww.palmon.item.ButcherKnife;
 import com.tonywww.palmon.item.EmptyContract;
 import com.tonywww.palmon.item.LaborContract;
 import net.minecraft.world.item.Item;
@@ -30,6 +31,12 @@ public class ModItems {
 
     public static final RegistryObject<Item> LABOR_CONTRACT = ITEMS.register("labor_contract",
             () -> new LaborContract(new Item.Properties()
+                    .stacksTo(1)
+                    .fireResistant()
+            ));
+
+    public static final RegistryObject<Item> BUTCHER_KNIFE = ITEMS.register("butcher_knife",
+            () -> new ButcherKnife(new Item.Properties()
                     .stacksTo(1)
                     .fireResistant()
             ));

@@ -18,6 +18,7 @@ public class ModCreativeModTabs {
                     .title(Component.translatable("creativetab.palmon_tab"))
                     .displayItems((pParameters, pOutput) -> {
                         pOutput.accept(ModItems.EMPTY_CONTRACT.get());
+                        pOutput.accept(ModItems.BUTCHER_KNIFE.get());
                         pOutput.accept(ModItems.POKE_FOOD.get());
 
                         pOutput.accept(ModItems.M_CRYSTAL.get());

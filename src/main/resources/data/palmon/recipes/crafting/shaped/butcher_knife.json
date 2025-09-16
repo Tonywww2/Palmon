@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:stick"
+    },
+    "B": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "pattern": [
+    " BB",
+    " BB",
+    " A  "
+  ],
+  "result": {
+    "item": "palmon:butcher_knife"
+  }
+}
