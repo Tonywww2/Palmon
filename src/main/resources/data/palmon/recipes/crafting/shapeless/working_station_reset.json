@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "palmon:working_station"
+    }
+  ],
+  "result": {
+    "item": "palmon:working_station",
+    "count": 1
+  }
+}

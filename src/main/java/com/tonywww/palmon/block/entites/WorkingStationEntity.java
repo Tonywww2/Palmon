@@ -158,7 +158,9 @@ public class WorkingStationEntity extends BasicPokemonMachineEntity implements M
             this.pokemonEntity = null;
         }
 
-        this.food = tag.getInt("food");
+        if (tag.contains("food")) {
+            this.food = tag.getInt("food");
+        }
 
         super.load(tag);
     }
@@ -171,6 +173,7 @@ public class WorkingStationEntity extends BasicPokemonMachineEntity implements M
 
         super.saveAdditional(tag);
     }
+
 
     @Override
     public @Nullable ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -287,4 +290,20 @@ public class WorkingStationEntity extends BasicPokemonMachineEntity implements M
     public void setMachineType(int machineType) {
         this.machineType = machineType;
     }
+
+    @Override
+    public WorkingStationEntity getWorkingStation() {
+        return this;
+    }
+
+    @Override
+    public int getFood() {
+        return this.food;
+    }
+
+    @Override
+    public void setFood(int food) {
+        this.food = food;
+    }
+
 }
