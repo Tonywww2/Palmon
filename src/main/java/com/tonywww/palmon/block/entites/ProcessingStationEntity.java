@@ -436,6 +436,7 @@ public class ProcessingStationEntity extends BasicPokemonMachineEntity implement
                 this.fluidTank.drain(rcp.getInputFluid().getAmount(), IFluidHandler.FluidAction.EXECUTE);
             }
             this.currentTick -= this.targetTick;
+            if (this.currentTick > this.targetTick) this.currentTick = this.targetTick;
             serverLevel.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS);
         }
     }
